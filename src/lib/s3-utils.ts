@@ -1,22 +1,21 @@
 /* eslint-disable max-params */
 /* eslint-disable max-depth */
 /* eslint-disable no-console */
+import {
+  S3Client,
+  GetObjectCommand,
+  PutObjectCommand,
+  DeleteObjectCommand,
+  HeadObjectCommand,
+  HeadBucketCommand,
+  CreateBucketCommand,
+  CopyObjectCommand,
+} from "@aws-sdk/client-s3";
+import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import fs from "fs";
+import path from "path";
 import { pipeline } from "stream";
 import { promisify } from "util";
-import fetch from "node-fetch";
-
-import {
-  CopyObjectCommand,
-  CreateBucketCommand,
-  DeleteObjectCommand,
-  GetObjectCommand,
-  getSignedUrl,
-  HeadBucketCommand,
-  HeadObjectCommand,
-  PutObjectCommand,
-  s3,
-} from "@/lib/s3";
 
 const pipelineAsync = promisify(pipeline);
 const CHUNK_SIZE = 5 * 1024 * 1024; // 5MB chunks for multipart upload
@@ -52,13 +51,15 @@ class S3Utils {
   private async ensureBucketExists(bucket: string) {
     try {
       // Check if bucket exists
-      await s3.send(new HeadBucketCommand({ Bucket: bucket }));
+      const s3Client = new S3Client({ region: "eu-central-1" });
+      await s3Client.send(new HeadBucketCommand({ Bucket: bucket }));
     } catch (error: any) {
       if (error.$metadata?.httpStatusCode === 404) {
         // Bucket doesn't exist, create it
         console.log(`Creating bucket: ${bucket}`);
         try {
-          await s3.send(new CreateBucketCommand({ Bucket: bucket }));
+          const s3Client = new S3Client({ region: "eu-central-1" });
+          await s3Client.send(new CreateBucketCommand({ Bucket: bucket }));
           console.log(`Successfully created bucket: ${bucket}`);
         } catch (createError) {
           console.error(`Failed to create bucket ${bucket}:`, createError);
@@ -162,6 +163,7 @@ class S3Utils {
       highWaterMark: CHUNK_SIZE,
     });
 
+    const s3Client = new S3Client({ region: "eu-central-1" });
     const command = new PutObjectCommand({
       Bucket: bucket,
       Key: bucketKey,
@@ -169,7 +171,7 @@ class S3Utils {
       ContentType: this.getContentType(bucketKey),
     });
 
-    await s3.send(command);
+    await s3Client.send(command);
   }
 
   private getContentType(filename: string): string {
@@ -237,13 +239,14 @@ class S3Utils {
       await this.uploadWithStream(bucket, bucketKey, filePath);
 
       // Verify the upload was successful
+      const s3Client = new S3Client({ region: "eu-central-1" });
       const headCommand = new HeadObjectCommand({
         Bucket: bucket,
         Key: bucketKey,
       });
 
       try {
-        const headResponse = await s3.send(headCommand);
+        const headResponse = await s3Client.send(headCommand);
         console.log("[uploadToS3] Upload verified:", {
           bucket,
           bucketKey,
@@ -277,13 +280,14 @@ class S3Utils {
       cleanKey = decodeURIComponent(cleanKey);
 
       // First check if the object exists using HeadObject (more efficient)
+      const s3Client = new S3Client({ region: "eu-central-1" });
       const headCommand = new HeadObjectCommand({
         Bucket: bucket,
         Key: cleanKey,
       });
 
       try {
-        const headResponse = await s3.send(headCommand);
+        const headResponse = await s3Client.send(headCommand);
         console.log("[getPresignedUrl] Object exists:", {
           bucket,
           key: cleanKey,
@@ -310,7 +314,7 @@ class S3Utils {
         Key: cleanKey,
       });
 
-      const presignedUrl = await getSignedUrl(s3, command, {
+      const presignedUrl = await getSignedUrl(s3Client, command, {
         expiresIn: 7 * 24 * 60 * 60, // 7 days (AWS maximum)
       });
 
@@ -339,6 +343,7 @@ class S3Utils {
       contentType,
     });
 
+    const s3Client = new S3Client({ region: "eu-central-1" });
     const command = new PutObjectCommand({
       Bucket: bucket,
       Key: bucketKey,
@@ -347,7 +352,7 @@ class S3Utils {
 
     try {
       // Generate presigned URL with 1 hour expiration for uploads
-      const url = await getSignedUrl(s3, command, {
+      const url = await getSignedUrl(s3Client, command, {
         expiresIn: 3600, // 1 hour in seconds
       });
 
@@ -388,6 +393,7 @@ class S3Utils {
       // Ensure bucket exists before uploading
       await this.ensureBucketExists(bucket);
 
+      const s3Client = new S3Client({ region: "eu-central-1" });
       const command = new PutObjectCommand({
         Bucket: bucket,
         Key: bucketKey,
@@ -395,7 +401,7 @@ class S3Utils {
         ContentType: contentType,
       });
 
-      await s3.send(command);
+      await s3Client.send(command);
       console.log("[uploadBufferToS3] Successfully uploaded buffer to S3:", {
         bucket,
         bucketKey,
@@ -450,7 +456,8 @@ class S3Utils {
 
   public async deleteObject(bucket: string, key: string): Promise<void> {
     try {
-      await s3.send(
+      const s3Client = new S3Client({ region: "eu-central-1" });
+      await s3Client.send(
         new DeleteObjectCommand({
           Bucket: bucket,
           Key: key,
@@ -490,13 +497,14 @@ class S3Utils {
 
     try {
       // Use the CopyObjectCommand to copy the object within S3
+      const s3Client = new S3Client({ region: "eu-central-1" });
       const command = new CopyObjectCommand({
         Bucket: bucket,
         CopySource: `${bucket}/${sourceKey}`,
         Key: destinationKey,
       });
 
-      await s3.send(command);
+      await s3Client.send(command);
       console.log(
         `Successfully copied ${sourceKey} to ${destinationKey} in bucket ${bucket}`
       );
@@ -557,13 +565,14 @@ class S3Utils {
     key: string,
     expiresIn: number = 3600
   ): Promise<string> {
+    const s3Client = new S3Client({ region: "eu-central-1" });
     const command = new GetObjectCommand({
       Bucket: bucket,
       Key: key,
     });
 
     try {
-      const url = await getSignedUrl(s3, command, { expiresIn });
+      const url = await getSignedUrl(s3Client, command, { expiresIn });
       console.log(`Generated presigned URL for ${bucket}/${key}`);
       return url;
     } catch (error) {
@@ -679,7 +688,8 @@ class S3Utils {
       }
 
       // Get the buffer
-      const buffer = await response.buffer();
+      const arrayBuffer = await response.arrayBuffer();
+      const buffer = Buffer.from(arrayBuffer);
 
       // Generate filename if not provided
       const finalFilename =

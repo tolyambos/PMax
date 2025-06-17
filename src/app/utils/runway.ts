@@ -3,7 +3,6 @@ import { RunwareServer } from "@runware/sdk-js";
 import fs from "fs";
 import os from "os";
 import path from "path";
-import fetch from "node-fetch";
 
 // Define schemas using Zod for type validation
 const RunwayImageOptionsSchema = z.object({
@@ -248,7 +247,8 @@ export class RunwayMLService {
           throw new Error(`Failed to download image: ${response.statusText}`);
         }
 
-        const buffer = await response.buffer();
+        const arrayBuffer = await response.arrayBuffer();
+        const buffer = Buffer.from(arrayBuffer);
         await fs.promises.writeFile(filePath, buffer);
 
         console.log(`Successfully downloaded image to ${filePath}`);

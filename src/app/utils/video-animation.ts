@@ -1,6 +1,5 @@
 import { z } from "zod";
 import OpenAI from "openai";
-import fetch from "node-fetch";
 import FormData from "form-data";
 import fs from "fs";
 import path from "path";
@@ -567,7 +566,13 @@ export class VideoAnimationService {
         console.log(
           `Downloading video from ${animationUrl} to ${outputPath}...`
         );
-        await this.downloadVideo(animationUrl, outputPath);
+        const response = await fetch(animationUrl);
+        if (!response.ok) {
+          throw new Error(`Failed to download video: ${response.statusText}`);
+        }
+        const arrayBuffer = await response.arrayBuffer();
+        const buffer = Buffer.from(arrayBuffer);
+        await fs.promises.writeFile(outputPath, buffer);
         console.log("Video downloaded successfully");
 
         return outputPath;
@@ -686,7 +691,8 @@ export class VideoAnimationService {
       );
     }
 
-    const buffer = await response.buffer();
+    const arrayBuffer = await response.arrayBuffer();
+    const buffer = Buffer.from(arrayBuffer);
     await fs.promises.writeFile(outputPath, buffer);
 
     console.log(`Image saved to ${outputPath}, size: ${buffer.length} bytes`);
@@ -705,7 +711,8 @@ export class VideoAnimationService {
       throw new Error(`Failed to download video: ${response.statusText}`);
     }
 
-    const buffer = await response.buffer();
+    const arrayBuffer = await response.arrayBuffer();
+    const buffer = Buffer.from(arrayBuffer);
     await fs.promises.writeFile(outputPath, buffer);
 
     console.log(`Video saved to ${outputPath}`);

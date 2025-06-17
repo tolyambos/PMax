@@ -3,7 +3,6 @@ import { RunwareServer } from "@runware/sdk-js";
 import fs from "fs";
 import os from "os";
 import path from "path";
-import fetch from "node-fetch";
 
 // Define schemas using Zod for type validation
 const RunwareImageOptionsSchema = z.object({
@@ -335,8 +334,8 @@ export class RunwareService {
           );
         }
 
-        const buffer = await response.buffer();
-        await fs.promises.writeFile(filePath, buffer);
+        const buffer = await response.arrayBuffer();
+        await fs.promises.writeFile(filePath, Buffer.from(buffer));
 
         console.log(`Successfully downloaded ${fileType} to ${filePath}`);
         return;
