@@ -94,7 +94,28 @@ After first deployment, run database migration:
 
 ## Step 9: Font Setup (Important!)
 
-Your app uses local fonts. Ensure the `fonts` directory is included in your repository and deployment.
+⚠️ **IMPORTANT**: Fonts are excluded from GitHub due to size limitations.
+
+### For Railway Deployment:
+
+**Option 1: Google Fonts (Recommended for quick deployment)**
+1. Update your font utilities to use Google Fonts API
+2. This will automatically download fonts during build
+
+**Option 2: Upload fonts separately**
+1. After deployment, you can upload fonts to your Railway app via:
+   - Railway CLI
+   - Build script that downloads fonts
+   - Environment-based font loading
+
+**Option 3: CDN Fonts**
+1. Upload your fonts to a CDN (AWS S3, Cloudinary, etc.)
+2. Update font paths in your app to point to CDN
+
+### Current Status:
+- ✅ All application code is in GitHub
+- ⚠️ Fonts need to be handled separately during deployment
+- ✅ Font loading system is ready and will work once fonts are available
 
 ## Step 10: Test Your Deployment
 
@@ -112,7 +133,7 @@ Your app uses local fonts. Ensure the `fonts` directory is included in your repo
 
 1. **Database Connection**: Ensure DATABASE_URL is correctly set
 2. **Auth Issues**: Update Clerk URLs to match your deployment URL
-3. **Font Loading**: Verify fonts directory is in the deployment
+3. **Font Loading**: Verify fonts are handled correctly during deployment
 4. **API Keys**: Double-check all API keys are correctly set
 
 ### Useful Railway Commands:
