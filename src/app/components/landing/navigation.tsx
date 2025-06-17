@@ -6,7 +6,7 @@ import { Button } from "@/app/components/ui/button";
 import { Badge } from "@/app/components/ui/badge";
 import { Menu, X, Video, Sparkles, User, LogIn, UserPlus } from "lucide-react";
 import Link from "next/link";
-import { useAuth } from "@/app/hooks/use-mock-auth";
+import { useUser, useClerk } from "@clerk/nextjs";
 import { ThemeToggle } from "@/app/components/theme-toggle";
 
 const navItems = [
@@ -19,10 +19,10 @@ const navItems = [
 export default function Navigation() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const { data: session, status, signIn, signOut } = useAuth();
+  const { user, isLoaded } = useUser();
+  const { signOut } = useClerk();
 
-  const isSignedIn = status === "authenticated";
-  const user = session?.user;
+  const isSignedIn = isLoaded && !!user;
 
   useEffect(() => {
     const handleScroll = () => {
@@ -83,14 +83,14 @@ export default function Navigation() {
                   </Link>
                 </Button>
                 <div className="flex items-center space-x-2">
-                  {user?.image && (
+                  {user?.imageUrl && (
                     <img
-                      src={user.image}
-                      alt={user?.name || "User"}
+                      src={user.imageUrl}
+                      alt={user.firstName || "User"}
                       className="w-8 h-8 rounded-full"
                     />
                   )}
-                  <span className="text-sm font-medium">{user?.name}</span>
+                  <span className="text-sm font-medium">{user?.firstName}</span>
                   <Button
                     variant="ghost"
                     size="sm"
@@ -167,14 +167,14 @@ export default function Navigation() {
               {isSignedIn ? (
                 <div className="space-y-3">
                   <div className="flex items-center space-x-2">
-                    {user?.image && (
+                    {user?.imageUrl && (
                       <img
-                        src={user.image}
-                        alt={user?.name || "User"}
+                        src={user.imageUrl}
+                        alt={user.firstName || "User"}
                         className="w-8 h-8 rounded-full"
                       />
                     )}
-                    <span className="text-sm font-medium">{user?.name}</span>
+                    <span className="text-sm font-medium">{user?.firstName}</span>
                   </div>
                   <Button
                     variant="outline"

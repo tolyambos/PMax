@@ -1,6 +1,6 @@
 "use client";
 
-import { useAuth } from "@/app/hooks/use-mock-auth";
+import { useUser } from "@clerk/nextjs";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import Navigation from "@/app/components/landing/navigation";
@@ -8,7 +8,7 @@ import HeroSection from "@/app/components/landing/hero-section";
 import { LoadingSpinner } from "@/app/components/ui/loading-spinner";
 
 export default function Home() {
-  const { data: session, status } = useAuth();
+  const { user, isLoaded } = useUser();
   const [isLoading, setIsLoading] = useState(true);
   const router = useRouter();
 
@@ -17,13 +17,13 @@ export default function Home() {
     setIsLoading(false);
 
     // If user is already signed in, redirect to dashboard
-    if (status === "authenticated") {
+    if (isLoaded && user) {
       router.push("/dashboard");
     }
-  }, [status, router]);
+  }, [isLoaded, user, router]);
 
   // Show loading spinner during initial load or auth check
-  if (isLoading || status === "loading") {
+  if (isLoading || !isLoaded) {
     return (
       <div className="flex justify-center items-center min-h-screen">
         <LoadingSpinner size="lg" variant="gradient" />

@@ -1,7 +1,7 @@
 import "./globals.css";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
-import { MockAuthProvider } from "./hooks/use-mock-auth";
+import { ClerkProvider } from '@clerk/nextjs';
 import { ErrorBoundary } from "@/app/components/ui/error-boundary";
 import { ThemeProvider } from "@/app/providers/theme-provider";
 import TRPCProviderWrapper from "@/app/providers/trpc-provider";
@@ -31,7 +31,7 @@ export default function RootLayout({
       <body className={inter.className}>
         <FontLoader />
         <ErrorBoundary>
-          <MockAuthProvider>
+          <ClerkProvider>
             <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
               <TRPCProviderWrapper>
                 <SettingsProvider>
@@ -44,7 +44,7 @@ export default function RootLayout({
                 </SettingsProvider>
               </TRPCProviderWrapper>
             </ThemeProvider>
-          </MockAuthProvider>
+          </ClerkProvider>
         </ErrorBoundary>
       </body>
     </html>

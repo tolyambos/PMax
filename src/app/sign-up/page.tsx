@@ -9,9 +9,9 @@ import {
   CardTitle,
 } from "@/app/components/ui/card";
 import { Video, Sparkles } from "lucide-react";
-import { SignIn } from "@clerk/nextjs";
+import { SignUp } from "@clerk/nextjs";
 
-export default function SignInPage() {
+export default function SignUpPage() {
   return (
     <div className="flex justify-center items-center p-4 min-h-screen bg-gradient-to-br via-purple-900 from-slate-900 to-slate-900">
       <motion.div
@@ -30,15 +30,17 @@ export default function SignInPage() {
                 PMax
               </h1>
             </div>
-            <CardTitle className="text-2xl text-white">Welcome back</CardTitle>
+            <CardTitle className="text-2xl text-white">
+              Create your account
+            </CardTitle>
             <CardDescription className="text-gray-300">
-              Sign in to your account to continue creating amazing videos
+              Join PMax and start creating amazing videos with AI
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <SignIn
+            <SignUp
               routing="hash"
-              signUpUrl="/sign-up"
+              signInUrl="/sign-in"
               appearance={{
                 elements: {
                   formButtonPrimary:
@@ -69,7 +71,7 @@ export default function SignInPage() {
         >
           <div className="flex gap-2 justify-center items-center text-sm text-gray-400">
             <Sparkles className="w-4 h-4" />
-            <span>AI-powered video creation awaits</span>
+            <span>Start your creative journey today</span>
             <Sparkles className="w-4 h-4" />
           </div>
         </motion.div>
