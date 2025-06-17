@@ -6,9 +6,43 @@ import path from "path";
 import os from "os";
 import { VIDEO_PROMPT_GENERATION } from "./prompts";
 import RunwayML from "@runwayml/sdk";
-import ffmpegStatic from "ffmpeg-static";
 import { exec } from "child_process";
 import { promisify } from "util";
+
+// Dynamically import ffmpeg-static to handle cases where it's not available
+let ffmpegStatic: string | null = null;
+try {
+  // This will work in development but may fail in production Docker
+  ffmpegStatic = require("ffmpeg-static");
+  console.log("Using ffmpeg-static:", ffmpegStatic);
+} catch (error) {
+  console.log("ffmpeg-static not available, will use system ffmpeg");
+}
+
+// Function to get ffmpeg path
+function getFFmpegPath(): string {
+  // First try ffmpeg-static
+  if (ffmpegStatic && typeof ffmpegStatic === "string") {
+    return ffmpegStatic;
+  }
+
+  // Fallback to system ffmpeg (useful in Docker)
+  return "ffmpeg";
+}
+
+// Test ffmpeg availability
+async function testFFmpegAvailability(): Promise<boolean> {
+  try {
+    const execAsync = promisify(exec);
+    const ffmpegPath = getFFmpegPath();
+    await execAsync(`${ffmpegPath} -version`);
+    console.log("FFmpeg is available at:", ffmpegPath);
+    return true;
+  } catch (error) {
+    console.error("FFmpeg is not available:", error);
+    return false;
+  }
+}
 
 // Interface for task response based on actual API
 interface TaskResponse {
@@ -612,16 +646,17 @@ export class VideoAnimationService {
       );
 
       // Check if we have ffmpeg available
-      if (ffmpegStatic) {
+      if (await testFFmpegAvailability()) {
         const execAsync = promisify(exec);
+        const ffmpegPath = getFFmpegPath();
 
         console.log("Creating mock animation using ffmpeg");
-        console.log("FFmpeg path:", ffmpegStatic);
+        console.log("FFmpeg path:", ffmpegPath);
 
         // Create a 3-second video from the still image
         const duration = 3;
         // Don't quote the ffmpeg path - let the shell handle it properly
-        const command = `${ffmpegStatic} -loop 1 -i "${imagePath}" -c:v libx264 -t ${duration} -pix_fmt yuv420p -vf "scale=trunc(iw/2)*2:trunc(ih/2)*2" "${outputPath}"`;
+        const command = `${ffmpegPath} -loop 1 -i "${imagePath}" -c:v libx264 -t ${duration} -pix_fmt yuv420p -vf "scale=trunc(iw/2)*2:trunc(ih/2)*2" "${outputPath}"`;
 
         try {
           await execAsync(command);
