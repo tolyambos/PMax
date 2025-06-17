@@ -4,6 +4,9 @@ FROM node:18-alpine
 # Set working directory
 WORKDIR /app
 
+# Install pnpm globally
+RUN npm install -g pnpm
+
 # Install system dependencies for canvas and fonts
 RUN apk add --no-cache \
     cairo-dev \
@@ -23,11 +26,11 @@ RUN apk add --no-cache \
     ttf-liberation
 
 # Copy package files
-COPY package*.json ./
+COPY package.json pnpm-lock.yaml ./
 COPY prisma ./prisma/
 
 # Install dependencies
-RUN npm ci --only=production
+RUN pnpm install --frozen-lockfile --prod
 
 # Copy fonts directory
 COPY fonts ./fonts/
@@ -40,13 +43,13 @@ ENV FONTCONFIG_PATH=./fonts
 ENV CANVAS_FONT_PATH=./fonts
 
 # Generate Prisma client
-RUN npx prisma generate
+RUN pnpm prisma generate
 
 # Build the application
-RUN npm run build
+RUN pnpm run build
 
 # Expose the port
 EXPOSE 3000
 
 # Start the application
-CMD ["npm", "start"]
+CMD ["pnpm", "start"]
