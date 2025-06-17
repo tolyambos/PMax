@@ -1,0 +1,244 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 240 10% 3.9%;
+    --card: 0 0% 100%;
+    --card-foreground: 240 10% 3.9%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 240 10% 3.9%;
+    --primary: 271 91% 65%;
+    --primary-foreground: 0 0% 98%;
+    --secondary: 240 4.8% 95.9%;
+    --secondary-foreground: 240 5.9% 10%;
+    --muted: 240 4.8% 95.9%;
+    --muted-foreground: 240 3.8% 46.1%;
+    --accent: 142 69% 58%;
+    --accent-foreground: 0 0% 98%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 240 5.9% 90%;
+    --input: 240 5.9% 90%;
+    --ring: 271 91% 65%;
+    --radius: 0.75rem;
+    
+    /* AI-focused brand colors */
+    --ai-primary: 271 91% 65%;      /* Purple */
+    --ai-secondary: 142 69% 58%;    /* Green */
+    --ai-accent: 195 100% 50%;      /* Cyan */
+    --ai-gradient-start: 271 91% 65%;
+    --ai-gradient-end: 195 100% 50%;
+    
+    /* Semantic colors */
+    --success: 142 76% 36%;
+    --warning: 38 92% 50%;
+    --error: 0 84% 60%;
+    
+    /* Surfaces */
+    --surface-elevated: 0 0% 98%;
+    --surface-overlay: 0 0% 96%;
+  }
+
+  .dark {
+    --background: 240 10% 3.9%;
+    --foreground: 0 0% 98%;
+    --card: 240 10% 7%;
+    --card-foreground: 0 0% 98%;
+    --popover: 240 10% 7%;
+    --popover-foreground: 0 0% 98%;
+    --primary: 271 91% 65%;
+    --primary-foreground: 240 10% 3.9%;
+    --secondary: 240 3.7% 15.9%;
+    --secondary-foreground: 0 0% 98%;
+    --muted: 240 3.7% 15.9%;
+    --muted-foreground: 240 5% 64.9%;
+    --accent: 142 69% 58%;
+    --accent-foreground: 240 10% 3.9%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 240 3.7% 15.9%;
+    --input: 240 3.7% 15.9%;
+    --ring: 271 91% 65%;
+    
+    /* Dark mode surfaces */
+    --surface-elevated: 240 10% 7%;
+    --surface-overlay: 240 5% 11%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+    font-feature-settings:
+      "rlig" 1,
+      "calt" 1;
+  }
+}
+
+/* Selection persistence styles */
+
+/* Helper class for when selection mode is active */
+body.element-selected-mode {
+  --selection-active: true;
+}
+
+/* Prevent accidental deselection by adding a small delay */
+.element-selected {
+  transition:
+    outline-color 0.2s ease,
+    box-shadow 0.2s ease;
+  outline: 2px solid #3b82f6 !important;
+  outline-offset: 2px;
+  box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.3) !important;
+}
+
+/* Make selection more prominent when holding mouse down */
+.element-renderer:active {
+  outline-width: 3px !important;
+}
+
+/* Ensure side panel selection stays visible */
+[data-element-id][data-selected="true"] {
+  border-color: #3b82f6 !important;
+  background-color: rgba(59, 130, 246, 0.1) !important;
+}
+
+/* Keep selection state even during operations */
+.element-renderer-container.element-selected {
+  z-index: 10 !important;
+}
+
+/* Make element controls more accessible */
+.element-controls > div {
+  transform: scale(1.1);
+  transition: transform 0.2s ease;
+}
+
+/* Modern utility classes */
+@layer utilities {
+  .text-gradient {
+    background: linear-gradient(135deg, hsl(var(--ai-primary)), hsl(var(--ai-accent)));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  
+  .bg-gradient-primary {
+    background: linear-gradient(135deg, hsl(var(--ai-primary)), hsl(var(--ai-accent)));
+  }
+  
+  .bg-gradient-secondary {
+    background: linear-gradient(135deg, hsl(var(--ai-secondary)), hsl(var(--ai-accent)));
+  }
+  
+  .surface-elevated {
+    background-color: hsl(var(--surface-elevated));
+  }
+  
+  .surface-overlay {
+    background-color: hsl(var(--surface-overlay));
+  }
+  
+  .glass-effect {
+    backdrop-filter: blur(12px);
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+  }
+  
+  .dark .glass-effect {
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+  
+  .animate-float {
+    animation: float 6s ease-in-out infinite;
+  }
+  
+  .animate-pulse-slow {
+    animation: pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  }
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-20px);
+  }
+}
+
+/* Enhanced scrollbar styling */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: hsl(var(--muted));
+  border-radius: 3px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: hsl(var(--primary));
+  border-radius: 3px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: hsl(var(--accent));
+}
+
+.element-controls > div:hover {
+  transform: scale(1.3);
+}
+
+/* Always show controls for selected elements */
+.element-selected .element-controls {
+  opacity: 1 !important;
+  pointer-events: all !important;
+}
+
+/* Improve visual distinction of side panel selected elements */
+.element-list [data-element-id][data-selected="true"],
+.element-list [data-element-id].selected {
+  position: relative;
+  border-left: 3px solid #3b82f6 !important;
+  padding-left: 8px;
+  background-color: rgba(59, 130, 246, 0.1) !important;
+}
+
+/* Add a persistent highlight effect to the selected element in side panel */
+.element-list [data-element-id][data-selected="true"]::after,
+.element-list [data-element-id].selected::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 3px;
+  background-color: #3b82f6;
+  box-shadow: 0 0 8px rgba(59, 130, 246, 0.6);
+}
+
+/* Make sure canvas-side selection state is clear and persistent */
+.scene-canvas [data-element-id][data-selected="true"],
+.scene-canvas .element-selected {
+  outline: 2px solid #3b82f6 !important;
+  outline-offset: 2px;
+  box-shadow:
+    0 0 0 4px rgba(59, 130, 246, 0.3),
+    0 0 12px rgba(59, 130, 246, 0.5) !important;
+}
+
+/* Add custom click handling styles */
+.element-renderer {
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+  -webkit-tap-highlight-color: transparent;
+}

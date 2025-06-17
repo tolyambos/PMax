@@ -1,0 +1,11 @@
+import NextAuth from "next-auth";
+import { PrismaAdapter } from "@auth/prisma-adapter";
+import { prisma } from "@/app/utils/db";
+import { authConfig } from "./auth.config";
+
+// Define authentication configuration for PMax with Prisma adapter
+// This file is used in non-edge environments (like API routes)
+export const { auth, handlers, signIn, signOut } = NextAuth({
+  adapter: PrismaAdapter(prisma),
+  ...authConfig,
+});
