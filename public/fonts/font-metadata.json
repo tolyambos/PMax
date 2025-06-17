@@ -1,0 +1,6300 @@
+[
+  {
+    "family": "AlfaSlabOne",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/AlfaSlabOne-Regular.ttf"
+    }
+  },
+  {
+    "family": "Allura",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Allura-Regular.ttf"
+    }
+  },
+  {
+    "family": "Anton",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Anton-Regular.ttf"
+    }
+  },
+  {
+    "family": "ArchivoBlack",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/ArchivoBlack-Regular.ttf"
+    }
+  },
+  {
+    "family": "Arvo",
+    "weights": [
+      "400",
+      "700"
+    ],
+    "files": {
+      "400": "/fonts/files/Arvo-Regular.ttf",
+      "700": "/fonts/files/Arvo-Bold.ttf"
+    }
+  },
+  {
+    "family": "Arvo-BoldItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Arvo-BoldItalic.ttf"
+    }
+  },
+  {
+    "family": "Arvo-Italic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Arvo-Italic.ttf"
+    }
+  },
+  {
+    "family": "Audiowide",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Audiowide-Regular.ttf"
+    }
+  },
+  {
+    "family": "Bangers",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Bangers-Regular.ttf"
+    }
+  },
+  {
+    "family": "Barlow",
+    "weights": [
+      "100",
+      "200",
+      "300",
+      "400",
+      "500",
+      "600",
+      "700",
+      "800",
+      "900"
+    ],
+    "files": {
+      "100": "/fonts/files/Barlow-Thin.ttf",
+      "200": "/fonts/files/Barlow-ExtraLight.ttf",
+      "300": "/fonts/files/Barlow-Light.ttf",
+      "400": "/fonts/files/Barlow-Regular.ttf",
+      "500": "/fonts/files/Barlow-Medium.ttf",
+      "600": "/fonts/files/Barlow-SemiBold.ttf",
+      "700": "/fonts/files/Barlow-Bold.ttf",
+      "800": "/fonts/files/Barlow-ExtraBold.ttf",
+      "900": "/fonts/files/Barlow-Black.ttf"
+    }
+  },
+  {
+    "family": "Barlow-BlackItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Barlow-BlackItalic.ttf"
+    }
+  },
+  {
+    "family": "Barlow-BoldItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Barlow-BoldItalic.ttf"
+    }
+  },
+  {
+    "family": "Barlow-ExtraBoldItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Barlow-ExtraBoldItalic.ttf"
+    }
+  },
+  {
+    "family": "Barlow-ExtraLightItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Barlow-ExtraLightItalic.ttf"
+    }
+  },
+  {
+    "family": "Barlow-Italic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Barlow-Italic.ttf"
+    }
+  },
+  {
+    "family": "Barlow-LightItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Barlow-LightItalic.ttf"
+    }
+  },
+  {
+    "family": "Barlow-MediumItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Barlow-MediumItalic.ttf"
+    }
+  },
+  {
+    "family": "Barlow-SemiBoldItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Barlow-SemiBoldItalic.ttf"
+    }
+  },
+  {
+    "family": "Barlow-ThinItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Barlow-ThinItalic.ttf"
+    }
+  },
+  {
+    "family": "BarlowCondensed",
+    "weights": [
+      "100",
+      "200",
+      "300",
+      "400",
+      "500",
+      "600",
+      "800"
+    ],
+    "files": {
+      "100": "/fonts/files/BarlowCondensed-Thin.ttf",
+      "200": "/fonts/files/BarlowCondensed-ExtraLight.ttf",
+      "300": "/fonts/files/BarlowCondensed-Light.ttf",
+      "400": "/fonts/files/BarlowCondensed-Regular.ttf",
+      "500": "/fonts/files/BarlowCondensed-Medium.ttf",
+      "600": "/fonts/files/BarlowCondensed-SemiBold.ttf",
+      "800": "/fonts/files/BarlowCondensed-ExtraBold.ttf"
+    }
+  },
+  {
+    "family": "BarlowCondensed-BoldItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/BarlowCondensed-BoldItalic.ttf"
+    }
+  },
+  {
+    "family": "BarlowCondensed-ExtraBoldItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/BarlowCondensed-ExtraBoldItalic.ttf"
+    }
+  },
+  {
+    "family": "BarlowCondensed-ExtraLightItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/BarlowCondensed-ExtraLightItalic.ttf"
+    }
+  },
+  {
+    "family": "BarlowCondensed-Italic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/BarlowCondensed-Italic.ttf"
+    }
+  },
+  {
+    "family": "BarlowCondensed-LightItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/BarlowCondensed-LightItalic.ttf"
+    }
+  },
+  {
+    "family": "BarlowCondensed-MediumItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/BarlowCondensed-MediumItalic.ttf"
+    }
+  },
+  {
+    "family": "BarlowCondensed-SemiBoldItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/BarlowCondensed-SemiBoldItalic.ttf"
+    }
+  },
+  {
+    "family": "BarlowCondensed-ThinItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/BarlowCondensed-ThinItalic.ttf"
+    }
+  },
+  {
+    "family": "BebasNeue",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/BebasNeue-Regular.ttf"
+    }
+  },
+  {
+    "family": "Boldonse",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Boldonse-Regular.ttf"
+    }
+  },
+  {
+    "family": "BreeSerif",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/BreeSerif-Regular.ttf"
+    }
+  },
+  {
+    "family": "BricolageGrotesque",
+    "weights": [
+      "200",
+      "300",
+      "400",
+      "500",
+      "600",
+      "700",
+      "800"
+    ],
+    "files": {
+      "200": "/fonts/files/BricolageGrotesque-ExtraLight.ttf",
+      "300": "/fonts/files/BricolageGrotesque-Light.ttf",
+      "400": "/fonts/files/BricolageGrotesque-Regular.ttf",
+      "500": "/fonts/files/BricolageGrotesque-Medium.ttf",
+      "600": "/fonts/files/BricolageGrotesque-SemiBold.ttf",
+      "700": "/fonts/files/BricolageGrotesque-Bold.ttf",
+      "800": "/fonts/files/BricolageGrotesque-ExtraBold.ttf"
+    }
+  },
+  {
+    "family": "BricolageGrotesque_24pt",
+    "weights": [
+      "200",
+      "300",
+      "400",
+      "500",
+      "600",
+      "700",
+      "800"
+    ],
+    "files": {
+      "200": "/fonts/files/BricolageGrotesque_24pt-ExtraLight.ttf",
+      "300": "/fonts/files/BricolageGrotesque_24pt-Light.ttf",
+      "400": "/fonts/files/BricolageGrotesque_24pt-Regular.ttf",
+      "500": "/fonts/files/BricolageGrotesque_24pt-Medium.ttf",
+      "600": "/fonts/files/BricolageGrotesque_24pt-SemiBold.ttf",
+      "700": "/fonts/files/BricolageGrotesque_24pt-Bold.ttf",
+      "800": "/fonts/files/BricolageGrotesque_24pt-ExtraBold.ttf"
+    }
+  },
+  {
+    "family": "BricolageGrotesque_24pt_Condensed",
+    "weights": [
+      "200",
+      "300",
+      "400",
+      "500",
+      "600",
+      "700",
+      "800"
+    ],
+    "files": {
+      "200": "/fonts/files/BricolageGrotesque_24pt_Condensed-ExtraLight.ttf",
+      "300": "/fonts/files/BricolageGrotesque_24pt_Condensed-Light.ttf",
+      "400": "/fonts/files/BricolageGrotesque_24pt_Condensed-Regular.ttf",
+      "500": "/fonts/files/BricolageGrotesque_24pt_Condensed-Medium.ttf",
+      "600": "/fonts/files/BricolageGrotesque_24pt_Condensed-SemiBold.ttf",
+      "700": "/fonts/files/BricolageGrotesque_24pt_Condensed-Bold.ttf",
+      "800": "/fonts/files/BricolageGrotesque_24pt_Condensed-ExtraBold.ttf"
+    }
+  },
+  {
+    "family": "BricolageGrotesque_24pt_SemiCondensed",
+    "weights": [
+      "200",
+      "300",
+      "400",
+      "500",
+      "600",
+      "700",
+      "800"
+    ],
+    "files": {
+      "200": "/fonts/files/BricolageGrotesque_24pt_SemiCondensed-ExtraLight.ttf",
+      "300": "/fonts/files/BricolageGrotesque_24pt_SemiCondensed-Light.ttf",
+      "400": "/fonts/files/BricolageGrotesque_24pt_SemiCondensed-Regular.ttf",
+      "500": "/fonts/files/BricolageGrotesque_24pt_SemiCondensed-Medium.ttf",
+      "600": "/fonts/files/BricolageGrotesque_24pt_SemiCondensed-SemiBold.ttf",
+      "700": "/fonts/files/BricolageGrotesque_24pt_SemiCondensed-Bold.ttf",
+      "800": "/fonts/files/BricolageGrotesque_24pt_SemiCondensed-ExtraBold.ttf"
+    }
+  },
+  {
+    "family": "BricolageGrotesque_36pt",
+    "weights": [
+      "200",
+      "300",
+      "400",
+      "500",
+      "600",
+      "700",
+      "800"
+    ],
+    "files": {
+      "200": "/fonts/files/BricolageGrotesque_36pt-ExtraLight.ttf",
+      "300": "/fonts/files/BricolageGrotesque_36pt-Light.ttf",
+      "400": "/fonts/files/BricolageGrotesque_36pt-Regular.ttf",
+      "500": "/fonts/files/BricolageGrotesque_36pt-Medium.ttf",
+      "600": "/fonts/files/BricolageGrotesque_36pt-SemiBold.ttf",
+      "700": "/fonts/files/BricolageGrotesque_36pt-Bold.ttf",
+      "800": "/fonts/files/BricolageGrotesque_36pt-ExtraBold.ttf"
+    }
+  },
+  {
+    "family": "BricolageGrotesque_36pt_Condensed",
+    "weights": [
+      "200",
+      "300",
+      "400",
+      "500",
+      "600",
+      "700",
+      "800"
+    ],
+    "files": {
+      "200": "/fonts/files/BricolageGrotesque_36pt_Condensed-ExtraLight.ttf",
+      "300": "/fonts/files/BricolageGrotesque_36pt_Condensed-Light.ttf",
+      "400": "/fonts/files/BricolageGrotesque_36pt_Condensed-Regular.ttf",
+      "500": "/fonts/files/BricolageGrotesque_36pt_Condensed-Medium.ttf",
+      "600": "/fonts/files/BricolageGrotesque_36pt_Condensed-SemiBold.ttf",
+      "700": "/fonts/files/BricolageGrotesque_36pt_Condensed-Bold.ttf",
+      "800": "/fonts/files/BricolageGrotesque_36pt_Condensed-ExtraBold.ttf"
+    }
+  },
+  {
+    "family": "BricolageGrotesque_36pt_SemiCondensed",
+    "weights": [
+      "200",
+      "300",
+      "400",
+      "500",
+      "600",
+      "700",
+      "800"
+    ],
+    "files": {
+      "200": "/fonts/files/BricolageGrotesque_36pt_SemiCondensed-ExtraLight.ttf",
+      "300": "/fonts/files/BricolageGrotesque_36pt_SemiCondensed-Light.ttf",
+      "400": "/fonts/files/BricolageGrotesque_36pt_SemiCondensed-Regular.ttf",
+      "500": "/fonts/files/BricolageGrotesque_36pt_SemiCondensed-Medium.ttf",
+      "600": "/fonts/files/BricolageGrotesque_36pt_SemiCondensed-SemiBold.ttf",
+      "700": "/fonts/files/BricolageGrotesque_36pt_SemiCondensed-Bold.ttf",
+      "800": "/fonts/files/BricolageGrotesque_36pt_SemiCondensed-ExtraBold.ttf"
+    }
+  },
+  {
+    "family": "BricolageGrotesque_48pt",
+    "weights": [
+      "200",
+      "300",
+      "400",
+      "500",
+      "600",
+      "700",
+      "800"
+    ],
+    "files": {
+      "200": "/fonts/files/BricolageGrotesque_48pt-ExtraLight.ttf",
+      "300": "/fonts/files/BricolageGrotesque_48pt-Light.ttf",
+      "400": "/fonts/files/BricolageGrotesque_48pt-Regular.ttf",
+      "500": "/fonts/files/BricolageGrotesque_48pt-Medium.ttf",
+      "600": "/fonts/files/BricolageGrotesque_48pt-SemiBold.ttf",
+      "700": "/fonts/files/BricolageGrotesque_48pt-Bold.ttf",
+      "800": "/fonts/files/BricolageGrotesque_48pt-ExtraBold.ttf"
+    }
+  },
+  {
+    "family": "BricolageGrotesque_48pt_Condensed",
+    "weights": [
+      "200",
+      "300",
+      "400",
+      "500",
+      "600",
+      "700",
+      "800"
+    ],
+    "files": {
+      "200": "/fonts/files/BricolageGrotesque_48pt_Condensed-ExtraLight.ttf",
+      "300": "/fonts/files/BricolageGrotesque_48pt_Condensed-Light.ttf",
+      "400": "/fonts/files/BricolageGrotesque_48pt_Condensed-Regular.ttf",
+      "500": "/fonts/files/BricolageGrotesque_48pt_Condensed-Medium.ttf",
+      "600": "/fonts/files/BricolageGrotesque_48pt_Condensed-SemiBold.ttf",
+      "700": "/fonts/files/BricolageGrotesque_48pt_Condensed-Bold.ttf",
+      "800": "/fonts/files/BricolageGrotesque_48pt_Condensed-ExtraBold.ttf"
+    }
+  },
+  {
+    "family": "BricolageGrotesque_48pt_SemiCondensed",
+    "weights": [
+      "200",
+      "300",
+      "400",
+      "500",
+      "600",
+      "700",
+      "800"
+    ],
+    "files": {
+      "200": "/fonts/files/BricolageGrotesque_48pt_SemiCondensed-ExtraLight.ttf",
+      "300": "/fonts/files/BricolageGrotesque_48pt_SemiCondensed-Light.ttf",
+      "400": "/fonts/files/BricolageGrotesque_48pt_SemiCondensed-Regular.ttf",
+      "500": "/fonts/files/BricolageGrotesque_48pt_SemiCondensed-Medium.ttf",
+      "600": "/fonts/files/BricolageGrotesque_48pt_SemiCondensed-SemiBold.ttf",
+      "700": "/fonts/files/BricolageGrotesque_48pt_SemiCondensed-Bold.ttf",
+      "800": "/fonts/files/BricolageGrotesque_48pt_SemiCondensed-ExtraBold.ttf"
+    }
+  },
+  {
+    "family": "BricolageGrotesque_72pt",
+    "weights": [
+      "200",
+      "300",
+      "400",
+      "500",
+      "600",
+      "700",
+      "800"
+    ],
+    "files": {
+      "200": "/fonts/files/BricolageGrotesque_72pt-ExtraLight.ttf",
+      "300": "/fonts/files/BricolageGrotesque_72pt-Light.ttf",
+      "400": "/fonts/files/BricolageGrotesque_72pt-Regular.ttf",
+      "500": "/fonts/files/BricolageGrotesque_72pt-Medium.ttf",
+      "600": "/fonts/files/BricolageGrotesque_72pt-SemiBold.ttf",
+      "700": "/fonts/files/BricolageGrotesque_72pt-Bold.ttf",
+      "800": "/fonts/files/BricolageGrotesque_72pt-ExtraBold.ttf"
+    }
+  },
+  {
+    "family": "BricolageGrotesque_72pt_Condensed",
+    "weights": [
+      "200",
+      "300",
+      "400",
+      "500",
+      "600",
+      "700",
+      "800"
+    ],
+    "files": {
+      "200": "/fonts/files/BricolageGrotesque_72pt_Condensed-ExtraLight.ttf",
+      "300": "/fonts/files/BricolageGrotesque_72pt_Condensed-Light.ttf",
+      "400": "/fonts/files/BricolageGrotesque_72pt_Condensed-Regular.ttf",
+      "500": "/fonts/files/BricolageGrotesque_72pt_Condensed-Medium.ttf",
+      "600": "/fonts/files/BricolageGrotesque_72pt_Condensed-SemiBold.ttf",
+      "700": "/fonts/files/BricolageGrotesque_72pt_Condensed-Bold.ttf",
+      "800": "/fonts/files/BricolageGrotesque_72pt_Condensed-ExtraBold.ttf"
+    }
+  },
+  {
+    "family": "BricolageGrotesque_72pt_SemiCondensed",
+    "weights": [
+      "200",
+      "300",
+      "400",
+      "500",
+      "600",
+      "700",
+      "800"
+    ],
+    "files": {
+      "200": "/fonts/files/BricolageGrotesque_72pt_SemiCondensed-ExtraLight.ttf",
+      "300": "/fonts/files/BricolageGrotesque_72pt_SemiCondensed-Light.ttf",
+      "400": "/fonts/files/BricolageGrotesque_72pt_SemiCondensed-Regular.ttf",
+      "500": "/fonts/files/BricolageGrotesque_72pt_SemiCondensed-Medium.ttf",
+      "600": "/fonts/files/BricolageGrotesque_72pt_SemiCondensed-SemiBold.ttf",
+      "700": "/fonts/files/BricolageGrotesque_72pt_SemiCondensed-Bold.ttf",
+      "800": "/fonts/files/BricolageGrotesque_72pt_SemiCondensed-ExtraBold.ttf"
+    }
+  },
+  {
+    "family": "BricolageGrotesque_Condensed",
+    "weights": [
+      "200",
+      "300",
+      "400",
+      "500",
+      "600",
+      "700",
+      "800"
+    ],
+    "files": {
+      "200": "/fonts/files/BricolageGrotesque_Condensed-ExtraLight.ttf",
+      "300": "/fonts/files/BricolageGrotesque_Condensed-Light.ttf",
+      "400": "/fonts/files/BricolageGrotesque_Condensed-Regular.ttf",
+      "500": "/fonts/files/BricolageGrotesque_Condensed-Medium.ttf",
+      "600": "/fonts/files/BricolageGrotesque_Condensed-SemiBold.ttf",
+      "700": "/fonts/files/BricolageGrotesque_Condensed-Bold.ttf",
+      "800": "/fonts/files/BricolageGrotesque_Condensed-ExtraBold.ttf"
+    }
+  },
+  {
+    "family": "BricolageGrotesque_SemiCondensed",
+    "weights": [
+      "200",
+      "300",
+      "400",
+      "500",
+      "600",
+      "700",
+      "800"
+    ],
+    "files": {
+      "200": "/fonts/files/BricolageGrotesque_SemiCondensed-ExtraLight.ttf",
+      "300": "/fonts/files/BricolageGrotesque_SemiCondensed-Light.ttf",
+      "400": "/fonts/files/BricolageGrotesque_SemiCondensed-Regular.ttf",
+      "500": "/fonts/files/BricolageGrotesque_SemiCondensed-Medium.ttf",
+      "600": "/fonts/files/BricolageGrotesque_SemiCondensed-SemiBold.ttf",
+      "700": "/fonts/files/BricolageGrotesque_SemiCondensed-Bold.ttf",
+      "800": "/fonts/files/BricolageGrotesque_SemiCondensed-ExtraBold.ttf"
+    }
+  },
+  {
+    "family": "Bungee",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Bungee-Regular.ttf"
+    }
+  },
+  {
+    "family": "Bytesized",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Bytesized-Regular.ttf"
+    }
+  },
+  {
+    "family": "CalSans",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/CalSans-Regular.ttf"
+    }
+  },
+  {
+    "family": "CarterOne",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/CarterOne-Regular.ttf"
+    }
+  },
+  {
+    "family": "CascadiaCode",
+    "weights": [
+      "200",
+      "300",
+      "400",
+      "500",
+      "600",
+      "700"
+    ],
+    "files": {
+      "200": "/fonts/files/CascadiaCode-ExtraLight.ttf",
+      "300": "/fonts/files/CascadiaCode-Light.ttf",
+      "400": "/fonts/files/CascadiaCode-Regular.ttf",
+      "500": "/fonts/files/CascadiaCode-Medium.ttf",
+      "600": "/fonts/files/CascadiaCode-SemiBold.ttf",
+      "700": "/fonts/files/CascadiaCode-Bold.ttf"
+    }
+  },
+  {
+    "family": "CascadiaCode-BoldItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/CascadiaCode-BoldItalic.ttf"
+    }
+  },
+  {
+    "family": "CascadiaCode-ExtraLightItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/CascadiaCode-ExtraLightItalic.ttf"
+    }
+  },
+  {
+    "family": "CascadiaCode-Italic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/CascadiaCode-Italic.ttf"
+    }
+  },
+  {
+    "family": "CascadiaCode-LightItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/CascadiaCode-LightItalic.ttf"
+    }
+  },
+  {
+    "family": "CascadiaCode-MediumItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/CascadiaCode-MediumItalic.ttf"
+    }
+  },
+  {
+    "family": "CascadiaCode-SemiBoldItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/CascadiaCode-SemiBoldItalic.ttf"
+    }
+  },
+  {
+    "family": "CascadiaMono",
+    "weights": [
+      "200",
+      "300",
+      "400",
+      "500",
+      "600",
+      "700"
+    ],
+    "files": {
+      "200": "/fonts/files/CascadiaMono-ExtraLight.ttf",
+      "300": "/fonts/files/CascadiaMono-Light.ttf",
+      "400": "/fonts/files/CascadiaMono-Regular.ttf",
+      "500": "/fonts/files/CascadiaMono-Medium.ttf",
+      "600": "/fonts/files/CascadiaMono-SemiBold.ttf",
+      "700": "/fonts/files/CascadiaMono-Bold.ttf"
+    }
+  },
+  {
+    "family": "CascadiaMono-BoldItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/CascadiaMono-BoldItalic.ttf"
+    }
+  },
+  {
+    "family": "CascadiaMono-ExtraLightItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/CascadiaMono-ExtraLightItalic.ttf"
+    }
+  },
+  {
+    "family": "CascadiaMono-Italic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/CascadiaMono-Italic.ttf"
+    }
+  },
+  {
+    "family": "CascadiaMono-LightItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/CascadiaMono-LightItalic.ttf"
+    }
+  },
+  {
+    "family": "CascadiaMono-MediumItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/CascadiaMono-MediumItalic.ttf"
+    }
+  },
+  {
+    "family": "CascadiaMono-SemiBoldItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/CascadiaMono-SemiBoldItalic.ttf"
+    }
+  },
+  {
+    "family": "Caveat",
+    "weights": [
+      "400",
+      "500",
+      "600",
+      "700"
+    ],
+    "files": {
+      "400": "/fonts/files/Caveat-Regular.ttf",
+      "500": "/fonts/files/Caveat-Medium.ttf",
+      "600": "/fonts/files/Caveat-SemiBold.ttf",
+      "700": "/fonts/files/Caveat-Bold.ttf"
+    }
+  },
+  {
+    "family": "ChauPhilomeneOne",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/ChauPhilomeneOne-Regular.ttf"
+    }
+  },
+  {
+    "family": "ChauPhilomeneOne-Italic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/ChauPhilomeneOne-Italic.ttf"
+    }
+  },
+  {
+    "family": "Cinzel",
+    "weights": [
+      "400",
+      "500",
+      "600",
+      "700",
+      "800",
+      "900"
+    ],
+    "files": {
+      "400": "/fonts/files/Cinzel-Regular.ttf",
+      "500": "/fonts/files/Cinzel-Medium.ttf",
+      "600": "/fonts/files/Cinzel-SemiBold.ttf",
+      "700": "/fonts/files/Cinzel-Bold.ttf",
+      "800": "/fonts/files/Cinzel-ExtraBold.ttf",
+      "900": "/fonts/files/Cinzel-Black.ttf"
+    }
+  },
+  {
+    "family": "Comfortaa",
+    "weights": [
+      "300",
+      "400",
+      "500",
+      "600",
+      "700"
+    ],
+    "files": {
+      "300": "/fonts/files/Comfortaa-Light.ttf",
+      "400": "/fonts/files/Comfortaa-Regular.ttf",
+      "500": "/fonts/files/Comfortaa-Medium.ttf",
+      "600": "/fonts/files/Comfortaa-SemiBold.ttf",
+      "700": "/fonts/files/Comfortaa-Bold.ttf"
+    }
+  },
+  {
+    "family": "ComicRelief",
+    "weights": [
+      "400",
+      "700"
+    ],
+    "files": {
+      "400": "/fonts/files/ComicRelief-Regular.ttf",
+      "700": "/fonts/files/ComicRelief-Bold.ttf"
+    }
+  },
+  {
+    "family": "ConcertOne",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/ConcertOne-Regular.ttf"
+    }
+  },
+  {
+    "family": "Courgette",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Courgette-Regular.ttf"
+    }
+  },
+  {
+    "family": "Creepster",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Creepster-Regular.ttf"
+    }
+  },
+  {
+    "family": "DancingScript",
+    "weights": [
+      "400",
+      "500",
+      "600",
+      "700"
+    ],
+    "files": {
+      "400": "/fonts/files/DancingScript-Regular.ttf",
+      "500": "/fonts/files/DancingScript-Medium.ttf",
+      "600": "/fonts/files/DancingScript-SemiBold.ttf",
+      "700": "/fonts/files/DancingScript-Bold.ttf"
+    }
+  },
+  {
+    "family": "DMSerifDisplay",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/DMSerifDisplay-Regular.ttf"
+    }
+  },
+  {
+    "family": "DMSerifDisplay-Italic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/DMSerifDisplay-Italic.ttf"
+    }
+  },
+  {
+    "family": "Dosis",
+    "weights": [
+      "200",
+      "300",
+      "400",
+      "500",
+      "600",
+      "700",
+      "800"
+    ],
+    "files": {
+      "200": "/fonts/files/Dosis-ExtraLight.ttf",
+      "300": "/fonts/files/Dosis-Light.ttf",
+      "400": "/fonts/files/Dosis-Regular.ttf",
+      "500": "/fonts/files/Dosis-Medium.ttf",
+      "600": "/fonts/files/Dosis-SemiBold.ttf",
+      "700": "/fonts/files/Dosis-Bold.ttf",
+      "800": "/fonts/files/Dosis-ExtraBold.ttf"
+    }
+  },
+  {
+    "family": "EBGaramond",
+    "weights": [
+      "400",
+      "500",
+      "600",
+      "700",
+      "800"
+    ],
+    "files": {
+      "400": "/fonts/files/EBGaramond-Regular.ttf",
+      "500": "/fonts/files/EBGaramond-Medium.ttf",
+      "600": "/fonts/files/EBGaramond-SemiBold.ttf",
+      "700": "/fonts/files/EBGaramond-Bold.ttf",
+      "800": "/fonts/files/EBGaramond-ExtraBold.ttf"
+    }
+  },
+  {
+    "family": "EBGaramond-BoldItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/EBGaramond-BoldItalic.ttf"
+    }
+  },
+  {
+    "family": "EBGaramond-ExtraBoldItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/EBGaramond-ExtraBoldItalic.ttf"
+    }
+  },
+  {
+    "family": "EBGaramond-Italic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/EBGaramond-Italic.ttf"
+    }
+  },
+  {
+    "family": "EBGaramond-MediumItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/EBGaramond-MediumItalic.ttf"
+    }
+  },
+  {
+    "family": "EBGaramond-SemiBoldItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/EBGaramond-SemiBoldItalic.ttf"
+    }
+  },
+  {
+    "family": "EncodeSansCondensed",
+    "weights": [
+      "100",
+      "200",
+      "300",
+      "400",
+      "500",
+      "600",
+      "700",
+      "800",
+      "900"
+    ],
+    "files": {
+      "100": "/fonts/files/EncodeSansCondensed-Thin.ttf",
+      "200": "/fonts/files/EncodeSansCondensed-ExtraLight.ttf",
+      "300": "/fonts/files/EncodeSansCondensed-Light.ttf",
+      "400": "/fonts/files/EncodeSansCondensed-Regular.ttf",
+      "500": "/fonts/files/EncodeSansCondensed-Medium.ttf",
+      "600": "/fonts/files/EncodeSansCondensed-SemiBold.ttf",
+      "700": "/fonts/files/EncodeSansCondensed-Bold.ttf",
+      "800": "/fonts/files/EncodeSansCondensed-ExtraBold.ttf",
+      "900": "/fonts/files/EncodeSansCondensed-Black.ttf"
+    }
+  },
+  {
+    "family": "Epilogue",
+    "weights": [
+      "100",
+      "200",
+      "300",
+      "400",
+      "500",
+      "600",
+      "700",
+      "800",
+      "900"
+    ],
+    "files": {
+      "100": "/fonts/files/Epilogue-Thin.ttf",
+      "200": "/fonts/files/Epilogue-ExtraLight.ttf",
+      "300": "/fonts/files/Epilogue-Light.ttf",
+      "400": "/fonts/files/Epilogue-Regular.ttf",
+      "500": "/fonts/files/Epilogue-Medium.ttf",
+      "600": "/fonts/files/Epilogue-SemiBold.ttf",
+      "700": "/fonts/files/Epilogue-Bold.ttf",
+      "800": "/fonts/files/Epilogue-ExtraBold.ttf",
+      "900": "/fonts/files/Epilogue-Black.ttf"
+    }
+  },
+  {
+    "family": "Epilogue-BlackItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Epilogue-BlackItalic.ttf"
+    }
+  },
+  {
+    "family": "Epilogue-BoldItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Epilogue-BoldItalic.ttf"
+    }
+  },
+  {
+    "family": "Epilogue-ExtraBoldItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Epilogue-ExtraBoldItalic.ttf"
+    }
+  },
+  {
+    "family": "Epilogue-ExtraLightItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Epilogue-ExtraLightItalic.ttf"
+    }
+  },
+  {
+    "family": "Epilogue-Italic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Epilogue-Italic.ttf"
+    }
+  },
+  {
+    "family": "Epilogue-LightItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Epilogue-LightItalic.ttf"
+    }
+  },
+  {
+    "family": "Epilogue-MediumItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Epilogue-MediumItalic.ttf"
+    }
+  },
+  {
+    "family": "Epilogue-SemiBoldItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Epilogue-SemiBoldItalic.ttf"
+    }
+  },
+  {
+    "family": "Epilogue-ThinItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Epilogue-ThinItalic.ttf"
+    }
+  },
+  {
+    "family": "Exo",
+    "weights": [
+      "100",
+      "200",
+      "300",
+      "400",
+      "500",
+      "600",
+      "700",
+      "800",
+      "900"
+    ],
+    "files": {
+      "100": "/fonts/files/Exo-Thin.ttf",
+      "200": "/fonts/files/Exo-ExtraLight.ttf",
+      "300": "/fonts/files/Exo-Light.ttf",
+      "400": "/fonts/files/Exo-Regular.ttf",
+      "500": "/fonts/files/Exo-Medium.ttf",
+      "600": "/fonts/files/Exo-SemiBold.ttf",
+      "700": "/fonts/files/Exo-Bold.ttf",
+      "800": "/fonts/files/Exo-ExtraBold.ttf",
+      "900": "/fonts/files/Exo-Black.ttf"
+    }
+  },
+  {
+    "family": "Exo-BlackItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Exo-BlackItalic.ttf"
+    }
+  },
+  {
+    "family": "Exo-BoldItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Exo-BoldItalic.ttf"
+    }
+  },
+  {
+    "family": "Exo-ExtraBoldItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Exo-ExtraBoldItalic.ttf"
+    }
+  },
+  {
+    "family": "Exo-ExtraLightItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Exo-ExtraLightItalic.ttf"
+    }
+  },
+  {
+    "family": "Exo-Italic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Exo-Italic.ttf"
+    }
+  },
+  {
+    "family": "Exo-LightItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Exo-LightItalic.ttf"
+    }
+  },
+  {
+    "family": "Exo-MediumItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Exo-MediumItalic.ttf"
+    }
+  },
+  {
+    "family": "Exo-SemiBoldItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Exo-SemiBoldItalic.ttf"
+    }
+  },
+  {
+    "family": "Exo-ThinItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Exo-ThinItalic.ttf"
+    }
+  },
+  {
+    "family": "Exo2",
+    "weights": [
+      "100",
+      "200",
+      "300",
+      "400",
+      "500",
+      "600",
+      "700",
+      "800",
+      "900"
+    ],
+    "files": {
+      "100": "/fonts/files/Exo2-Thin.ttf",
+      "200": "/fonts/files/Exo2-ExtraLight.ttf",
+      "300": "/fonts/files/Exo2-Light.ttf",
+      "400": "/fonts/files/Exo2-Regular.ttf",
+      "500": "/fonts/files/Exo2-Medium.ttf",
+      "600": "/fonts/files/Exo2-SemiBold.ttf",
+      "700": "/fonts/files/Exo2-Bold.ttf",
+      "800": "/fonts/files/Exo2-ExtraBold.ttf",
+      "900": "/fonts/files/Exo2-Black.ttf"
+    }
+  },
+  {
+    "family": "Exo2-BlackItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Exo2-BlackItalic.ttf"
+    }
+  },
+  {
+    "family": "Exo2-BoldItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Exo2-BoldItalic.ttf"
+    }
+  },
+  {
+    "family": "Exo2-ExtraBoldItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Exo2-ExtraBoldItalic.ttf"
+    }
+  },
+  {
+    "family": "Exo2-ExtraLightItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Exo2-ExtraLightItalic.ttf"
+    }
+  },
+  {
+    "family": "Exo2-Italic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Exo2-Italic.ttf"
+    }
+  },
+  {
+    "family": "Exo2-LightItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Exo2-LightItalic.ttf"
+    }
+  },
+  {
+    "family": "Exo2-MediumItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Exo2-MediumItalic.ttf"
+    }
+  },
+  {
+    "family": "Exo2-SemiBoldItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Exo2-SemiBoldItalic.ttf"
+    }
+  },
+  {
+    "family": "Exo2-ThinItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Exo2-ThinItalic.ttf"
+    }
+  },
+  {
+    "family": "FjallaOne",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/FjallaOne-Regular.ttf"
+    }
+  },
+  {
+    "family": "FugazOne",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/FugazOne-Regular.ttf"
+    }
+  },
+  {
+    "family": "GloriaHallelujah",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/GloriaHallelujah-Regular.ttf"
+    }
+  },
+  {
+    "family": "Heebo",
+    "weights": [
+      "100",
+      "200",
+      "300",
+      "400",
+      "500",
+      "600",
+      "700",
+      "800",
+      "900"
+    ],
+    "files": {
+      "100": "/fonts/files/Heebo-Thin.ttf",
+      "200": "/fonts/files/Heebo-ExtraLight.ttf",
+      "300": "/fonts/files/Heebo-Light.ttf",
+      "400": "/fonts/files/Heebo-Regular.ttf",
+      "500": "/fonts/files/Heebo-Medium.ttf",
+      "600": "/fonts/files/Heebo-SemiBold.ttf",
+      "700": "/fonts/files/Heebo-Bold.ttf",
+      "800": "/fonts/files/Heebo-ExtraBold.ttf",
+      "900": "/fonts/files/Heebo-Black.ttf"
+    }
+  },
+  {
+    "family": "Iansui",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Iansui-Regular.ttf"
+    }
+  },
+  {
+    "family": "IBMPlexSerif",
+    "weights": [
+      "100",
+      "200",
+      "300",
+      "400",
+      "500",
+      "600",
+      "700"
+    ],
+    "files": {
+      "100": "/fonts/files/IBMPlexSerif-Thin.ttf",
+      "200": "/fonts/files/IBMPlexSerif-ExtraLight.ttf",
+      "300": "/fonts/files/IBMPlexSerif-Light.ttf",
+      "400": "/fonts/files/IBMPlexSerif-Regular.ttf",
+      "500": "/fonts/files/IBMPlexSerif-Medium.ttf",
+      "600": "/fonts/files/IBMPlexSerif-SemiBold.ttf",
+      "700": "/fonts/files/IBMPlexSerif-Bold.ttf"
+    }
+  },
+  {
+    "family": "IBMPlexSerif-BoldItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/IBMPlexSerif-BoldItalic.ttf"
+    }
+  },
+  {
+    "family": "IBMPlexSerif-ExtraLightItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/IBMPlexSerif-ExtraLightItalic.ttf"
+    }
+  },
+  {
+    "family": "IBMPlexSerif-Italic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/IBMPlexSerif-Italic.ttf"
+    }
+  },
+  {
+    "family": "IBMPlexSerif-LightItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/IBMPlexSerif-LightItalic.ttf"
+    }
+  },
+  {
+    "family": "IBMPlexSerif-MediumItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/IBMPlexSerif-MediumItalic.ttf"
+    }
+  },
+  {
+    "family": "IBMPlexSerif-SemiBoldItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/IBMPlexSerif-SemiBoldItalic.ttf"
+    }
+  },
+  {
+    "family": "IBMPlexSerif-ThinItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/IBMPlexSerif-ThinItalic.ttf"
+    }
+  },
+  {
+    "family": "Inter_18pt",
+    "weights": [
+      "100",
+      "200",
+      "300",
+      "400",
+      "500",
+      "600",
+      "700",
+      "800",
+      "900"
+    ],
+    "files": {
+      "100": "/fonts/files/Inter_18pt-Thin.ttf",
+      "200": "/fonts/files/Inter_18pt-ExtraLight.ttf",
+      "300": "/fonts/files/Inter_18pt-Light.ttf",
+      "400": "/fonts/files/Inter_18pt-Regular.ttf",
+      "500": "/fonts/files/Inter_18pt-Medium.ttf",
+      "600": "/fonts/files/Inter_18pt-SemiBold.ttf",
+      "700": "/fonts/files/Inter_18pt-Bold.ttf",
+      "800": "/fonts/files/Inter_18pt-ExtraBold.ttf",
+      "900": "/fonts/files/Inter_18pt-Black.ttf"
+    }
+  },
+  {
+    "family": "Inter_18pt-BlackItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Inter_18pt-BlackItalic.ttf"
+    }
+  },
+  {
+    "family": "Inter_18pt-BoldItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Inter_18pt-BoldItalic.ttf"
+    }
+  },
+  {
+    "family": "Inter_18pt-ExtraBoldItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Inter_18pt-ExtraBoldItalic.ttf"
+    }
+  },
+  {
+    "family": "Inter_18pt-ExtraLightItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Inter_18pt-ExtraLightItalic.ttf"
+    }
+  },
+  {
+    "family": "Inter_18pt-Italic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Inter_18pt-Italic.ttf"
+    }
+  },
+  {
+    "family": "Inter_18pt-LightItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Inter_18pt-LightItalic.ttf"
+    }
+  },
+  {
+    "family": "Inter_18pt-MediumItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Inter_18pt-MediumItalic.ttf"
+    }
+  },
+  {
+    "family": "Inter_18pt-SemiBoldItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Inter_18pt-SemiBoldItalic.ttf"
+    }
+  },
+  {
+    "family": "Inter_18pt-ThinItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Inter_18pt-ThinItalic.ttf"
+    }
+  },
+  {
+    "family": "Inter_24pt",
+    "weights": [
+      "100",
+      "200",
+      "300",
+      "400",
+      "500",
+      "600",
+      "700",
+      "800",
+      "900"
+    ],
+    "files": {
+      "100": "/fonts/files/Inter_24pt-Thin.ttf",
+      "200": "/fonts/files/Inter_24pt-ExtraLight.ttf",
+      "300": "/fonts/files/Inter_24pt-Light.ttf",
+      "400": "/fonts/files/Inter_24pt-Regular.ttf",
+      "500": "/fonts/files/Inter_24pt-Medium.ttf",
+      "600": "/fonts/files/Inter_24pt-SemiBold.ttf",
+      "700": "/fonts/files/Inter_24pt-Bold.ttf",
+      "800": "/fonts/files/Inter_24pt-ExtraBold.ttf",
+      "900": "/fonts/files/Inter_24pt-Black.ttf"
+    }
+  },
+  {
+    "family": "Inter_24pt-BlackItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Inter_24pt-BlackItalic.ttf"
+    }
+  },
+  {
+    "family": "Inter_24pt-BoldItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Inter_24pt-BoldItalic.ttf"
+    }
+  },
+  {
+    "family": "Inter_24pt-ExtraBoldItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Inter_24pt-ExtraBoldItalic.ttf"
+    }
+  },
+  {
+    "family": "Inter_24pt-ExtraLightItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Inter_24pt-ExtraLightItalic.ttf"
+    }
+  },
+  {
+    "family": "Inter_24pt-Italic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Inter_24pt-Italic.ttf"
+    }
+  },
+  {
+    "family": "Inter_24pt-LightItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Inter_24pt-LightItalic.ttf"
+    }
+  },
+  {
+    "family": "Inter_24pt-MediumItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Inter_24pt-MediumItalic.ttf"
+    }
+  },
+  {
+    "family": "Inter_24pt-SemiBoldItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Inter_24pt-SemiBoldItalic.ttf"
+    }
+  },
+  {
+    "family": "Inter_24pt-ThinItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Inter_24pt-ThinItalic.ttf"
+    }
+  },
+  {
+    "family": "Inter_28pt",
+    "weights": [
+      "100",
+      "200",
+      "300",
+      "400",
+      "500",
+      "600",
+      "700",
+      "800",
+      "900"
+    ],
+    "files": {
+      "100": "/fonts/files/Inter_28pt-Thin.ttf",
+      "200": "/fonts/files/Inter_28pt-ExtraLight.ttf",
+      "300": "/fonts/files/Inter_28pt-Light.ttf",
+      "400": "/fonts/files/Inter_28pt-Regular.ttf",
+      "500": "/fonts/files/Inter_28pt-Medium.ttf",
+      "600": "/fonts/files/Inter_28pt-SemiBold.ttf",
+      "700": "/fonts/files/Inter_28pt-Bold.ttf",
+      "800": "/fonts/files/Inter_28pt-ExtraBold.ttf",
+      "900": "/fonts/files/Inter_28pt-Black.ttf"
+    }
+  },
+  {
+    "family": "Inter_28pt-BlackItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Inter_28pt-BlackItalic.ttf"
+    }
+  },
+  {
+    "family": "Inter_28pt-BoldItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Inter_28pt-BoldItalic.ttf"
+    }
+  },
+  {
+    "family": "Inter_28pt-ExtraBoldItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Inter_28pt-ExtraBoldItalic.ttf"
+    }
+  },
+  {
+    "family": "Inter_28pt-ExtraLightItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Inter_28pt-ExtraLightItalic.ttf"
+    }
+  },
+  {
+    "family": "Inter_28pt-Italic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Inter_28pt-Italic.ttf"
+    }
+  },
+  {
+    "family": "Inter_28pt-LightItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Inter_28pt-LightItalic.ttf"
+    }
+  },
+  {
+    "family": "Inter_28pt-MediumItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Inter_28pt-MediumItalic.ttf"
+    }
+  },
+  {
+    "family": "Inter_28pt-SemiBoldItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Inter_28pt-SemiBoldItalic.ttf"
+    }
+  },
+  {
+    "family": "Inter_28pt-ThinItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Inter_28pt-ThinItalic.ttf"
+    }
+  },
+  {
+    "family": "Jersey25",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Jersey25-Regular.ttf"
+    }
+  },
+  {
+    "family": "JosefinSans",
+    "weights": [
+      "100",
+      "200",
+      "300",
+      "400",
+      "500",
+      "600",
+      "700"
+    ],
+    "files": {
+      "100": "/fonts/files/JosefinSans-Thin.ttf",
+      "200": "/fonts/files/JosefinSans-ExtraLight.ttf",
+      "300": "/fonts/files/JosefinSans-Light.ttf",
+      "400": "/fonts/files/JosefinSans-Regular.ttf",
+      "500": "/fonts/files/JosefinSans-Medium.ttf",
+      "600": "/fonts/files/JosefinSans-SemiBold.ttf",
+      "700": "/fonts/files/JosefinSans-Bold.ttf"
+    }
+  },
+  {
+    "family": "JosefinSans-BoldItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/JosefinSans-BoldItalic.ttf"
+    }
+  },
+  {
+    "family": "JosefinSans-ExtraLightItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/JosefinSans-ExtraLightItalic.ttf"
+    }
+  },
+  {
+    "family": "JosefinSans-Italic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/JosefinSans-Italic.ttf"
+    }
+  },
+  {
+    "family": "JosefinSans-LightItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/JosefinSans-LightItalic.ttf"
+    }
+  },
+  {
+    "family": "JosefinSans-MediumItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/JosefinSans-MediumItalic.ttf"
+    }
+  },
+  {
+    "family": "JosefinSans-SemiBoldItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/JosefinSans-SemiBoldItalic.ttf"
+    }
+  },
+  {
+    "family": "JosefinSans-ThinItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/JosefinSans-ThinItalic.ttf"
+    }
+  },
+  {
+    "family": "Kanchenjunga",
+    "weights": [
+      "400",
+      "500",
+      "600",
+      "700"
+    ],
+    "files": {
+      "400": "/fonts/files/Kanchenjunga-Regular.ttf",
+      "500": "/fonts/files/Kanchenjunga-Medium.ttf",
+      "600": "/fonts/files/Kanchenjunga-SemiBold.ttf",
+      "700": "/fonts/files/Kanchenjunga-Bold.ttf"
+    }
+  },
+  {
+    "family": "Kanit",
+    "weights": [
+      "100",
+      "200",
+      "300",
+      "400",
+      "500",
+      "600",
+      "700",
+      "800",
+      "900"
+    ],
+    "files": {
+      "100": "/fonts/files/Kanit-Thin.ttf",
+      "200": "/fonts/files/Kanit-ExtraLight.ttf",
+      "300": "/fonts/files/Kanit-Light.ttf",
+      "400": "/fonts/files/Kanit-Regular.ttf",
+      "500": "/fonts/files/Kanit-Medium.ttf",
+      "600": "/fonts/files/Kanit-SemiBold.ttf",
+      "700": "/fonts/files/Kanit-Bold.ttf",
+      "800": "/fonts/files/Kanit-ExtraBold.ttf",
+      "900": "/fonts/files/Kanit-Black.ttf"
+    }
+  },
+  {
+    "family": "Kanit-BlackItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Kanit-BlackItalic.ttf"
+    }
+  },
+  {
+    "family": "Kanit-BoldItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Kanit-BoldItalic.ttf"
+    }
+  },
+  {
+    "family": "Kanit-ExtraBoldItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Kanit-ExtraBoldItalic.ttf"
+    }
+  },
+  {
+    "family": "Kanit-ExtraLightItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Kanit-ExtraLightItalic.ttf"
+    }
+  },
+  {
+    "family": "Kanit-Italic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Kanit-Italic.ttf"
+    }
+  },
+  {
+    "family": "Kanit-LightItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Kanit-LightItalic.ttf"
+    }
+  },
+  {
+    "family": "Kanit-MediumItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Kanit-MediumItalic.ttf"
+    }
+  },
+  {
+    "family": "Kanit-SemiBoldItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Kanit-SemiBoldItalic.ttf"
+    }
+  },
+  {
+    "family": "Kanit-ThinItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Kanit-ThinItalic.ttf"
+    }
+  },
+  {
+    "family": "Karla",
+    "weights": [
+      "200",
+      "300",
+      "400",
+      "500",
+      "600",
+      "700",
+      "800"
+    ],
+    "files": {
+      "200": "/fonts/files/Karla-ExtraLight.ttf",
+      "300": "/fonts/files/Karla-Light.ttf",
+      "400": "/fonts/files/Karla-Regular.ttf",
+      "500": "/fonts/files/Karla-Medium.ttf",
+      "600": "/fonts/files/Karla-SemiBold.ttf",
+      "700": "/fonts/files/Karla-Bold.ttf",
+      "800": "/fonts/files/Karla-ExtraBold.ttf"
+    }
+  },
+  {
+    "family": "Karla-BoldItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Karla-BoldItalic.ttf"
+    }
+  },
+  {
+    "family": "Karla-ExtraBoldItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Karla-ExtraBoldItalic.ttf"
+    }
+  },
+  {
+    "family": "Karla-ExtraLightItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Karla-ExtraLightItalic.ttf"
+    }
+  },
+  {
+    "family": "Karla-Italic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Karla-Italic.ttf"
+    }
+  },
+  {
+    "family": "Karla-LightItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Karla-LightItalic.ttf"
+    }
+  },
+  {
+    "family": "Karla-MediumItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Karla-MediumItalic.ttf"
+    }
+  },
+  {
+    "family": "Karla-SemiBoldItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Karla-SemiBoldItalic.ttf"
+    }
+  },
+  {
+    "family": "KaushanScript",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/KaushanScript-Regular.ttf"
+    }
+  },
+  {
+    "family": "Lato",
+    "weights": [
+      "100",
+      "300",
+      "400",
+      "700",
+      "900"
+    ],
+    "files": {
+      "100": "/fonts/files/Lato-Thin.ttf",
+      "300": "/fonts/files/Lato-Light.ttf",
+      "400": "/fonts/files/Lato-Regular.ttf",
+      "700": "/fonts/files/Lato-Bold.ttf",
+      "900": "/fonts/files/Lato-Black.ttf"
+    }
+  },
+  {
+    "family": "Lato-BlackItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Lato-BlackItalic.ttf"
+    }
+  },
+  {
+    "family": "Lato-BoldItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Lato-BoldItalic.ttf"
+    }
+  },
+  {
+    "family": "Lato-Italic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Lato-Italic.ttf"
+    }
+  },
+  {
+    "family": "Lato-LightItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Lato-LightItalic.ttf"
+    }
+  },
+  {
+    "family": "Lato-ThinItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Lato-ThinItalic.ttf"
+    }
+  },
+  {
+    "family": "Lexend",
+    "weights": [
+      "100",
+      "200",
+      "300",
+      "400",
+      "500",
+      "600",
+      "700",
+      "800",
+      "900"
+    ],
+    "files": {
+      "100": "/fonts/files/Lexend-Thin.ttf",
+      "200": "/fonts/files/Lexend-ExtraLight.ttf",
+      "300": "/fonts/files/Lexend-Light.ttf",
+      "400": "/fonts/files/Lexend-Regular.ttf",
+      "500": "/fonts/files/Lexend-Medium.ttf",
+      "600": "/fonts/files/Lexend-SemiBold.ttf",
+      "700": "/fonts/files/Lexend-Bold.ttf",
+      "800": "/fonts/files/Lexend-ExtraBold.ttf",
+      "900": "/fonts/files/Lexend-Black.ttf"
+    }
+  },
+  {
+    "family": "LibreBaskerville",
+    "weights": [
+      "400",
+      "700"
+    ],
+    "files": {
+      "400": "/fonts/files/LibreBaskerville-Regular.ttf",
+      "700": "/fonts/files/LibreBaskerville-Bold.ttf"
+    }
+  },
+  {
+    "family": "LibreBaskerville-Italic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/LibreBaskerville-Italic.ttf"
+    }
+  },
+  {
+    "family": "LilitaOne",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/LilitaOne-Regular.ttf"
+    }
+  },
+  {
+    "family": "Lobster",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Lobster-Regular.ttf"
+    }
+  },
+  {
+    "family": "LobsterTwo",
+    "weights": [
+      "400",
+      "700"
+    ],
+    "files": {
+      "400": "/fonts/files/LobsterTwo-Regular.ttf",
+      "700": "/fonts/files/LobsterTwo-Bold.ttf"
+    }
+  },
+  {
+    "family": "LobsterTwo-BoldItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/LobsterTwo-BoldItalic.ttf"
+    }
+  },
+  {
+    "family": "LobsterTwo-Italic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/LobsterTwo-Italic.ttf"
+    }
+  },
+  {
+    "family": "Lora",
+    "weights": [
+      "400",
+      "500",
+      "600",
+      "700"
+    ],
+    "files": {
+      "400": "/fonts/files/Lora-Regular.ttf",
+      "500": "/fonts/files/Lora-Medium.ttf",
+      "600": "/fonts/files/Lora-SemiBold.ttf",
+      "700": "/fonts/files/Lora-Bold.ttf"
+    }
+  },
+  {
+    "family": "Lora-BoldItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Lora-BoldItalic.ttf"
+    }
+  },
+  {
+    "family": "Lora-Italic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Lora-Italic.ttf"
+    }
+  },
+  {
+    "family": "Lora-MediumItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Lora-MediumItalic.ttf"
+    }
+  },
+  {
+    "family": "Lora-SemiBoldItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Lora-SemiBoldItalic.ttf"
+    }
+  },
+  {
+    "family": "LuckiestGuy",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/LuckiestGuy-Regular.ttf"
+    }
+  },
+  {
+    "family": "Merriweather",
+    "weights": [
+      "300",
+      "400",
+      "700",
+      "900"
+    ],
+    "files": {
+      "300": "/fonts/files/Merriweather-Light.ttf",
+      "400": "/fonts/files/Merriweather-Regular.ttf",
+      "700": "/fonts/files/Merriweather-Bold.ttf",
+      "900": "/fonts/files/Merriweather-Black.ttf"
+    }
+  },
+  {
+    "family": "Merriweather_120pt",
+    "weights": [
+      "300",
+      "400",
+      "500",
+      "600",
+      "700",
+      "800",
+      "900"
+    ],
+    "files": {
+      "300": "/fonts/files/Merriweather_120pt-Light.ttf",
+      "400": "/fonts/files/Merriweather_120pt-Regular.ttf",
+      "500": "/fonts/files/Merriweather_120pt-Medium.ttf",
+      "600": "/fonts/files/Merriweather_120pt-SemiBold.ttf",
+      "700": "/fonts/files/Merriweather_120pt-Bold.ttf",
+      "800": "/fonts/files/Merriweather_120pt-ExtraBold.ttf",
+      "900": "/fonts/files/Merriweather_120pt-Black.ttf"
+    }
+  },
+  {
+    "family": "Merriweather_120pt_SemiCondensed",
+    "weights": [
+      "300",
+      "400",
+      "500",
+      "600",
+      "700",
+      "800",
+      "900"
+    ],
+    "files": {
+      "300": "/fonts/files/Merriweather_120pt_SemiCondensed-Light.ttf",
+      "400": "/fonts/files/Merriweather_120pt_SemiCondensed-Regular.ttf",
+      "500": "/fonts/files/Merriweather_120pt_SemiCondensed-Medium.ttf",
+      "600": "/fonts/files/Merriweather_120pt_SemiCondensed-SemiBold.ttf",
+      "700": "/fonts/files/Merriweather_120pt_SemiCondensed-Bold.ttf",
+      "800": "/fonts/files/Merriweather_120pt_SemiCondensed-ExtraBold.ttf",
+      "900": "/fonts/files/Merriweather_120pt_SemiCondensed-Black.ttf"
+    }
+  },
+  {
+    "family": "Merriweather_120pt_SemiCondensed-BlackItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Merriweather_120pt_SemiCondensed-BlackItalic.ttf"
+    }
+  },
+  {
+    "family": "Merriweather_120pt_SemiCondensed-BoldItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Merriweather_120pt_SemiCondensed-BoldItalic.ttf"
+    }
+  },
+  {
+    "family": "Merriweather_120pt_SemiCondensed-ExtraBoldItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Merriweather_120pt_SemiCondensed-ExtraBoldItalic.ttf"
+    }
+  },
+  {
+    "family": "Merriweather_120pt_SemiCondensed-Italic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Merriweather_120pt_SemiCondensed-Italic.ttf"
+    }
+  },
+  {
+    "family": "Merriweather_120pt_SemiCondensed-LightItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Merriweather_120pt_SemiCondensed-LightItalic.ttf"
+    }
+  },
+  {
+    "family": "Merriweather_120pt_SemiCondensed-MediumItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Merriweather_120pt_SemiCondensed-MediumItalic.ttf"
+    }
+  },
+  {
+    "family": "Merriweather_120pt_SemiCondensed-SemiBoldItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Merriweather_120pt_SemiCondensed-SemiBoldItalic.ttf"
+    }
+  },
+  {
+    "family": "Merriweather_120pt-BlackItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Merriweather_120pt-BlackItalic.ttf"
+    }
+  },
+  {
+    "family": "Merriweather_120pt-BoldItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Merriweather_120pt-BoldItalic.ttf"
+    }
+  },
+  {
+    "family": "Merriweather_120pt-ExtraBoldItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Merriweather_120pt-ExtraBoldItalic.ttf"
+    }
+  },
+  {
+    "family": "Merriweather_120pt-Italic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Merriweather_120pt-Italic.ttf"
+    }
+  },
+  {
+    "family": "Merriweather_120pt-LightItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Merriweather_120pt-LightItalic.ttf"
+    }
+  },
+  {
+    "family": "Merriweather_120pt-MediumItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Merriweather_120pt-MediumItalic.ttf"
+    }
+  },
+  {
+    "family": "Merriweather_120pt-SemiBoldItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Merriweather_120pt-SemiBoldItalic.ttf"
+    }
+  },
+  {
+    "family": "Merriweather_24pt",
+    "weights": [
+      "300",
+      "400",
+      "500",
+      "600",
+      "700",
+      "800",
+      "900"
+    ],
+    "files": {
+      "300": "/fonts/files/Merriweather_24pt-Light.ttf",
+      "400": "/fonts/files/Merriweather_24pt-Regular.ttf",
+      "500": "/fonts/files/Merriweather_24pt-Medium.ttf",
+      "600": "/fonts/files/Merriweather_24pt-SemiBold.ttf",
+      "700": "/fonts/files/Merriweather_24pt-Bold.ttf",
+      "800": "/fonts/files/Merriweather_24pt-ExtraBold.ttf",
+      "900": "/fonts/files/Merriweather_24pt-Black.ttf"
+    }
+  },
+  {
+    "family": "Merriweather_24pt_SemiCondensed",
+    "weights": [
+      "300",
+      "400",
+      "500",
+      "600",
+      "700",
+      "800",
+      "900"
+    ],
+    "files": {
+      "300": "/fonts/files/Merriweather_24pt_SemiCondensed-Light.ttf",
+      "400": "/fonts/files/Merriweather_24pt_SemiCondensed-Regular.ttf",
+      "500": "/fonts/files/Merriweather_24pt_SemiCondensed-Medium.ttf",
+      "600": "/fonts/files/Merriweather_24pt_SemiCondensed-SemiBold.ttf",
+      "700": "/fonts/files/Merriweather_24pt_SemiCondensed-Bold.ttf",
+      "800": "/fonts/files/Merriweather_24pt_SemiCondensed-ExtraBold.ttf",
+      "900": "/fonts/files/Merriweather_24pt_SemiCondensed-Black.ttf"
+    }
+  },
+  {
+    "family": "Merriweather_24pt_SemiCondensed-BlackItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Merriweather_24pt_SemiCondensed-BlackItalic.ttf"
+    }
+  },
+  {
+    "family": "Merriweather_24pt_SemiCondensed-BoldItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Merriweather_24pt_SemiCondensed-BoldItalic.ttf"
+    }
+  },
+  {
+    "family": "Merriweather_24pt_SemiCondensed-ExtraBoldItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Merriweather_24pt_SemiCondensed-ExtraBoldItalic.ttf"
+    }
+  },
+  {
+    "family": "Merriweather_24pt_SemiCondensed-Italic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Merriweather_24pt_SemiCondensed-Italic.ttf"
+    }
+  },
+  {
+    "family": "Merriweather_24pt_SemiCondensed-LightItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Merriweather_24pt_SemiCondensed-LightItalic.ttf"
+    }
+  },
+  {
+    "family": "Merriweather_24pt_SemiCondensed-MediumItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Merriweather_24pt_SemiCondensed-MediumItalic.ttf"
+    }
+  },
+  {
+    "family": "Merriweather_24pt_SemiCondensed-SemiBoldItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Merriweather_24pt_SemiCondensed-SemiBoldItalic.ttf"
+    }
+  },
+  {
+    "family": "Merriweather_24pt-BlackItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Merriweather_24pt-BlackItalic.ttf"
+    }
+  },
+  {
+    "family": "Merriweather_24pt-BoldItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Merriweather_24pt-BoldItalic.ttf"
+    }
+  },
+  {
+    "family": "Merriweather_24pt-ExtraBoldItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Merriweather_24pt-ExtraBoldItalic.ttf"
+    }
+  },
+  {
+    "family": "Merriweather_24pt-Italic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Merriweather_24pt-Italic.ttf"
+    }
+  },
+  {
+    "family": "Merriweather_24pt-LightItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Merriweather_24pt-LightItalic.ttf"
+    }
+  },
+  {
+    "family": "Merriweather_24pt-MediumItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Merriweather_24pt-MediumItalic.ttf"
+    }
+  },
+  {
+    "family": "Merriweather_24pt-SemiBoldItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Merriweather_24pt-SemiBoldItalic.ttf"
+    }
+  },
+  {
+    "family": "Merriweather_36pt",
+    "weights": [
+      "300",
+      "400",
+      "500",
+      "600",
+      "700",
+      "800",
+      "900"
+    ],
+    "files": {
+      "300": "/fonts/files/Merriweather_36pt-Light.ttf",
+      "400": "/fonts/files/Merriweather_36pt-Regular.ttf",
+      "500": "/fonts/files/Merriweather_36pt-Medium.ttf",
+      "600": "/fonts/files/Merriweather_36pt-SemiBold.ttf",
+      "700": "/fonts/files/Merriweather_36pt-Bold.ttf",
+      "800": "/fonts/files/Merriweather_36pt-ExtraBold.ttf",
+      "900": "/fonts/files/Merriweather_36pt-Black.ttf"
+    }
+  },
+  {
+    "family": "Merriweather_36pt_SemiCondensed",
+    "weights": [
+      "300",
+      "400",
+      "500",
+      "600",
+      "700",
+      "800",
+      "900"
+    ],
+    "files": {
+      "300": "/fonts/files/Merriweather_36pt_SemiCondensed-Light.ttf",
+      "400": "/fonts/files/Merriweather_36pt_SemiCondensed-Regular.ttf",
+      "500": "/fonts/files/Merriweather_36pt_SemiCondensed-Medium.ttf",
+      "600": "/fonts/files/Merriweather_36pt_SemiCondensed-SemiBold.ttf",
+      "700": "/fonts/files/Merriweather_36pt_SemiCondensed-Bold.ttf",
+      "800": "/fonts/files/Merriweather_36pt_SemiCondensed-ExtraBold.ttf",
+      "900": "/fonts/files/Merriweather_36pt_SemiCondensed-Black.ttf"
+    }
+  },
+  {
+    "family": "Merriweather_36pt_SemiCondensed-BlackItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Merriweather_36pt_SemiCondensed-BlackItalic.ttf"
+    }
+  },
+  {
+    "family": "Merriweather_36pt_SemiCondensed-BoldItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Merriweather_36pt_SemiCondensed-BoldItalic.ttf"
+    }
+  },
+  {
+    "family": "Merriweather_36pt_SemiCondensed-ExtraBoldItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Merriweather_36pt_SemiCondensed-ExtraBoldItalic.ttf"
+    }
+  },
+  {
+    "family": "Merriweather_36pt_SemiCondensed-Italic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Merriweather_36pt_SemiCondensed-Italic.ttf"
+    }
+  },
+  {
+    "family": "Merriweather_36pt_SemiCondensed-LightItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Merriweather_36pt_SemiCondensed-LightItalic.ttf"
+    }
+  },
+  {
+    "family": "Merriweather_36pt_SemiCondensed-MediumItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Merriweather_36pt_SemiCondensed-MediumItalic.ttf"
+    }
+  },
+  {
+    "family": "Merriweather_36pt_SemiCondensed-SemiBoldItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Merriweather_36pt_SemiCondensed-SemiBoldItalic.ttf"
+    }
+  },
+  {
+    "family": "Merriweather_36pt-BlackItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Merriweather_36pt-BlackItalic.ttf"
+    }
+  },
+  {
+    "family": "Merriweather_36pt-BoldItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Merriweather_36pt-BoldItalic.ttf"
+    }
+  },
+  {
+    "family": "Merriweather_36pt-ExtraBoldItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Merriweather_36pt-ExtraBoldItalic.ttf"
+    }
+  },
+  {
+    "family": "Merriweather_36pt-Italic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Merriweather_36pt-Italic.ttf"
+    }
+  },
+  {
+    "family": "Merriweather_36pt-LightItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Merriweather_36pt-LightItalic.ttf"
+    }
+  },
+  {
+    "family": "Merriweather_36pt-MediumItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Merriweather_36pt-MediumItalic.ttf"
+    }
+  },
+  {
+    "family": "Merriweather_36pt-SemiBoldItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Merriweather_36pt-SemiBoldItalic.ttf"
+    }
+  },
+  {
+    "family": "Merriweather_48pt",
+    "weights": [
+      "300",
+      "400",
+      "500",
+      "600",
+      "700",
+      "800",
+      "900"
+    ],
+    "files": {
+      "300": "/fonts/files/Merriweather_48pt-Light.ttf",
+      "400": "/fonts/files/Merriweather_48pt-Regular.ttf",
+      "500": "/fonts/files/Merriweather_48pt-Medium.ttf",
+      "600": "/fonts/files/Merriweather_48pt-SemiBold.ttf",
+      "700": "/fonts/files/Merriweather_48pt-Bold.ttf",
+      "800": "/fonts/files/Merriweather_48pt-ExtraBold.ttf",
+      "900": "/fonts/files/Merriweather_48pt-Black.ttf"
+    }
+  },
+  {
+    "family": "Merriweather_48pt_SemiCondensed",
+    "weights": [
+      "300",
+      "400",
+      "500",
+      "600",
+      "700",
+      "800",
+      "900"
+    ],
+    "files": {
+      "300": "/fonts/files/Merriweather_48pt_SemiCondensed-Light.ttf",
+      "400": "/fonts/files/Merriweather_48pt_SemiCondensed-Regular.ttf",
+      "500": "/fonts/files/Merriweather_48pt_SemiCondensed-Medium.ttf",
+      "600": "/fonts/files/Merriweather_48pt_SemiCondensed-SemiBold.ttf",
+      "700": "/fonts/files/Merriweather_48pt_SemiCondensed-Bold.ttf",
+      "800": "/fonts/files/Merriweather_48pt_SemiCondensed-ExtraBold.ttf",
+      "900": "/fonts/files/Merriweather_48pt_SemiCondensed-Black.ttf"
+    }
+  },
+  {
+    "family": "Merriweather_48pt_SemiCondensed-BlackItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Merriweather_48pt_SemiCondensed-BlackItalic.ttf"
+    }
+  },
+  {
+    "family": "Merriweather_48pt_SemiCondensed-BoldItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Merriweather_48pt_SemiCondensed-BoldItalic.ttf"
+    }
+  },
+  {
+    "family": "Merriweather_48pt_SemiCondensed-ExtraBoldItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Merriweather_48pt_SemiCondensed-ExtraBoldItalic.ttf"
+    }
+  },
+  {
+    "family": "Merriweather_48pt_SemiCondensed-Italic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Merriweather_48pt_SemiCondensed-Italic.ttf"
+    }
+  },
+  {
+    "family": "Merriweather_48pt_SemiCondensed-LightItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Merriweather_48pt_SemiCondensed-LightItalic.ttf"
+    }
+  },
+  {
+    "family": "Merriweather_48pt_SemiCondensed-MediumItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Merriweather_48pt_SemiCondensed-MediumItalic.ttf"
+    }
+  },
+  {
+    "family": "Merriweather_48pt_SemiCondensed-SemiBoldItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Merriweather_48pt_SemiCondensed-SemiBoldItalic.ttf"
+    }
+  },
+  {
+    "family": "Merriweather_48pt-BlackItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Merriweather_48pt-BlackItalic.ttf"
+    }
+  },
+  {
+    "family": "Merriweather_48pt-BoldItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Merriweather_48pt-BoldItalic.ttf"
+    }
+  },
+  {
+    "family": "Merriweather_48pt-ExtraBoldItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Merriweather_48pt-ExtraBoldItalic.ttf"
+    }
+  },
+  {
+    "family": "Merriweather_48pt-Italic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Merriweather_48pt-Italic.ttf"
+    }
+  },
+  {
+    "family": "Merriweather_48pt-LightItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Merriweather_48pt-LightItalic.ttf"
+    }
+  },
+  {
+    "family": "Merriweather_48pt-MediumItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Merriweather_48pt-MediumItalic.ttf"
+    }
+  },
+  {
+    "family": "Merriweather_48pt-SemiBoldItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Merriweather_48pt-SemiBoldItalic.ttf"
+    }
+  },
+  {
+    "family": "Merriweather_96pt",
+    "weights": [
+      "300",
+      "400",
+      "500",
+      "600",
+      "700",
+      "800",
+      "900"
+    ],
+    "files": {
+      "300": "/fonts/files/Merriweather_96pt-Light.ttf",
+      "400": "/fonts/files/Merriweather_96pt-Regular.ttf",
+      "500": "/fonts/files/Merriweather_96pt-Medium.ttf",
+      "600": "/fonts/files/Merriweather_96pt-SemiBold.ttf",
+      "700": "/fonts/files/Merriweather_96pt-Bold.ttf",
+      "800": "/fonts/files/Merriweather_96pt-ExtraBold.ttf",
+      "900": "/fonts/files/Merriweather_96pt-Black.ttf"
+    }
+  },
+  {
+    "family": "Merriweather_96pt_SemiCondensed",
+    "weights": [
+      "300",
+      "400",
+      "500",
+      "600",
+      "700",
+      "800",
+      "900"
+    ],
+    "files": {
+      "300": "/fonts/files/Merriweather_96pt_SemiCondensed-Light.ttf",
+      "400": "/fonts/files/Merriweather_96pt_SemiCondensed-Regular.ttf",
+      "500": "/fonts/files/Merriweather_96pt_SemiCondensed-Medium.ttf",
+      "600": "/fonts/files/Merriweather_96pt_SemiCondensed-SemiBold.ttf",
+      "700": "/fonts/files/Merriweather_96pt_SemiCondensed-Bold.ttf",
+      "800": "/fonts/files/Merriweather_96pt_SemiCondensed-ExtraBold.ttf",
+      "900": "/fonts/files/Merriweather_96pt_SemiCondensed-Black.ttf"
+    }
+  },
+  {
+    "family": "Merriweather_96pt_SemiCondensed-BlackItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Merriweather_96pt_SemiCondensed-BlackItalic.ttf"
+    }
+  },
+  {
+    "family": "Merriweather_96pt_SemiCondensed-BoldItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Merriweather_96pt_SemiCondensed-BoldItalic.ttf"
+    }
+  },
+  {
+    "family": "Merriweather_96pt_SemiCondensed-ExtraBoldItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Merriweather_96pt_SemiCondensed-ExtraBoldItalic.ttf"
+    }
+  },
+  {
+    "family": "Merriweather_96pt_SemiCondensed-Italic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Merriweather_96pt_SemiCondensed-Italic.ttf"
+    }
+  },
+  {
+    "family": "Merriweather_96pt_SemiCondensed-LightItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Merriweather_96pt_SemiCondensed-LightItalic.ttf"
+    }
+  },
+  {
+    "family": "Merriweather_96pt_SemiCondensed-MediumItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Merriweather_96pt_SemiCondensed-MediumItalic.ttf"
+    }
+  },
+  {
+    "family": "Merriweather_96pt_SemiCondensed-SemiBoldItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Merriweather_96pt_SemiCondensed-SemiBoldItalic.ttf"
+    }
+  },
+  {
+    "family": "Merriweather_96pt-BlackItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Merriweather_96pt-BlackItalic.ttf"
+    }
+  },
+  {
+    "family": "Merriweather_96pt-BoldItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Merriweather_96pt-BoldItalic.ttf"
+    }
+  },
+  {
+    "family": "Merriweather_96pt-ExtraBoldItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Merriweather_96pt-ExtraBoldItalic.ttf"
+    }
+  },
+  {
+    "family": "Merriweather_96pt-Italic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Merriweather_96pt-Italic.ttf"
+    }
+  },
+  {
+    "family": "Merriweather_96pt-LightItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Merriweather_96pt-LightItalic.ttf"
+    }
+  },
+  {
+    "family": "Merriweather_96pt-MediumItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Merriweather_96pt-MediumItalic.ttf"
+    }
+  },
+  {
+    "family": "Merriweather_96pt-SemiBoldItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Merriweather_96pt-SemiBoldItalic.ttf"
+    }
+  },
+  {
+    "family": "Monoton",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Monoton-Regular.ttf"
+    }
+  },
+  {
+    "family": "Montserrat",
+    "weights": [
+      "100",
+      "200",
+      "300",
+      "400",
+      "500",
+      "600",
+      "700",
+      "800",
+      "900"
+    ],
+    "files": {
+      "100": "/fonts/files/Montserrat-Thin.ttf",
+      "200": "/fonts/files/Montserrat-ExtraLight.ttf",
+      "300": "/fonts/files/Montserrat-Light.ttf",
+      "400": "/fonts/files/Montserrat-Regular.ttf",
+      "500": "/fonts/files/Montserrat-Medium.ttf",
+      "600": "/fonts/files/Montserrat-SemiBold.ttf",
+      "700": "/fonts/files/Montserrat-Bold.ttf",
+      "800": "/fonts/files/Montserrat-ExtraBold.ttf",
+      "900": "/fonts/files/Montserrat-Black.ttf"
+    }
+  },
+  {
+    "family": "Montserrat-BlackItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Montserrat-BlackItalic.ttf"
+    }
+  },
+  {
+    "family": "Montserrat-BoldItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Montserrat-BoldItalic.ttf"
+    }
+  },
+  {
+    "family": "Montserrat-ExtraBoldItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Montserrat-ExtraBoldItalic.ttf"
+    }
+  },
+  {
+    "family": "Montserrat-ExtraLightItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Montserrat-ExtraLightItalic.ttf"
+    }
+  },
+  {
+    "family": "Montserrat-Italic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Montserrat-Italic.ttf"
+    }
+  },
+  {
+    "family": "Montserrat-LightItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Montserrat-LightItalic.ttf"
+    }
+  },
+  {
+    "family": "Montserrat-MediumItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Montserrat-MediumItalic.ttf"
+    }
+  },
+  {
+    "family": "Montserrat-SemiBoldItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Montserrat-SemiBoldItalic.ttf"
+    }
+  },
+  {
+    "family": "Montserrat-ThinItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Montserrat-ThinItalic.ttf"
+    }
+  },
+  {
+    "family": "Mukta",
+    "weights": [
+      "200",
+      "300",
+      "400",
+      "500",
+      "600",
+      "700",
+      "800"
+    ],
+    "files": {
+      "200": "/fonts/files/Mukta-ExtraLight.ttf",
+      "300": "/fonts/files/Mukta-Light.ttf",
+      "400": "/fonts/files/Mukta-Regular.ttf",
+      "500": "/fonts/files/Mukta-Medium.ttf",
+      "600": "/fonts/files/Mukta-SemiBold.ttf",
+      "700": "/fonts/files/Mukta-Bold.ttf",
+      "800": "/fonts/files/Mukta-ExtraBold.ttf"
+    }
+  },
+  {
+    "family": "Mulish",
+    "weights": [
+      "200",
+      "300",
+      "400",
+      "500",
+      "600",
+      "700",
+      "800",
+      "900"
+    ],
+    "files": {
+      "200": "/fonts/files/Mulish-ExtraLight.ttf",
+      "300": "/fonts/files/Mulish-Light.ttf",
+      "400": "/fonts/files/Mulish-Regular.ttf",
+      "500": "/fonts/files/Mulish-Medium.ttf",
+      "600": "/fonts/files/Mulish-SemiBold.ttf",
+      "700": "/fonts/files/Mulish-Bold.ttf",
+      "800": "/fonts/files/Mulish-ExtraBold.ttf",
+      "900": "/fonts/files/Mulish-Black.ttf"
+    }
+  },
+  {
+    "family": "Mulish-BlackItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Mulish-BlackItalic.ttf"
+    }
+  },
+  {
+    "family": "Mulish-BoldItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Mulish-BoldItalic.ttf"
+    }
+  },
+  {
+    "family": "Mulish-ExtraBoldItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Mulish-ExtraBoldItalic.ttf"
+    }
+  },
+  {
+    "family": "Mulish-ExtraLightItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Mulish-ExtraLightItalic.ttf"
+    }
+  },
+  {
+    "family": "Mulish-Italic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Mulish-Italic.ttf"
+    }
+  },
+  {
+    "family": "Mulish-LightItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Mulish-LightItalic.ttf"
+    }
+  },
+  {
+    "family": "Mulish-MediumItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Mulish-MediumItalic.ttf"
+    }
+  },
+  {
+    "family": "Mulish-SemiBoldItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Mulish-SemiBoldItalic.ttf"
+    }
+  },
+  {
+    "family": "Neucha",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Neucha-Regular.ttf"
+    }
+  },
+  {
+    "family": "NotoSans",
+    "weights": [
+      "100",
+      "200",
+      "300",
+      "400",
+      "500",
+      "600",
+      "700",
+      "800",
+      "900"
+    ],
+    "files": {
+      "100": "/fonts/files/NotoSans-Thin.ttf",
+      "200": "/fonts/files/NotoSans-ExtraLight.ttf",
+      "300": "/fonts/files/NotoSans-Light.ttf",
+      "400": "/fonts/files/NotoSans-Regular.ttf",
+      "500": "/fonts/files/NotoSans-Medium.ttf",
+      "600": "/fonts/files/NotoSans-SemiBold.ttf",
+      "700": "/fonts/files/NotoSans-Bold.ttf",
+      "800": "/fonts/files/NotoSans-ExtraBold.ttf",
+      "900": "/fonts/files/NotoSans-Black.ttf"
+    }
+  },
+  {
+    "family": "NotoSans_Condensed",
+    "weights": [
+      "100",
+      "200",
+      "300",
+      "400",
+      "500",
+      "600",
+      "700",
+      "800",
+      "900"
+    ],
+    "files": {
+      "100": "/fonts/files/NotoSans_Condensed-Thin.ttf",
+      "200": "/fonts/files/NotoSans_Condensed-ExtraLight.ttf",
+      "300": "/fonts/files/NotoSans_Condensed-Light.ttf",
+      "400": "/fonts/files/NotoSans_Condensed-Regular.ttf",
+      "500": "/fonts/files/NotoSans_Condensed-Medium.ttf",
+      "600": "/fonts/files/NotoSans_Condensed-SemiBold.ttf",
+      "700": "/fonts/files/NotoSans_Condensed-Bold.ttf",
+      "800": "/fonts/files/NotoSans_Condensed-ExtraBold.ttf",
+      "900": "/fonts/files/NotoSans_Condensed-Black.ttf"
+    }
+  },
+  {
+    "family": "NotoSans_Condensed-BlackItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/NotoSans_Condensed-BlackItalic.ttf"
+    }
+  },
+  {
+    "family": "NotoSans_Condensed-BoldItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/NotoSans_Condensed-BoldItalic.ttf"
+    }
+  },
+  {
+    "family": "NotoSans_Condensed-ExtraBoldItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/NotoSans_Condensed-ExtraBoldItalic.ttf"
+    }
+  },
+  {
+    "family": "NotoSans_Condensed-ExtraLightItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/NotoSans_Condensed-ExtraLightItalic.ttf"
+    }
+  },
+  {
+    "family": "NotoSans_Condensed-Italic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/NotoSans_Condensed-Italic.ttf"
+    }
+  },
+  {
+    "family": "NotoSans_Condensed-LightItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/NotoSans_Condensed-LightItalic.ttf"
+    }
+  },
+  {
+    "family": "NotoSans_Condensed-MediumItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/NotoSans_Condensed-MediumItalic.ttf"
+    }
+  },
+  {
+    "family": "NotoSans_Condensed-SemiBoldItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/NotoSans_Condensed-SemiBoldItalic.ttf"
+    }
+  },
+  {
+    "family": "NotoSans_Condensed-ThinItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/NotoSans_Condensed-ThinItalic.ttf"
+    }
+  },
+  {
+    "family": "NotoSans_ExtraCondensed",
+    "weights": [
+      "100",
+      "200",
+      "300",
+      "400",
+      "500",
+      "600",
+      "700",
+      "800",
+      "900"
+    ],
+    "files": {
+      "100": "/fonts/files/NotoSans_ExtraCondensed-Thin.ttf",
+      "200": "/fonts/files/NotoSans_ExtraCondensed-ExtraLight.ttf",
+      "300": "/fonts/files/NotoSans_ExtraCondensed-Light.ttf",
+      "400": "/fonts/files/NotoSans_ExtraCondensed-Regular.ttf",
+      "500": "/fonts/files/NotoSans_ExtraCondensed-Medium.ttf",
+      "600": "/fonts/files/NotoSans_ExtraCondensed-SemiBold.ttf",
+      "700": "/fonts/files/NotoSans_ExtraCondensed-Bold.ttf",
+      "800": "/fonts/files/NotoSans_ExtraCondensed-ExtraBold.ttf",
+      "900": "/fonts/files/NotoSans_ExtraCondensed-Black.ttf"
+    }
+  },
+  {
+    "family": "NotoSans_ExtraCondensed-BlackItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/NotoSans_ExtraCondensed-BlackItalic.ttf"
+    }
+  },
+  {
+    "family": "NotoSans_ExtraCondensed-BoldItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/NotoSans_ExtraCondensed-BoldItalic.ttf"
+    }
+  },
+  {
+    "family": "NotoSans_ExtraCondensed-ExtraBoldItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/NotoSans_ExtraCondensed-ExtraBoldItalic.ttf"
+    }
+  },
+  {
+    "family": "NotoSans_ExtraCondensed-ExtraLightItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/NotoSans_ExtraCondensed-ExtraLightItalic.ttf"
+    }
+  },
+  {
+    "family": "NotoSans_ExtraCondensed-Italic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/NotoSans_ExtraCondensed-Italic.ttf"
+    }
+  },
+  {
+    "family": "NotoSans_ExtraCondensed-LightItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/NotoSans_ExtraCondensed-LightItalic.ttf"
+    }
+  },
+  {
+    "family": "NotoSans_ExtraCondensed-MediumItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/NotoSans_ExtraCondensed-MediumItalic.ttf"
+    }
+  },
+  {
+    "family": "NotoSans_ExtraCondensed-SemiBoldItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/NotoSans_ExtraCondensed-SemiBoldItalic.ttf"
+    }
+  },
+  {
+    "family": "NotoSans_ExtraCondensed-ThinItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/NotoSans_ExtraCondensed-ThinItalic.ttf"
+    }
+  },
+  {
+    "family": "NotoSans_SemiCondensed",
+    "weights": [
+      "100",
+      "200",
+      "300",
+      "400",
+      "500",
+      "600",
+      "700",
+      "800",
+      "900"
+    ],
+    "files": {
+      "100": "/fonts/files/NotoSans_SemiCondensed-Thin.ttf",
+      "200": "/fonts/files/NotoSans_SemiCondensed-ExtraLight.ttf",
+      "300": "/fonts/files/NotoSans_SemiCondensed-Light.ttf",
+      "400": "/fonts/files/NotoSans_SemiCondensed-Regular.ttf",
+      "500": "/fonts/files/NotoSans_SemiCondensed-Medium.ttf",
+      "600": "/fonts/files/NotoSans_SemiCondensed-SemiBold.ttf",
+      "700": "/fonts/files/NotoSans_SemiCondensed-Bold.ttf",
+      "800": "/fonts/files/NotoSans_SemiCondensed-ExtraBold.ttf",
+      "900": "/fonts/files/NotoSans_SemiCondensed-Black.ttf"
+    }
+  },
+  {
+    "family": "NotoSans_SemiCondensed-BlackItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/NotoSans_SemiCondensed-BlackItalic.ttf"
+    }
+  },
+  {
+    "family": "NotoSans_SemiCondensed-BoldItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/NotoSans_SemiCondensed-BoldItalic.ttf"
+    }
+  },
+  {
+    "family": "NotoSans_SemiCondensed-ExtraBoldItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/NotoSans_SemiCondensed-ExtraBoldItalic.ttf"
+    }
+  },
+  {
+    "family": "NotoSans_SemiCondensed-ExtraLightItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/NotoSans_SemiCondensed-ExtraLightItalic.ttf"
+    }
+  },
+  {
+    "family": "NotoSans_SemiCondensed-Italic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/NotoSans_SemiCondensed-Italic.ttf"
+    }
+  },
+  {
+    "family": "NotoSans_SemiCondensed-LightItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/NotoSans_SemiCondensed-LightItalic.ttf"
+    }
+  },
+  {
+    "family": "NotoSans_SemiCondensed-MediumItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/NotoSans_SemiCondensed-MediumItalic.ttf"
+    }
+  },
+  {
+    "family": "NotoSans_SemiCondensed-SemiBoldItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/NotoSans_SemiCondensed-SemiBoldItalic.ttf"
+    }
+  },
+  {
+    "family": "NotoSans_SemiCondensed-ThinItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/NotoSans_SemiCondensed-ThinItalic.ttf"
+    }
+  },
+  {
+    "family": "NotoSans-BlackItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/NotoSans-BlackItalic.ttf"
+    }
+  },
+  {
+    "family": "NotoSans-BoldItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/NotoSans-BoldItalic.ttf"
+    }
+  },
+  {
+    "family": "NotoSans-ExtraBoldItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/NotoSans-ExtraBoldItalic.ttf"
+    }
+  },
+  {
+    "family": "NotoSans-ExtraLightItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/NotoSans-ExtraLightItalic.ttf"
+    }
+  },
+  {
+    "family": "NotoSans-Italic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/NotoSans-Italic.ttf"
+    }
+  },
+  {
+    "family": "NotoSans-LightItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/NotoSans-LightItalic.ttf"
+    }
+  },
+  {
+    "family": "NotoSans-MediumItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/NotoSans-MediumItalic.ttf"
+    }
+  },
+  {
+    "family": "NotoSans-SemiBoldItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/NotoSans-SemiBoldItalic.ttf"
+    }
+  },
+  {
+    "family": "NotoSans-ThinItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/NotoSans-ThinItalic.ttf"
+    }
+  },
+  {
+    "family": "NotoSansJP",
+    "weights": [
+      "100",
+      "200",
+      "300",
+      "400",
+      "500",
+      "600",
+      "700",
+      "800",
+      "900"
+    ],
+    "files": {
+      "100": "/fonts/files/NotoSansJP-Thin.ttf",
+      "200": "/fonts/files/NotoSansJP-ExtraLight.ttf",
+      "300": "/fonts/files/NotoSansJP-Light.ttf",
+      "400": "/fonts/files/NotoSansJP-Regular.ttf",
+      "500": "/fonts/files/NotoSansJP-Medium.ttf",
+      "600": "/fonts/files/NotoSansJP-SemiBold.ttf",
+      "700": "/fonts/files/NotoSansJP-Bold.ttf",
+      "800": "/fonts/files/NotoSansJP-ExtraBold.ttf",
+      "900": "/fonts/files/NotoSansJP-Black.ttf"
+    }
+  },
+  {
+    "family": "NotoSansMandaic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/NotoSansMandaic-Regular.ttf"
+    }
+  },
+  {
+    "family": "NotoSansSC",
+    "weights": [
+      "100",
+      "200",
+      "300",
+      "400",
+      "500",
+      "600",
+      "700",
+      "800",
+      "900"
+    ],
+    "files": {
+      "100": "/fonts/files/NotoSansSC-Thin.ttf",
+      "200": "/fonts/files/NotoSansSC-ExtraLight.ttf",
+      "300": "/fonts/files/NotoSansSC-Light.ttf",
+      "400": "/fonts/files/NotoSansSC-Regular.ttf",
+      "500": "/fonts/files/NotoSansSC-Medium.ttf",
+      "600": "/fonts/files/NotoSansSC-SemiBold.ttf",
+      "700": "/fonts/files/NotoSansSC-Bold.ttf",
+      "800": "/fonts/files/NotoSansSC-ExtraBold.ttf",
+      "900": "/fonts/files/NotoSansSC-Black.ttf"
+    }
+  },
+  {
+    "family": "NotoSansTC",
+    "weights": [
+      "100",
+      "200",
+      "300",
+      "400",
+      "500",
+      "600",
+      "700",
+      "800",
+      "900"
+    ],
+    "files": {
+      "100": "/fonts/files/NotoSansTC-Thin.ttf",
+      "200": "/fonts/files/NotoSansTC-ExtraLight.ttf",
+      "300": "/fonts/files/NotoSansTC-Light.ttf",
+      "400": "/fonts/files/NotoSansTC-Regular.ttf",
+      "500": "/fonts/files/NotoSansTC-Medium.ttf",
+      "600": "/fonts/files/NotoSansTC-SemiBold.ttf",
+      "700": "/fonts/files/NotoSansTC-Bold.ttf",
+      "800": "/fonts/files/NotoSansTC-ExtraBold.ttf",
+      "900": "/fonts/files/NotoSansTC-Black.ttf"
+    }
+  },
+  {
+    "family": "NotoSerifTC",
+    "weights": [
+      "200",
+      "300",
+      "400",
+      "500",
+      "600",
+      "700",
+      "800",
+      "900"
+    ],
+    "files": {
+      "200": "/fonts/files/NotoSerifTC-ExtraLight.ttf",
+      "300": "/fonts/files/NotoSerifTC-Light.ttf",
+      "400": "/fonts/files/NotoSerifTC-Regular.ttf",
+      "500": "/fonts/files/NotoSerifTC-Medium.ttf",
+      "600": "/fonts/files/NotoSerifTC-SemiBold.ttf",
+      "700": "/fonts/files/NotoSerifTC-Bold.ttf",
+      "800": "/fonts/files/NotoSerifTC-ExtraBold.ttf",
+      "900": "/fonts/files/NotoSerifTC-Black.ttf"
+    }
+  },
+  {
+    "family": "Nunito",
+    "weights": [
+      "200",
+      "300",
+      "400",
+      "500",
+      "600",
+      "700",
+      "800",
+      "900"
+    ],
+    "files": {
+      "200": "/fonts/files/Nunito-ExtraLight.ttf",
+      "300": "/fonts/files/Nunito-Light.ttf",
+      "400": "/fonts/files/Nunito-Regular.ttf",
+      "500": "/fonts/files/Nunito-Medium.ttf",
+      "600": "/fonts/files/Nunito-SemiBold.ttf",
+      "700": "/fonts/files/Nunito-Bold.ttf",
+      "800": "/fonts/files/Nunito-ExtraBold.ttf",
+      "900": "/fonts/files/Nunito-Black.ttf"
+    }
+  },
+  {
+    "family": "Nunito-BlackItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Nunito-BlackItalic.ttf"
+    }
+  },
+  {
+    "family": "Nunito-BoldItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Nunito-BoldItalic.ttf"
+    }
+  },
+  {
+    "family": "Nunito-ExtraBoldItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Nunito-ExtraBoldItalic.ttf"
+    }
+  },
+  {
+    "family": "Nunito-ExtraLightItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Nunito-ExtraLightItalic.ttf"
+    }
+  },
+  {
+    "family": "Nunito-Italic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Nunito-Italic.ttf"
+    }
+  },
+  {
+    "family": "Nunito-LightItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Nunito-LightItalic.ttf"
+    }
+  },
+  {
+    "family": "Nunito-MediumItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Nunito-MediumItalic.ttf"
+    }
+  },
+  {
+    "family": "Nunito-SemiBoldItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Nunito-SemiBoldItalic.ttf"
+    }
+  },
+  {
+    "family": "NunitoSans-Italic-VariableFont_YTLC,opsz,wdth,wght",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/NunitoSans-Italic-VariableFont_YTLC,opsz,wdth,wght.ttf"
+    }
+  },
+  {
+    "family": "NunitoSans-VariableFont_YTLC,opsz,wdth,wght",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/NunitoSans-VariableFont_YTLC,opsz,wdth,wght.ttf"
+    }
+  },
+  {
+    "family": "OldStandardTT",
+    "weights": [
+      "400",
+      "700"
+    ],
+    "files": {
+      "400": "/fonts/files/OldStandardTT-Regular.ttf",
+      "700": "/fonts/files/OldStandardTT-Bold.ttf"
+    }
+  },
+  {
+    "family": "OldStandardTT-Italic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/OldStandardTT-Italic.ttf"
+    }
+  },
+  {
+    "family": "OpenSans",
+    "weights": [
+      "300",
+      "400",
+      "500",
+      "600",
+      "700",
+      "800"
+    ],
+    "files": {
+      "300": "/fonts/files/OpenSans-Light.ttf",
+      "400": "/fonts/files/OpenSans-Regular.ttf",
+      "500": "/fonts/files/OpenSans-Medium.ttf",
+      "600": "/fonts/files/OpenSans-SemiBold.ttf",
+      "700": "/fonts/files/OpenSans-Bold.ttf",
+      "800": "/fonts/files/OpenSans-ExtraBold.ttf"
+    }
+  },
+  {
+    "family": "OpenSans_Condensed",
+    "weights": [
+      "300",
+      "400",
+      "500",
+      "600",
+      "700",
+      "800"
+    ],
+    "files": {
+      "300": "/fonts/files/OpenSans_Condensed-Light.ttf",
+      "400": "/fonts/files/OpenSans_Condensed-Regular.ttf",
+      "500": "/fonts/files/OpenSans_Condensed-Medium.ttf",
+      "600": "/fonts/files/OpenSans_Condensed-SemiBold.ttf",
+      "700": "/fonts/files/OpenSans_Condensed-Bold.ttf",
+      "800": "/fonts/files/OpenSans_Condensed-ExtraBold.ttf"
+    }
+  },
+  {
+    "family": "OpenSans_Condensed-BoldItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/OpenSans_Condensed-BoldItalic.ttf"
+    }
+  },
+  {
+    "family": "OpenSans_Condensed-ExtraBoldItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/OpenSans_Condensed-ExtraBoldItalic.ttf"
+    }
+  },
+  {
+    "family": "OpenSans_Condensed-Italic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/OpenSans_Condensed-Italic.ttf"
+    }
+  },
+  {
+    "family": "OpenSans_Condensed-LightItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/OpenSans_Condensed-LightItalic.ttf"
+    }
+  },
+  {
+    "family": "OpenSans_Condensed-MediumItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/OpenSans_Condensed-MediumItalic.ttf"
+    }
+  },
+  {
+    "family": "OpenSans_Condensed-SemiBoldItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/OpenSans_Condensed-SemiBoldItalic.ttf"
+    }
+  },
+  {
+    "family": "OpenSans_SemiCondensed",
+    "weights": [
+      "300",
+      "400",
+      "500",
+      "600",
+      "700",
+      "800"
+    ],
+    "files": {
+      "300": "/fonts/files/OpenSans_SemiCondensed-Light.ttf",
+      "400": "/fonts/files/OpenSans_SemiCondensed-Regular.ttf",
+      "500": "/fonts/files/OpenSans_SemiCondensed-Medium.ttf",
+      "600": "/fonts/files/OpenSans_SemiCondensed-SemiBold.ttf",
+      "700": "/fonts/files/OpenSans_SemiCondensed-Bold.ttf",
+      "800": "/fonts/files/OpenSans_SemiCondensed-ExtraBold.ttf"
+    }
+  },
+  {
+    "family": "OpenSans_SemiCondensed-BoldItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/OpenSans_SemiCondensed-BoldItalic.ttf"
+    }
+  },
+  {
+    "family": "OpenSans_SemiCondensed-ExtraBoldItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/OpenSans_SemiCondensed-ExtraBoldItalic.ttf"
+    }
+  },
+  {
+    "family": "OpenSans_SemiCondensed-Italic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/OpenSans_SemiCondensed-Italic.ttf"
+    }
+  },
+  {
+    "family": "OpenSans_SemiCondensed-LightItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/OpenSans_SemiCondensed-LightItalic.ttf"
+    }
+  },
+  {
+    "family": "OpenSans_SemiCondensed-MediumItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/OpenSans_SemiCondensed-MediumItalic.ttf"
+    }
+  },
+  {
+    "family": "OpenSans_SemiCondensed-SemiBoldItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/OpenSans_SemiCondensed-SemiBoldItalic.ttf"
+    }
+  },
+  {
+    "family": "OpenSans-BoldItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/OpenSans-BoldItalic.ttf"
+    }
+  },
+  {
+    "family": "OpenSans-ExtraBoldItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/OpenSans-ExtraBoldItalic.ttf"
+    }
+  },
+  {
+    "family": "OpenSans-Italic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/OpenSans-Italic.ttf"
+    }
+  },
+  {
+    "family": "OpenSans-LightItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/OpenSans-LightItalic.ttf"
+    }
+  },
+  {
+    "family": "OpenSans-MediumItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/OpenSans-MediumItalic.ttf"
+    }
+  },
+  {
+    "family": "OpenSans-SemiBoldItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/OpenSans-SemiBoldItalic.ttf"
+    }
+  },
+  {
+    "family": "Orbitron",
+    "weights": [
+      "400",
+      "500",
+      "600",
+      "700",
+      "800",
+      "900"
+    ],
+    "files": {
+      "400": "/fonts/files/Orbitron-Regular.ttf",
+      "500": "/fonts/files/Orbitron-Medium.ttf",
+      "600": "/fonts/files/Orbitron-SemiBold.ttf",
+      "700": "/fonts/files/Orbitron-Bold.ttf",
+      "800": "/fonts/files/Orbitron-ExtraBold.ttf",
+      "900": "/fonts/files/Orbitron-Black.ttf"
+    }
+  },
+  {
+    "family": "Oswald",
+    "weights": [
+      "200",
+      "300",
+      "400",
+      "500",
+      "600",
+      "700"
+    ],
+    "files": {
+      "200": "/fonts/files/Oswald-ExtraLight.ttf",
+      "300": "/fonts/files/Oswald-Light.ttf",
+      "400": "/fonts/files/Oswald-Regular.ttf",
+      "500": "/fonts/files/Oswald-Medium.ttf",
+      "600": "/fonts/files/Oswald-SemiBold.ttf",
+      "700": "/fonts/files/Oswald-Bold.ttf"
+    }
+  },
+  {
+    "family": "Pacifico",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Pacifico-Regular.ttf"
+    }
+  },
+  {
+    "family": "PassionOne",
+    "weights": [
+      "400",
+      "700",
+      "900"
+    ],
+    "files": {
+      "400": "/fonts/files/PassionOne-Regular.ttf",
+      "700": "/fonts/files/PassionOne-Bold.ttf",
+      "900": "/fonts/files/PassionOne-Black.ttf"
+    }
+  },
+  {
+    "family": "PaytoneOne",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/PaytoneOne-Regular.ttf"
+    }
+  },
+  {
+    "family": "PermanentMarker",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/PermanentMarker-Regular.ttf"
+    }
+  },
+  {
+    "family": "PlayfairDisplay",
+    "weights": [
+      "400",
+      "500",
+      "600",
+      "700",
+      "800",
+      "900"
+    ],
+    "files": {
+      "400": "/fonts/files/PlayfairDisplay-Regular.ttf",
+      "500": "/fonts/files/PlayfairDisplay-Medium.ttf",
+      "600": "/fonts/files/PlayfairDisplay-SemiBold.ttf",
+      "700": "/fonts/files/PlayfairDisplay-Bold.ttf",
+      "800": "/fonts/files/PlayfairDisplay-ExtraBold.ttf",
+      "900": "/fonts/files/PlayfairDisplay-Black.ttf"
+    }
+  },
+  {
+    "family": "PlayfairDisplay-BlackItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/PlayfairDisplay-BlackItalic.ttf"
+    }
+  },
+  {
+    "family": "PlayfairDisplay-BoldItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/PlayfairDisplay-BoldItalic.ttf"
+    }
+  },
+  {
+    "family": "PlayfairDisplay-ExtraBoldItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/PlayfairDisplay-ExtraBoldItalic.ttf"
+    }
+  },
+  {
+    "family": "PlayfairDisplay-Italic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/PlayfairDisplay-Italic.ttf"
+    }
+  },
+  {
+    "family": "PlayfairDisplay-MediumItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/PlayfairDisplay-MediumItalic.ttf"
+    }
+  },
+  {
+    "family": "PlayfairDisplay-SemiBoldItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/PlayfairDisplay-SemiBoldItalic.ttf"
+    }
+  },
+  {
+    "family": "PlaywriteAUSA",
+    "weights": [
+      "100",
+      "200",
+      "300",
+      "400"
+    ],
+    "files": {
+      "100": "/fonts/files/PlaywriteAUSA-Thin.ttf",
+      "200": "/fonts/files/PlaywriteAUSA-ExtraLight.ttf",
+      "300": "/fonts/files/PlaywriteAUSA-Light.ttf",
+      "400": "/fonts/files/PlaywriteAUSA-Regular.ttf"
+    }
+  },
+  {
+    "family": "PlaywriteRO",
+    "weights": [
+      "100",
+      "200",
+      "300",
+      "400"
+    ],
+    "files": {
+      "100": "/fonts/files/PlaywriteRO-Thin.ttf",
+      "200": "/fonts/files/PlaywriteRO-ExtraLight.ttf",
+      "300": "/fonts/files/PlaywriteRO-Light.ttf",
+      "400": "/fonts/files/PlaywriteRO-Regular.ttf"
+    }
+  },
+  {
+    "family": "PlusJakartaSans",
+    "weights": [
+      "200",
+      "300",
+      "400",
+      "500",
+      "600",
+      "700",
+      "800"
+    ],
+    "files": {
+      "200": "/fonts/files/PlusJakartaSans-ExtraLight.ttf",
+      "300": "/fonts/files/PlusJakartaSans-Light.ttf",
+      "400": "/fonts/files/PlusJakartaSans-Regular.ttf",
+      "500": "/fonts/files/PlusJakartaSans-Medium.ttf",
+      "600": "/fonts/files/PlusJakartaSans-SemiBold.ttf",
+      "700": "/fonts/files/PlusJakartaSans-Bold.ttf",
+      "800": "/fonts/files/PlusJakartaSans-ExtraBold.ttf"
+    }
+  },
+  {
+    "family": "PlusJakartaSans-BoldItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/PlusJakartaSans-BoldItalic.ttf"
+    }
+  },
+  {
+    "family": "PlusJakartaSans-ExtraBoldItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/PlusJakartaSans-ExtraBoldItalic.ttf"
+    }
+  },
+  {
+    "family": "PlusJakartaSans-ExtraLightItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/PlusJakartaSans-ExtraLightItalic.ttf"
+    }
+  },
+  {
+    "family": "PlusJakartaSans-Italic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/PlusJakartaSans-Italic.ttf"
+    }
+  },
+  {
+    "family": "PlusJakartaSans-LightItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/PlusJakartaSans-LightItalic.ttf"
+    }
+  },
+  {
+    "family": "PlusJakartaSans-MediumItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/PlusJakartaSans-MediumItalic.ttf"
+    }
+  },
+  {
+    "family": "PlusJakartaSans-SemiBoldItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/PlusJakartaSans-SemiBoldItalic.ttf"
+    }
+  },
+  {
+    "family": "Poppins",
+    "weights": [
+      "100",
+      "200",
+      "300",
+      "400",
+      "500",
+      "600",
+      "700",
+      "800",
+      "900"
+    ],
+    "files": {
+      "100": "/fonts/files/Poppins-Thin.ttf",
+      "200": "/fonts/files/Poppins-ExtraLight.ttf",
+      "300": "/fonts/files/Poppins-Light.ttf",
+      "400": "/fonts/files/Poppins-Regular.ttf",
+      "500": "/fonts/files/Poppins-Medium.ttf",
+      "600": "/fonts/files/Poppins-SemiBold.ttf",
+      "700": "/fonts/files/Poppins-Bold.ttf",
+      "800": "/fonts/files/Poppins-ExtraBold.ttf",
+      "900": "/fonts/files/Poppins-Black.ttf"
+    }
+  },
+  {
+    "family": "Poppins-BlackItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Poppins-BlackItalic.ttf"
+    }
+  },
+  {
+    "family": "Poppins-BoldItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Poppins-BoldItalic.ttf"
+    }
+  },
+  {
+    "family": "Poppins-ExtraBoldItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Poppins-ExtraBoldItalic.ttf"
+    }
+  },
+  {
+    "family": "Poppins-ExtraLightItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Poppins-ExtraLightItalic.ttf"
+    }
+  },
+  {
+    "family": "Poppins-Italic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Poppins-Italic.ttf"
+    }
+  },
+  {
+    "family": "Poppins-LightItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Poppins-LightItalic.ttf"
+    }
+  },
+  {
+    "family": "Poppins-MediumItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Poppins-MediumItalic.ttf"
+    }
+  },
+  {
+    "family": "Poppins-SemiBoldItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Poppins-SemiBoldItalic.ttf"
+    }
+  },
+  {
+    "family": "Poppins-ThinItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Poppins-ThinItalic.ttf"
+    }
+  },
+  {
+    "family": "Prata",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Prata-Regular.ttf"
+    }
+  },
+  {
+    "family": "PressStart2P",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/PressStart2P-Regular.ttf"
+    }
+  },
+  {
+    "family": "Prompt",
+    "weights": [
+      "100",
+      "200",
+      "300",
+      "400",
+      "500",
+      "600",
+      "700",
+      "800",
+      "900"
+    ],
+    "files": {
+      "100": "/fonts/files/Prompt-Thin.ttf",
+      "200": "/fonts/files/Prompt-ExtraLight.ttf",
+      "300": "/fonts/files/Prompt-Light.ttf",
+      "400": "/fonts/files/Prompt-Regular.ttf",
+      "500": "/fonts/files/Prompt-Medium.ttf",
+      "600": "/fonts/files/Prompt-SemiBold.ttf",
+      "700": "/fonts/files/Prompt-Bold.ttf",
+      "800": "/fonts/files/Prompt-ExtraBold.ttf",
+      "900": "/fonts/files/Prompt-Black.ttf"
+    }
+  },
+  {
+    "family": "Prompt-BlackItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Prompt-BlackItalic.ttf"
+    }
+  },
+  {
+    "family": "Prompt-BoldItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Prompt-BoldItalic.ttf"
+    }
+  },
+  {
+    "family": "Prompt-ExtraBoldItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Prompt-ExtraBoldItalic.ttf"
+    }
+  },
+  {
+    "family": "Prompt-ExtraLightItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Prompt-ExtraLightItalic.ttf"
+    }
+  },
+  {
+    "family": "Prompt-Italic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Prompt-Italic.ttf"
+    }
+  },
+  {
+    "family": "Prompt-LightItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Prompt-LightItalic.ttf"
+    }
+  },
+  {
+    "family": "Prompt-MediumItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Prompt-MediumItalic.ttf"
+    }
+  },
+  {
+    "family": "Prompt-SemiBoldItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Prompt-SemiBoldItalic.ttf"
+    }
+  },
+  {
+    "family": "Prompt-ThinItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Prompt-ThinItalic.ttf"
+    }
+  },
+  {
+    "family": "PTSans",
+    "weights": [
+      "400",
+      "700"
+    ],
+    "files": {
+      "400": "/fonts/files/PTSans-Regular.ttf",
+      "700": "/fonts/files/PTSans-Bold.ttf"
+    }
+  },
+  {
+    "family": "PTSans-BoldItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/PTSans-BoldItalic.ttf"
+    }
+  },
+  {
+    "family": "PTSans-Italic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/PTSans-Italic.ttf"
+    }
+  },
+  {
+    "family": "PTSansCaption",
+    "weights": [
+      "400",
+      "700"
+    ],
+    "files": {
+      "400": "/fonts/files/PTSansCaption-Regular.ttf",
+      "700": "/fonts/files/PTSansCaption-Bold.ttf"
+    }
+  },
+  {
+    "family": "PTSerif",
+    "weights": [
+      "400",
+      "700"
+    ],
+    "files": {
+      "400": "/fonts/files/PTSerif-Regular.ttf",
+      "700": "/fonts/files/PTSerif-Bold.ttf"
+    }
+  },
+  {
+    "family": "PTSerif-BoldItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/PTSerif-BoldItalic.ttf"
+    }
+  },
+  {
+    "family": "PTSerif-Italic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/PTSerif-Italic.ttf"
+    }
+  },
+  {
+    "family": "Quantico",
+    "weights": [
+      "400",
+      "700"
+    ],
+    "files": {
+      "400": "/fonts/files/Quantico-Regular.ttf",
+      "700": "/fonts/files/Quantico-Bold.ttf"
+    }
+  },
+  {
+    "family": "Quantico-BoldItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Quantico-BoldItalic.ttf"
+    }
+  },
+  {
+    "family": "Quantico-Italic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Quantico-Italic.ttf"
+    }
+  },
+  {
+    "family": "Quicksand",
+    "weights": [
+      "300",
+      "400",
+      "500",
+      "600",
+      "700"
+    ],
+    "files": {
+      "300": "/fonts/files/Quicksand-Light.ttf",
+      "400": "/fonts/files/Quicksand-Regular.ttf",
+      "500": "/fonts/files/Quicksand-Medium.ttf",
+      "600": "/fonts/files/Quicksand-SemiBold.ttf",
+      "700": "/fonts/files/Quicksand-Bold.ttf"
+    }
+  },
+  {
+    "family": "Raleway",
+    "weights": [
+      "100",
+      "200",
+      "300",
+      "400",
+      "500",
+      "600",
+      "700",
+      "800",
+      "900"
+    ],
+    "files": {
+      "100": "/fonts/files/Raleway-Thin.ttf",
+      "200": "/fonts/files/Raleway-ExtraLight.ttf",
+      "300": "/fonts/files/Raleway-Light.ttf",
+      "400": "/fonts/files/Raleway-Regular.ttf",
+      "500": "/fonts/files/Raleway-Medium.ttf",
+      "600": "/fonts/files/Raleway-SemiBold.ttf",
+      "700": "/fonts/files/Raleway-Bold.ttf",
+      "800": "/fonts/files/Raleway-ExtraBold.ttf",
+      "900": "/fonts/files/Raleway-Black.ttf"
+    }
+  },
+  {
+    "family": "Raleway-BlackItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Raleway-BlackItalic.ttf"
+    }
+  },
+  {
+    "family": "Raleway-BoldItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Raleway-BoldItalic.ttf"
+    }
+  },
+  {
+    "family": "Raleway-ExtraBoldItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Raleway-ExtraBoldItalic.ttf"
+    }
+  },
+  {
+    "family": "Raleway-ExtraLightItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Raleway-ExtraLightItalic.ttf"
+    }
+  },
+  {
+    "family": "Raleway-Italic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Raleway-Italic.ttf"
+    }
+  },
+  {
+    "family": "Raleway-LightItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Raleway-LightItalic.ttf"
+    }
+  },
+  {
+    "family": "Raleway-MediumItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Raleway-MediumItalic.ttf"
+    }
+  },
+  {
+    "family": "Raleway-SemiBoldItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Raleway-SemiBoldItalic.ttf"
+    }
+  },
+  {
+    "family": "Raleway-ThinItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Raleway-ThinItalic.ttf"
+    }
+  },
+  {
+    "family": "Righteous",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Righteous-Regular.ttf"
+    }
+  },
+  {
+    "family": "Roboto",
+    "weights": [
+      "100",
+      "200",
+      "300",
+      "400",
+      "500",
+      "600",
+      "700",
+      "800",
+      "900"
+    ],
+    "files": {
+      "100": "/fonts/files/Roboto-Thin.ttf",
+      "200": "/fonts/files/Roboto-ExtraLight.ttf",
+      "300": "/fonts/files/Roboto-Light.ttf",
+      "400": "/fonts/files/Roboto-Regular.ttf",
+      "500": "/fonts/files/Roboto-Medium.ttf",
+      "600": "/fonts/files/Roboto-SemiBold.ttf",
+      "700": "/fonts/files/Roboto-Bold.ttf",
+      "800": "/fonts/files/Roboto-ExtraBold.ttf",
+      "900": "/fonts/files/Roboto-Black.ttf"
+    }
+  },
+  {
+    "family": "Roboto_Condensed",
+    "weights": [
+      "100",
+      "200",
+      "300",
+      "400",
+      "500",
+      "600",
+      "700",
+      "800",
+      "900"
+    ],
+    "files": {
+      "100": "/fonts/files/Roboto_Condensed-Thin.ttf",
+      "200": "/fonts/files/Roboto_Condensed-ExtraLight.ttf",
+      "300": "/fonts/files/Roboto_Condensed-Light.ttf",
+      "400": "/fonts/files/Roboto_Condensed-Regular.ttf",
+      "500": "/fonts/files/Roboto_Condensed-Medium.ttf",
+      "600": "/fonts/files/Roboto_Condensed-SemiBold.ttf",
+      "700": "/fonts/files/Roboto_Condensed-Bold.ttf",
+      "800": "/fonts/files/Roboto_Condensed-ExtraBold.ttf",
+      "900": "/fonts/files/Roboto_Condensed-Black.ttf"
+    }
+  },
+  {
+    "family": "Roboto_Condensed-BlackItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Roboto_Condensed-BlackItalic.ttf"
+    }
+  },
+  {
+    "family": "Roboto_Condensed-BoldItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Roboto_Condensed-BoldItalic.ttf"
+    }
+  },
+  {
+    "family": "Roboto_Condensed-ExtraBoldItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Roboto_Condensed-ExtraBoldItalic.ttf"
+    }
+  },
+  {
+    "family": "Roboto_Condensed-ExtraLightItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Roboto_Condensed-ExtraLightItalic.ttf"
+    }
+  },
+  {
+    "family": "Roboto_Condensed-Italic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Roboto_Condensed-Italic.ttf"
+    }
+  },
+  {
+    "family": "Roboto_Condensed-LightItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Roboto_Condensed-LightItalic.ttf"
+    }
+  },
+  {
+    "family": "Roboto_Condensed-MediumItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Roboto_Condensed-MediumItalic.ttf"
+    }
+  },
+  {
+    "family": "Roboto_Condensed-SemiBoldItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Roboto_Condensed-SemiBoldItalic.ttf"
+    }
+  },
+  {
+    "family": "Roboto_Condensed-ThinItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Roboto_Condensed-ThinItalic.ttf"
+    }
+  },
+  {
+    "family": "Roboto_SemiCondensed",
+    "weights": [
+      "100",
+      "200",
+      "300",
+      "400",
+      "500",
+      "600",
+      "700",
+      "800",
+      "900"
+    ],
+    "files": {
+      "100": "/fonts/files/Roboto_SemiCondensed-Thin.ttf",
+      "200": "/fonts/files/Roboto_SemiCondensed-ExtraLight.ttf",
+      "300": "/fonts/files/Roboto_SemiCondensed-Light.ttf",
+      "400": "/fonts/files/Roboto_SemiCondensed-Regular.ttf",
+      "500": "/fonts/files/Roboto_SemiCondensed-Medium.ttf",
+      "600": "/fonts/files/Roboto_SemiCondensed-SemiBold.ttf",
+      "700": "/fonts/files/Roboto_SemiCondensed-Bold.ttf",
+      "800": "/fonts/files/Roboto_SemiCondensed-ExtraBold.ttf",
+      "900": "/fonts/files/Roboto_SemiCondensed-Black.ttf"
+    }
+  },
+  {
+    "family": "Roboto_SemiCondensed-BlackItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Roboto_SemiCondensed-BlackItalic.ttf"
+    }
+  },
+  {
+    "family": "Roboto_SemiCondensed-BoldItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Roboto_SemiCondensed-BoldItalic.ttf"
+    }
+  },
+  {
+    "family": "Roboto_SemiCondensed-ExtraBoldItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Roboto_SemiCondensed-ExtraBoldItalic.ttf"
+    }
+  },
+  {
+    "family": "Roboto_SemiCondensed-ExtraLightItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Roboto_SemiCondensed-ExtraLightItalic.ttf"
+    }
+  },
+  {
+    "family": "Roboto_SemiCondensed-Italic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Roboto_SemiCondensed-Italic.ttf"
+    }
+  },
+  {
+    "family": "Roboto_SemiCondensed-LightItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Roboto_SemiCondensed-LightItalic.ttf"
+    }
+  },
+  {
+    "family": "Roboto_SemiCondensed-MediumItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Roboto_SemiCondensed-MediumItalic.ttf"
+    }
+  },
+  {
+    "family": "Roboto_SemiCondensed-SemiBoldItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Roboto_SemiCondensed-SemiBoldItalic.ttf"
+    }
+  },
+  {
+    "family": "Roboto_SemiCondensed-ThinItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Roboto_SemiCondensed-ThinItalic.ttf"
+    }
+  },
+  {
+    "family": "Roboto-BlackItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Roboto-BlackItalic.ttf"
+    }
+  },
+  {
+    "family": "Roboto-BoldItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Roboto-BoldItalic.ttf"
+    }
+  },
+  {
+    "family": "Roboto-ExtraBoldItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Roboto-ExtraBoldItalic.ttf"
+    }
+  },
+  {
+    "family": "Roboto-ExtraLightItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Roboto-ExtraLightItalic.ttf"
+    }
+  },
+  {
+    "family": "Roboto-Italic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Roboto-Italic.ttf"
+    }
+  },
+  {
+    "family": "Roboto-LightItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Roboto-LightItalic.ttf"
+    }
+  },
+  {
+    "family": "Roboto-MediumItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Roboto-MediumItalic.ttf"
+    }
+  },
+  {
+    "family": "Roboto-SemiBoldItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Roboto-SemiBoldItalic.ttf"
+    }
+  },
+  {
+    "family": "Roboto-ThinItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Roboto-ThinItalic.ttf"
+    }
+  },
+  {
+    "family": "RobotoSlab",
+    "weights": [
+      "100",
+      "200",
+      "300",
+      "400",
+      "500",
+      "600",
+      "700",
+      "800",
+      "900"
+    ],
+    "files": {
+      "100": "/fonts/files/RobotoSlab-Thin.ttf",
+      "200": "/fonts/files/RobotoSlab-ExtraLight.ttf",
+      "300": "/fonts/files/RobotoSlab-Light.ttf",
+      "400": "/fonts/files/RobotoSlab-Regular.ttf",
+      "500": "/fonts/files/RobotoSlab-Medium.ttf",
+      "600": "/fonts/files/RobotoSlab-SemiBold.ttf",
+      "700": "/fonts/files/RobotoSlab-Bold.ttf",
+      "800": "/fonts/files/RobotoSlab-ExtraBold.ttf",
+      "900": "/fonts/files/RobotoSlab-Black.ttf"
+    }
+  },
+  {
+    "family": "RockSalt",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/RockSalt-Regular.ttf"
+    }
+  },
+  {
+    "family": "RopaSans",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/RopaSans-Regular.ttf"
+    }
+  },
+  {
+    "family": "RopaSans-Italic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/RopaSans-Italic.ttf"
+    }
+  },
+  {
+    "family": "Rowdies",
+    "weights": [
+      "300",
+      "400",
+      "700"
+    ],
+    "files": {
+      "300": "/fonts/files/Rowdies-Light.ttf",
+      "400": "/fonts/files/Rowdies-Regular.ttf",
+      "700": "/fonts/files/Rowdies-Bold.ttf"
+    }
+  },
+  {
+    "family": "Rubik",
+    "weights": [
+      "300",
+      "400",
+      "500",
+      "600",
+      "700",
+      "800",
+      "900"
+    ],
+    "files": {
+      "300": "/fonts/files/Rubik-Light.ttf",
+      "400": "/fonts/files/Rubik-Regular.ttf",
+      "500": "/fonts/files/Rubik-Medium.ttf",
+      "600": "/fonts/files/Rubik-SemiBold.ttf",
+      "700": "/fonts/files/Rubik-Bold.ttf",
+      "800": "/fonts/files/Rubik-ExtraBold.ttf",
+      "900": "/fonts/files/Rubik-Black.ttf"
+    }
+  },
+  {
+    "family": "Rubik-BlackItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Rubik-BlackItalic.ttf"
+    }
+  },
+  {
+    "family": "Rubik-BoldItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Rubik-BoldItalic.ttf"
+    }
+  },
+  {
+    "family": "Rubik-ExtraBoldItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Rubik-ExtraBoldItalic.ttf"
+    }
+  },
+  {
+    "family": "Rubik-Italic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Rubik-Italic.ttf"
+    }
+  },
+  {
+    "family": "Rubik-LightItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Rubik-LightItalic.ttf"
+    }
+  },
+  {
+    "family": "Rubik-MediumItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Rubik-MediumItalic.ttf"
+    }
+  },
+  {
+    "family": "Rubik-SemiBoldItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Rubik-SemiBoldItalic.ttf"
+    }
+  },
+  {
+    "family": "RubikBubbles",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/RubikBubbles-Regular.ttf"
+    }
+  },
+  {
+    "family": "RubikMonoOne",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/RubikMonoOne-Regular.ttf"
+    }
+  },
+  {
+    "family": "RussoOne",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/RussoOne-Regular.ttf"
+    }
+  },
+  {
+    "family": "SairaCondensed",
+    "weights": [
+      "100",
+      "200",
+      "300",
+      "400",
+      "500",
+      "600",
+      "700",
+      "800"
+    ],
+    "files": {
+      "100": "/fonts/files/SairaCondensed-Thin.ttf",
+      "200": "/fonts/files/SairaCondensed-ExtraLight.ttf",
+      "300": "/fonts/files/SairaCondensed-Light.ttf",
+      "400": "/fonts/files/SairaCondensed-Regular.ttf",
+      "500": "/fonts/files/SairaCondensed-Medium.ttf",
+      "600": "/fonts/files/SairaCondensed-SemiBold.ttf",
+      "700": "/fonts/files/SairaCondensed-Bold.ttf",
+      "800": "/fonts/files/SairaCondensed-ExtraBold.ttf"
+    }
+  },
+  {
+    "family": "Sansation",
+    "weights": [
+      "300",
+      "400",
+      "700"
+    ],
+    "files": {
+      "300": "/fonts/files/Sansation-Light.ttf",
+      "400": "/fonts/files/Sansation-Regular.ttf",
+      "700": "/fonts/files/Sansation-Bold.ttf"
+    }
+  },
+  {
+    "family": "Sansation-BoldItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Sansation-BoldItalic.ttf"
+    }
+  },
+  {
+    "family": "Sansation-Italic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Sansation-Italic.ttf"
+    }
+  },
+  {
+    "family": "Sansation-LightItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Sansation-LightItalic.ttf"
+    }
+  },
+  {
+    "family": "Satisfy",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Satisfy-Regular.ttf"
+    }
+  },
+  {
+    "family": "Sen",
+    "weights": [
+      "400",
+      "500",
+      "600",
+      "700",
+      "800"
+    ],
+    "files": {
+      "400": "/fonts/files/Sen-Regular.ttf",
+      "500": "/fonts/files/Sen-Medium.ttf",
+      "600": "/fonts/files/Sen-SemiBold.ttf",
+      "700": "/fonts/files/Sen-Bold.ttf",
+      "800": "/fonts/files/Sen-ExtraBold.ttf"
+    }
+  },
+  {
+    "family": "ShadowsIntoLight",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/ShadowsIntoLight-Regular.ttf"
+    }
+  },
+  {
+    "family": "Shafarik",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Shafarik-Regular.ttf"
+    }
+  },
+  {
+    "family": "SignikaNegative",
+    "weights": [
+      "300",
+      "400",
+      "500",
+      "600",
+      "700"
+    ],
+    "files": {
+      "300": "/fonts/files/SignikaNegative-Light.ttf",
+      "400": "/fonts/files/SignikaNegative-Regular.ttf",
+      "500": "/fonts/files/SignikaNegative-Medium.ttf",
+      "600": "/fonts/files/SignikaNegative-SemiBold.ttf",
+      "700": "/fonts/files/SignikaNegative-Bold.ttf"
+    }
+  },
+  {
+    "family": "Silkscreen",
+    "weights": [
+      "400",
+      "700"
+    ],
+    "files": {
+      "400": "/fonts/files/Silkscreen-Regular.ttf",
+      "700": "/fonts/files/Silkscreen-Bold.ttf"
+    }
+  },
+  {
+    "family": "SingleDay",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/SingleDay-Regular.ttf"
+    }
+  },
+  {
+    "family": "SixCaps",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/SixCaps-Regular.ttf"
+    }
+  },
+  {
+    "family": "SmoochSans",
+    "weights": [
+      "100",
+      "200",
+      "300",
+      "400",
+      "500",
+      "600",
+      "700",
+      "800",
+      "900"
+    ],
+    "files": {
+      "100": "/fonts/files/SmoochSans-Thin.ttf",
+      "200": "/fonts/files/SmoochSans-ExtraLight.ttf",
+      "300": "/fonts/files/SmoochSans-Light.ttf",
+      "400": "/fonts/files/SmoochSans-Regular.ttf",
+      "500": "/fonts/files/SmoochSans-Medium.ttf",
+      "600": "/fonts/files/SmoochSans-SemiBold.ttf",
+      "700": "/fonts/files/SmoochSans-Bold.ttf",
+      "800": "/fonts/files/SmoochSans-ExtraBold.ttf",
+      "900": "/fonts/files/SmoochSans-Black.ttf"
+    }
+  },
+  {
+    "family": "Sora",
+    "weights": [
+      "100",
+      "200",
+      "300",
+      "400",
+      "500",
+      "600",
+      "700",
+      "800"
+    ],
+    "files": {
+      "100": "/fonts/files/Sora-Thin.ttf",
+      "200": "/fonts/files/Sora-ExtraLight.ttf",
+      "300": "/fonts/files/Sora-Light.ttf",
+      "400": "/fonts/files/Sora-Regular.ttf",
+      "500": "/fonts/files/Sora-Medium.ttf",
+      "600": "/fonts/files/Sora-SemiBold.ttf",
+      "700": "/fonts/files/Sora-Bold.ttf",
+      "800": "/fonts/files/Sora-ExtraBold.ttf"
+    }
+  },
+  {
+    "family": "SourceCodePro",
+    "weights": [
+      "200",
+      "300",
+      "400",
+      "500",
+      "600",
+      "700",
+      "800",
+      "900"
+    ],
+    "files": {
+      "200": "/fonts/files/SourceCodePro-ExtraLight.ttf",
+      "300": "/fonts/files/SourceCodePro-Light.ttf",
+      "400": "/fonts/files/SourceCodePro-Regular.ttf",
+      "500": "/fonts/files/SourceCodePro-Medium.ttf",
+      "600": "/fonts/files/SourceCodePro-SemiBold.ttf",
+      "700": "/fonts/files/SourceCodePro-Bold.ttf",
+      "800": "/fonts/files/SourceCodePro-ExtraBold.ttf",
+      "900": "/fonts/files/SourceCodePro-Black.ttf"
+    }
+  },
+  {
+    "family": "SourceCodePro-BlackItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/SourceCodePro-BlackItalic.ttf"
+    }
+  },
+  {
+    "family": "SourceCodePro-BoldItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/SourceCodePro-BoldItalic.ttf"
+    }
+  },
+  {
+    "family": "SourceCodePro-ExtraBoldItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/SourceCodePro-ExtraBoldItalic.ttf"
+    }
+  },
+  {
+    "family": "SourceCodePro-ExtraLightItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/SourceCodePro-ExtraLightItalic.ttf"
+    }
+  },
+  {
+    "family": "SourceCodePro-Italic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/SourceCodePro-Italic.ttf"
+    }
+  },
+  {
+    "family": "SourceCodePro-LightItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/SourceCodePro-LightItalic.ttf"
+    }
+  },
+  {
+    "family": "SourceCodePro-MediumItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/SourceCodePro-MediumItalic.ttf"
+    }
+  },
+  {
+    "family": "SourceCodePro-SemiBoldItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/SourceCodePro-SemiBoldItalic.ttf"
+    }
+  },
+  {
+    "family": "SourceSansPro",
+    "weights": [
+      "300",
+      "400",
+      "600",
+      "700"
+    ],
+    "files": {
+      "300": "/fonts/files/SourceSansPro-Light.ttf",
+      "400": "/fonts/files/SourceSansPro-Regular.ttf",
+      "600": "/fonts/files/SourceSansPro-SemiBold.ttf",
+      "700": "/fonts/files/SourceSansPro-Bold.ttf"
+    }
+  },
+  {
+    "family": "SpaceMono",
+    "weights": [
+      "400",
+      "700"
+    ],
+    "files": {
+      "400": "/fonts/files/SpaceMono-Regular.ttf",
+      "700": "/fonts/files/SpaceMono-Bold.ttf"
+    }
+  },
+  {
+    "family": "SpaceMono-BoldItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/SpaceMono-BoldItalic.ttf"
+    }
+  },
+  {
+    "family": "SpaceMono-Italic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/SpaceMono-Italic.ttf"
+    }
+  },
+  {
+    "family": "SpecialGothicCondensedOne",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/SpecialGothicCondensedOne-Regular.ttf"
+    }
+  },
+  {
+    "family": "SpecialGothicExpandedOne",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/SpecialGothicExpandedOne-Regular.ttf"
+    }
+  },
+  {
+    "family": "Staatliches",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Staatliches-Regular.ttf"
+    }
+  },
+  {
+    "family": "Tagesschrift",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Tagesschrift-Regular.ttf"
+    }
+  },
+  {
+    "family": "Tuffy",
+    "weights": [
+      "400",
+      "700"
+    ],
+    "files": {
+      "400": "/fonts/files/Tuffy-Regular.ttf",
+      "700": "/fonts/files/Tuffy-Bold.ttf"
+    }
+  },
+  {
+    "family": "Tuffy-BoldItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Tuffy-BoldItalic.ttf"
+    }
+  },
+  {
+    "family": "Tuffy-Italic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Tuffy-Italic.ttf"
+    }
+  },
+  {
+    "family": "Ubuntu",
+    "weights": [
+      "300",
+      "400",
+      "500",
+      "700"
+    ],
+    "files": {
+      "300": "/fonts/files/Ubuntu-Light.ttf",
+      "400": "/fonts/files/Ubuntu-Regular.ttf",
+      "500": "/fonts/files/Ubuntu-Medium.ttf",
+      "700": "/fonts/files/Ubuntu-Bold.ttf"
+    }
+  },
+  {
+    "family": "Ubuntu-BoldItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Ubuntu-BoldItalic.ttf"
+    }
+  },
+  {
+    "family": "Ubuntu-Italic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Ubuntu-Italic.ttf"
+    }
+  },
+  {
+    "family": "Ubuntu-LightItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Ubuntu-LightItalic.ttf"
+    }
+  },
+  {
+    "family": "Ubuntu-MediumItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Ubuntu-MediumItalic.ttf"
+    }
+  },
+  {
+    "family": "Ultra",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Ultra-Regular.ttf"
+    }
+  },
+  {
+    "family": "Unbounded",
+    "weights": [
+      "200",
+      "300",
+      "400",
+      "500",
+      "600",
+      "700",
+      "800",
+      "900"
+    ],
+    "files": {
+      "200": "/fonts/files/Unbounded-ExtraLight.ttf",
+      "300": "/fonts/files/Unbounded-Light.ttf",
+      "400": "/fonts/files/Unbounded-Regular.ttf",
+      "500": "/fonts/files/Unbounded-Medium.ttf",
+      "600": "/fonts/files/Unbounded-SemiBold.ttf",
+      "700": "/fonts/files/Unbounded-Bold.ttf",
+      "800": "/fonts/files/Unbounded-ExtraBold.ttf",
+      "900": "/fonts/files/Unbounded-Black.ttf"
+    }
+  },
+  {
+    "family": "Unlock",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Unlock-Regular.ttf"
+    }
+  },
+  {
+    "family": "VT323",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/VT323-Regular.ttf"
+    }
+  },
+  {
+    "family": "WinkyRough",
+    "weights": [
+      "300",
+      "400",
+      "500",
+      "600",
+      "700",
+      "800",
+      "900"
+    ],
+    "files": {
+      "300": "/fonts/files/WinkyRough-Light.ttf",
+      "400": "/fonts/files/WinkyRough-Regular.ttf",
+      "500": "/fonts/files/WinkyRough-Medium.ttf",
+      "600": "/fonts/files/WinkyRough-SemiBold.ttf",
+      "700": "/fonts/files/WinkyRough-Bold.ttf",
+      "800": "/fonts/files/WinkyRough-ExtraBold.ttf",
+      "900": "/fonts/files/WinkyRough-Black.ttf"
+    }
+  },
+  {
+    "family": "WinkyRough-BlackItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/WinkyRough-BlackItalic.ttf"
+    }
+  },
+  {
+    "family": "WinkyRough-BoldItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/WinkyRough-BoldItalic.ttf"
+    }
+  },
+  {
+    "family": "WinkyRough-ExtraBoldItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/WinkyRough-ExtraBoldItalic.ttf"
+    }
+  },
+  {
+    "family": "WinkyRough-Italic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/WinkyRough-Italic.ttf"
+    }
+  },
+  {
+    "family": "WinkyRough-LightItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/WinkyRough-LightItalic.ttf"
+    }
+  },
+  {
+    "family": "WinkyRough-MediumItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/WinkyRough-MediumItalic.ttf"
+    }
+  },
+  {
+    "family": "WinkyRough-SemiBoldItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/WinkyRough-SemiBoldItalic.ttf"
+    }
+  },
+  {
+    "family": "WinkySans",
+    "weights": [
+      "300",
+      "400",
+      "500",
+      "600",
+      "700",
+      "800",
+      "900"
+    ],
+    "files": {
+      "300": "/fonts/files/WinkySans-Light.ttf",
+      "400": "/fonts/files/WinkySans-Regular.ttf",
+      "500": "/fonts/files/WinkySans-Medium.ttf",
+      "600": "/fonts/files/WinkySans-SemiBold.ttf",
+      "700": "/fonts/files/WinkySans-Bold.ttf",
+      "800": "/fonts/files/WinkySans-ExtraBold.ttf",
+      "900": "/fonts/files/WinkySans-Black.ttf"
+    }
+  },
+  {
+    "family": "WinkySans-BlackItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/WinkySans-BlackItalic.ttf"
+    }
+  },
+  {
+    "family": "WinkySans-BoldItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/WinkySans-BoldItalic.ttf"
+    }
+  },
+  {
+    "family": "WinkySans-ExtraBoldItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/WinkySans-ExtraBoldItalic.ttf"
+    }
+  },
+  {
+    "family": "WinkySans-Italic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/WinkySans-Italic.ttf"
+    }
+  },
+  {
+    "family": "WinkySans-LightItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/WinkySans-LightItalic.ttf"
+    }
+  },
+  {
+    "family": "WinkySans-MediumItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/WinkySans-MediumItalic.ttf"
+    }
+  },
+  {
+    "family": "WinkySans-SemiBoldItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/WinkySans-SemiBoldItalic.ttf"
+    }
+  },
+  {
+    "family": "Yellowtail",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/Yellowtail-Regular.ttf"
+    }
+  },
+  {
+    "family": "ZillaSlab",
+    "weights": [
+      "300",
+      "400",
+      "500",
+      "600",
+      "700"
+    ],
+    "files": {
+      "300": "/fonts/files/ZillaSlab-Light.ttf",
+      "400": "/fonts/files/ZillaSlab-Regular.ttf",
+      "500": "/fonts/files/ZillaSlab-Medium.ttf",
+      "600": "/fonts/files/ZillaSlab-SemiBold.ttf",
+      "700": "/fonts/files/ZillaSlab-Bold.ttf"
+    }
+  },
+  {
+    "family": "ZillaSlab-BoldItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/ZillaSlab-BoldItalic.ttf"
+    }
+  },
+  {
+    "family": "ZillaSlab-Italic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/ZillaSlab-Italic.ttf"
+    }
+  },
+  {
+    "family": "ZillaSlab-LightItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/ZillaSlab-LightItalic.ttf"
+    }
+  },
+  {
+    "family": "ZillaSlab-MediumItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/ZillaSlab-MediumItalic.ttf"
+    }
+  },
+  {
+    "family": "ZillaSlab-SemiBoldItalic",
+    "weights": [
+      "400"
+    ],
+    "files": {
+      "400": "/fonts/files/ZillaSlab-SemiBoldItalic.ttf"
+    }
+  }
+]
