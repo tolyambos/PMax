@@ -41,6 +41,14 @@ test_duration/
 .vscode/
 .claude/
 
+# Development files (not needed for production)
+db/
+build.log
+build2.log
+fonts_backup/
+public/uploads/
+test-ffmpeg-syntax.js
+
 # Font files now handled by Git LFS (GitHub Pro)
 !public/fonts/system-fonts.json
 !src/app/utils/fonts.ts

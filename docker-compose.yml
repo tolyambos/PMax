@@ -1,0 +1,18 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:16
+    container_name: pmax-postgres
+    restart: always
+    ports:
+      - "57684:5432"  # Map to a random high port to avoid conflicts
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: pmax
+    volumes:
+      - pmax-postgres-data:/var/lib/postgresql/data
+
+volumes:
+  pmax-postgres-data:
