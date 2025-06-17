@@ -36,13 +36,14 @@ next-env.d.ts
 # Large files and directories (excluded for GitHub)
 renders/*
 public/animations/*
-fonts/
-public/fonts/
-fonts_backup/
 test-ffmpeg/
 test_duration/
 .vscode/
 .claude/
+
+# Font files now handled by Git LFS (GitHub Pro)
+!public/fonts/system-fonts.json
+!src/app/utils/fonts.ts
 
 # Video and image files (too large for GitHub)
 *.mp4
@@ -50,11 +51,3 @@ test_duration/
 *.avi
 *.mkv
 *.webm
-*.ttf
-*.otf
-*.woff
-*.woff2
-
-# Keep only essential font files (add specific ones you need)
-!public/fonts/system-fonts.json
-!src/app/utils/fonts.ts
