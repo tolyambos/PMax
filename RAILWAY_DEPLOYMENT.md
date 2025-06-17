@@ -1,173 +1,135 @@
-# Railway Deployment Guide for PMax
+# Railway Deployment Guide for PMax (Updated)
+
+## ✅ What's Fixed:
+
+- **Removed problematic Dockerfile** - Using Railway's default Nixpacks builder instead
+- **Added nixpacks.toml configuration** - Handles ffmpeg-static properly with SKIP_FFMPEG_DOWNLOAD=1
+- **System ffmpeg installation** - Nixpacks installs system ffmpeg for production
+- **Fixed authentication** - Fully switched to Clerk authentication
 
 ## Step 1: Push Your Code to GitHub
 
 1. Make sure all your changes are committed:
+
 ```bash
 git add .
-git commit -m "Prepare for Railway deployment"
+git commit -m "Fix Railway deployment with Nixpacks and Clerk auth"
 git push origin main
 ```
 
-## Step 2: Set Up Railway Project
+## Step 2: Deploy to Railway
 
-1. Go to [railway.app](https://railway.app) and sign in
-2. Click "New Project"
-3. Select "Deploy from GitHub repo"
-4. Choose your PMax repository
-5. Railway will automatically detect it's a Next.js app
+### Option A: Connect GitHub Repository (Recommended)
 
-## Step 3: Add PostgreSQL Database
+1. Go to [Railway.app](https://railway.app) and sign in
+2. Click "New Project" → "Deploy from GitHub repo"
+3. Select your PMax repository
+4. Railway will automatically detect the Node.js project and use Nixpacks
 
-1. In your Railway project dashboard, click "New Service"
-2. Select "Database" → "Add PostgreSQL"
-3. Railway will create a PostgreSQL instance
-4. Copy the connection string from the PostgreSQL service
+### Option B: Use Railway CLI
 
-## Step 4: Configure Environment Variables
+```bash
+# Install Railway CLI
+npm install -g @railway/cli
 
-In your Railway project, go to Variables tab and add these environment variables:
-
-### Database
-- `DATABASE_URL`: Use the PostgreSQL connection string from Railway
-
-### Auth (Clerk)
-- `CLERK_SECRET_KEY`: Your Clerk secret key
-- `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY`: Your Clerk publishable key
-
-### AI Services
-- `OPENAI_API_KEY`: Your OpenAI API key
-- `ELEVENLABS_API_KEY`: Your ElevenLabs API key
-- `RUNWARE_API_KEY`: Your Runware API key
-- `RUNWAYML_API_KEY`: Your RunwayML API key
-- `PIKALABS_API_KEY`: Your PikaLabs API key
-- `FAL_KEY`: Your FAL API key
-
-### Storage (Wasabi S3)
-- `WASABI_ACCESS_KEY`: Your Wasabi access key
-- `WASABI_SECRET_ACCESS_KEY`: Your Wasabi secret key
-
-### Upload
-- `UPLOADTHING_SECRET`: Your UploadThing secret
-- `UPLOADTHING_APP_ID`: Your UploadThing app ID
-
-### Required for Production
-- `NODE_ENV`: `production`
-- `FONTCONFIG_PATH`: `./fonts`
-- `CANVAS_FONT_PATH`: `./fonts`
-
-## Step 5: Update Clerk Configuration
-
-1. Go to your Clerk dashboard
-2. Update the allowed origins and redirect URLs to include your Railway domain:
-   - `https://your-app-name.up.railway.app`
-   - Add your custom domain when ready
-
-## Step 6: Deploy
-
-1. Railway will automatically deploy when you push to GitHub
-2. You can also manually trigger deployment from the Railway dashboard
-3. Monitor the build logs for any issues
-
-## Step 7: Custom Domain Setup
-
-### After purchasing your domain:
-
-1. In your Railway project, go to Settings → Domains
-2. Click "Custom Domain" 
-3. Enter your domain (e.g., `yourdomain.com`)
-4. Railway will provide CNAME records
-5. In your domain registrar's DNS settings, add the CNAME records:
-   - Type: CNAME
-   - Name: @ (for root domain) or www
-   - Value: The target provided by Railway
-
-### SSL Certificate
-Railway automatically provides SSL certificates for custom domains.
-
-## Step 8: Database Migration
-
-After first deployment, run database migration:
-1. Go to your Railway project
-2. In the web service, go to "Deploy" → "Run Command"
-3. Run: `npx prisma db push`
-
-## Step 9: Font Setup (Important!)
-
-✅ **FONTS INCLUDED**: With GitHub Pro, all fonts are now included in the repository using Git LFS!
-
-### What's Included:
-- **2,322 font files** in the repository
-- **640MB+ of fonts** managed by Git LFS
-- **Both `fonts/` and `public/fonts/` directories**
-- **Font metadata and scanning system**
-
-### For Railway Deployment:
-Railway will automatically:
-1. **Download Git LFS files** during deployment
-2. **Make fonts available** in the build process
-3. **Use your existing font system** without changes
-
-### Font Environment Variables:
-Make sure these are set in Railway:
+# Login and deploy
+railway login
+railway link
+railway up
 ```
+
+## Step 3: Configure Environment Variables
+
+In Railway dashboard, add these environment variables:
+
+### Required Clerk Variables:
+
+```
+NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=pk_test_...
+CLERK_SECRET_KEY=sk_test_...
+NEXT_PUBLIC_CLERK_SIGN_IN_URL=/sign-in
+NEXT_PUBLIC_CLERK_SIGN_UP_URL=/sign-up
+NEXT_PUBLIC_CLERK_AFTER_SIGN_IN_URL=/dashboard
+NEXT_PUBLIC_CLERK_AFTER_SIGN_UP_URL=/dashboard
+```
+
+### Database Variables:
+
+```
+DATABASE_URL=postgresql://...
+```
+
+### AWS S3 Variables (if using):
+
+```
+AWS_REGION=us-east-1
+AWS_ACCESS_KEY_ID=...
+AWS_SECRET_ACCESS_KEY=...
+S3_BUCKET_NAME=...
+```
+
+### API Keys:
+
+```
+OPENAI_API_KEY=sk-...
+RUNWAY_API_KEY=...
+FAL_KEY=...
+```
+
+### Build Variables (automatically set by nixpacks.toml):
+
+```
+SKIP_FFMPEG_DOWNLOAD=1
 FONTCONFIG_PATH=./fonts
 CANVAS_FONT_PATH=./fonts
 ```
 
-### Current Status:
-- ✅ All application code is in GitHub
-- ✅ All fonts included with Git LFS
-- ✅ Font loading system ready for production
-- ✅ No additional font setup required!
+## Step 4: Railway Will Automatically:
 
-## Step 10: Test Your Deployment
+1. **Install System Dependencies**: ffmpeg, fonts, etc.
+2. **Skip ffmpeg-static Download**: Uses SKIP_FFMPEG_DOWNLOAD=1
+3. **Install Node Dependencies**: Using pnpm
+4. **Generate Prisma Client**: Automatically
+5. **Build the Application**: With proper font and ffmpeg paths
+6. **Start the Application**: With optimized configuration
 
-1. Visit your Railway URL: `https://your-app-name.up.railway.app`
-2. Test all major features:
-   - User authentication
-   - Video creation
-   - Element editing
-   - Video rendering
-   - File uploads
+## Step 5: Test Deployment
 
-## Troubleshooting
+Once deployed, Railway will provide a URL like: `https://your-app-name.railway.app`
 
-### Common Issues:
+Test:
 
-1. **Database Connection**: Ensure DATABASE_URL is correctly set
-2. **Auth Issues**: Update Clerk URLs to match your deployment URL
-3. **Font Loading**: Verify fonts are handled correctly during deployment
-4. **API Keys**: Double-check all API keys are correctly set
+- ✅ Landing page loads
+- ✅ Sign-in/Sign-up with Clerk works
+- ✅ Dashboard accessible after auth
+- ✅ Video processing features work (with system ffmpeg)
 
-### Useful Railway Commands:
-- View logs: Check the "Deploy" logs in Railway dashboard
-- Environment Variables: Update in Variables tab
-- Manual Deploy: Click "Deploy" in the Railway dashboard
+## Troubleshooting:
 
-## Monitoring
+### If Build Fails:
 
-- Railway provides built-in monitoring
-- Check "Metrics" tab for performance data
-- Set up alerts for downtime
+- Check the Railway build logs for specific errors
+- Ensure all environment variables are set correctly
+- Verify Prisma schema is valid
 
-## Scaling
+### If FFmpeg Issues:
 
-Railway auto-scales based on traffic. For heavy video processing, consider:
-- Upgrading to Railway Pro for more resources
-- Implementing queue system for video rendering
-- Using Railway's horizontal scaling features
+- The nixpacks.toml configuration should handle this automatically
+- Check logs for "SKIP_FFMPEG_DOWNLOAD=1" message
+- System ffmpeg should be available via apt packages
 
-## Security Checklist
+### If Auth Issues:
 
-- [ ] All environment variables are set
-- [ ] Database is secured (Railway handles this)
-- [ ] Clerk is configured with correct domains
-- [ ] API keys are not exposed in client code
-- [ ] HTTPS is enabled (Railway handles this)
+- Verify all Clerk environment variables are correct
+- Check Clerk dashboard for webhook configuration
+- Ensure domain is added to Clerk's allowed origins
 
-## Backup Strategy
+## Why This Works Better:
 
-- Railway PostgreSQL includes automatic backups
-- Consider implementing regular data exports
-- Keep environment variables documented securely
+1. **Railway Nixpacks**: Native support for complex dependencies
+2. **No Docker complexity**: Simpler, more reliable builds
+3. **System FFmpeg**: More stable than downloading binaries
+4. **Automatic optimization**: Railway handles production optimizations
+5. **Better error handling**: Clear logs and debugging info
+
+Your app should now deploy successfully to Railway! 🚀

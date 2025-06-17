@@ -1,0 +1,34 @@
+[build]
+# Use Node.js 18
+nodeVersion = "18"
+
+[phases.setup]
+# Install system dependencies including ffmpeg
+dependsOn = []
+aptPkgs = ["ffmpeg", "fonts-dejavu-core", "fontconfig"]
+
+[phases.install]
+# Install dependencies with proper environment variables
+dependsOn = ["setup"]
+cmds = [
+  "npm install -g pnpm",
+  "SKIP_FFMPEG_DOWNLOAD=1 pnpm install --frozen-lockfile"
+]
+
+[phases.build]
+# Build the application
+dependsOn = ["install"]
+cmds = [
+  "pnpm prisma generate",
+  "FONTCONFIG_PATH=./fonts CANVAS_FONT_PATH=./fonts pnpm run build"
+]
+
+[start]
+# Start command
+cmd = "FONTCONFIG_PATH=./fonts CANVAS_FONT_PATH=./fonts pnpm start"
+
+[variables]
+# Environment variables for the build
+SKIP_FFMPEG_DOWNLOAD = "1"
+FONTCONFIG_PATH = "./fonts"
+CANVAS_FONT_PATH = "./fonts"
