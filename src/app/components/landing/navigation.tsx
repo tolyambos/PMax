@@ -174,7 +174,9 @@ export default function Navigation() {
                         className="w-8 h-8 rounded-full"
                       />
                     )}
-                    <span className="text-sm font-medium">{user?.firstName}</span>
+                    <span className="text-sm font-medium">
+                      {user?.firstName}
+                    </span>
                   </div>
                   <Button
                     variant="outline"

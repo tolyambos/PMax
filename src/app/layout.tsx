@@ -1,7 +1,7 @@
 import "./globals.css";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
-import { ClerkProvider } from '@clerk/nextjs';
+import { ClerkProvider } from "@clerk/nextjs";
 import { ErrorBoundary } from "@/app/components/ui/error-boundary";
 import { ThemeProvider } from "@/app/providers/theme-provider";
 import TRPCProviderWrapper from "@/app/providers/trpc-provider";
