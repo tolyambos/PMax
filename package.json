@@ -52,10 +52,6 @@
     "@trpc/next": "^10.43.0",
     "@trpc/react-query": "^10.43.0",
     "@trpc/server": "^10.43.0",
-    "@types/node": "^20.10.1",
-    "@types/react": "^18.2.39",
-    "@types/react-dom": "^18.2.17",
-    "@types/uuid": "^9.0.7",
     "@uploadthing/react": "^6.0.2",
     "autoprefixer": "^10.4.16",
     "axios": "^1.8.4",
@@ -113,6 +109,10 @@
   },
   "devDependencies": {
     "@types/fluent-ffmpeg": "^2.1.27",
-    "@types/pg": "^8.15.4"
+    "@types/node": "^20.19.1",
+    "@types/pg": "^8.15.4",
+    "@types/react": "^18.3.23",
+    "@types/react-dom": "^18.3.7",
+    "@types/uuid": "^9.0.8"
   }
 }
