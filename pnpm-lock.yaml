@@ -191,9 +191,6 @@ importers:
       next-themes:
         specifier: ^0.2.1
         version: 0.2.1(next@14.2.25(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-      node-fetch:
-        specifier: ^2.7.0
-        version: 2.7.0
       openai:
         specifier: ^4.20.1
         version: 4.104.0(ws@8.18.2(bufferutil@4.0.9))(zod@3.25.67)
@@ -249,9 +246,6 @@ importers:
         specifier: ^3.22.4
         version: 3.25.67
     devDependencies:
-      '@types/node-fetch':
-        specifier: ^2.6.12
-        version: 2.6.12
       '@types/pg':
         specifier: ^8.15.4
         version: 8.15.4

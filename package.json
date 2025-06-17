@@ -80,7 +80,6 @@
     "next": "14.2.25",
     "next-auth": "^5.0.0-beta.25",
     "next-themes": "^0.2.1",
-    "node-fetch": "^2.7.0",
     "openai": "^4.20.1",
     "pg": "^8.14.1",
     "postcss": "^8.4.31",
@@ -113,7 +112,6 @@
     ]
   },
   "devDependencies": {
-    "@types/node-fetch": "^2.6.12",
     "@types/pg": "^8.15.4"
   }
 }

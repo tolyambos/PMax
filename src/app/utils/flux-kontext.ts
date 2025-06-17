@@ -4,7 +4,6 @@ import { RunwareServer } from "@runware/sdk-js";
 import fs from "fs";
 import os from "os";
 import path from "path";
-import fetch from "node-fetch";
 import { v4 as uuidv4 } from "uuid";
 import { s3Utils } from "@/lib/s3-utils";
 
@@ -190,7 +189,8 @@ export class FluxKontextService {
           throw new Error(`Failed to download image: ${response.statusText}`);
         }
 
-        const buffer = await response.buffer();
+        const arrayBuffer = await response.arrayBuffer();
+        const buffer = Buffer.from(arrayBuffer);
         await fs.promises.writeFile(filePath, buffer);
 
         // If successful, return early
@@ -1085,7 +1085,8 @@ Focus on technical and aesthetic quality. A score of 7+ should be considered goo
         throw new Error(`Failed to download file: ${response.statusText}`);
       }
 
-      const buffer = await response.buffer();
+      const arrayBuffer = await response.arrayBuffer();
+      const buffer = Buffer.from(arrayBuffer);
       const finalFilename =
         filename ||
         `flux_upload_${Date.now()}.${this.getExtensionFromUrl(externalUrl) || "jpg"}`;
