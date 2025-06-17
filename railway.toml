@@ -1,9 +1,9 @@
 [build]
 builder = "NIXPACKS"
-buildCommand = "npm run build:railway"
+buildCommand = "pnpm run build:railway"
 
 [deploy]
-startCommand = "npm start"
+startCommand = "pnpm start"
 healthcheckPath = "/"
 healthcheckTimeout = 100
 restartPolicyType = "ON_FAILURE"

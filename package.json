@@ -3,10 +3,10 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "FONTCONFIG_PATH=./fonts prisma db push && concurrently --names \"NEXT,PRISMA\" --prefix-colors \"blue,green\" \"CANVAS_FONT_PATH=./fonts next dev\" \"npm run db:studio\"",
+    "dev": "FONTCONFIG_PATH=./fonts prisma db push && concurrently --names \"NEXT,PRISMA\" --prefix-colors \"blue,green\" \"CANVAS_FONT_PATH=./fonts next dev\" \"pnpm run db:studio\"",
     "dev:next": "FONTCONFIG_PATH=./fonts CANVAS_FONT_PATH=./fonts prisma db push && next dev",
     "build": "prisma generate && FONTCONFIG_PATH=./fonts CANVAS_FONT_PATH=./fonts next build",
-    "build:railway": "npm ci --legacy-peer-deps && prisma generate && FONTCONFIG_PATH=./fonts CANVAS_FONT_PATH=./fonts next build",
+    "build:railway": "pnpm install --frozen-lockfile && prisma generate && FONTCONFIG_PATH=./fonts CANVAS_FONT_PATH=./fonts next build",
     "start": "FONTCONFIG_PATH=./fonts CANVAS_FONT_PATH=./fonts next start",
     "build:production": "prisma generate && prisma db push && FONTCONFIG_PATH=./fonts CANVAS_FONT_PATH=./fonts next build",
     "lint": "next lint",
@@ -97,5 +97,17 @@
     "typescript": "^5.3.2",
     "uploadthing": "^6.0.3",
     "zod": "^3.24.3"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "@prisma/client",
+      "@prisma/engines",
+      "bufferutil",
+      "canvas",
+      "ffmpeg-static",
+      "prisma",
+      "sharp",
+      "unrs-resolver"
+    ]
   }
 }
