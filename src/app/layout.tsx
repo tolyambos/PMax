@@ -1,4 +1,5 @@
 import "./globals.css";
+import "@/lib/bigint-fix"; // Fix BigInt serialization globally
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import { ClerkProvider } from "@clerk/nextjs";

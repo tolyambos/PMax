@@ -397,6 +397,7 @@ export class FFmpegRenderer {
 
         // Get the element to find its URL
         const imageUrl = await this.getElementImageUrl(elementId);
+        console.log(`[processFilterMarkers] getElementImageUrl result for ${elementId}:`, imageUrl);
 
         if (imageUrl) {
           try {
@@ -417,15 +418,83 @@ export class FFmpegRenderer {
             const tempImagePath = `/tmp/overlay_${elementId}_${Date.now()}.png`;
 
             try {
-              // Download the image
-              const response = await fetch(refreshedUrl);
-              if (!response.ok) {
-                throw new Error(`Failed to download image: ${response.status}`);
-              }
+              // Download the image with timeout and better error handling
+              const controller = new AbortController();
+              const timeoutId = setTimeout(() => controller.abort(), 30000); // 30 second timeout
 
-              const buffer = await response.arrayBuffer();
-              const fs = require("fs");
-              fs.writeFileSync(tempImagePath, Buffer.from(buffer));
+              const response = await fetch(refreshedUrl, {
+                signal: controller.signal,
+                headers: {
+                  "User-Agent": "PMax-Video-Renderer/1.0",
+                },
+              });
+
+              clearTimeout(timeoutId);
+
+              if (!response.ok) {
+                console.error(
+                  `[processFilterMarkers] HTTP ${response.status} ${response.statusText} for URL: ${refreshedUrl}`
+                );
+
+                // If we get a 403, try refreshing the URL one more time
+                if (response.status === 403) {
+                  console.log(
+                    `[processFilterMarkers] Got 403, attempting to refresh URL again for element ${elementId}`
+                  );
+                  try {
+                    const retryUrl = await s3Utils.refreshS3Url(imageUrl);
+                    if (retryUrl !== refreshedUrl) {
+                      // Create a new controller for the retry attempt
+                      const retryController = new AbortController();
+                      const retryTimeoutId = setTimeout(() => retryController.abort(), 30000);
+                      
+                      const retryResponse = await fetch(retryUrl, {
+                        signal: retryController.signal,
+                        headers: {
+                          "User-Agent": "PMax-Video-Renderer/1.0",
+                        },
+                      });
+                      
+                      clearTimeout(retryTimeoutId);
+                      if (retryResponse.ok) {
+                        console.log(
+                          `[processFilterMarkers] Retry successful for element ${elementId}`
+                        );
+                        const retryBuffer = await retryResponse.arrayBuffer();
+                        const fs = require("fs");
+                        fs.writeFileSync(
+                          tempImagePath,
+                          Buffer.from(retryBuffer)
+                        );
+                      } else {
+                        throw new Error(
+                          `Retry also failed: ${retryResponse.status} ${retryResponse.statusText}`
+                        );
+                      }
+                    } else {
+                      throw new Error(
+                        `URL refresh didn't generate new URL: ${response.status} ${response.statusText}`
+                      );
+                    }
+                  } catch (retryError) {
+                    console.error(
+                      `[processFilterMarkers] Retry failed for element ${elementId}:`,
+                      retryError
+                    );
+                    throw new Error(
+                      `Failed to download image after retry: ${response.status} ${response.statusText}`
+                    );
+                  }
+                } else {
+                  throw new Error(
+                    `Failed to download image: ${response.status} ${response.statusText}`
+                  );
+                }
+              } else {
+                const buffer = await response.arrayBuffer();
+                const fs = require("fs");
+                fs.writeFileSync(tempImagePath, Buffer.from(buffer));
+              }
 
               // Store overlay info for complex filter processing
               this.imageOverlays = this.imageOverlays || [];
@@ -519,6 +588,16 @@ export class FFmpegRenderer {
         );
         return null;
       }
+
+      // Debug log the full element data
+      console.log(`[getElementImageUrl] Element ${elementId} data:`, {
+        id: element.id,
+        type: element.type,
+        url: element.url,
+        content: element.content,
+        hasAsset: !!element.asset,
+        assetUrl: element.asset?.url
+      });
 
       // Check if element has a direct URL field (new pattern)
       if (element.url) {
@@ -725,22 +804,31 @@ export class FFmpegRenderer {
       // Build complex filter string
       let complexFilter = `[0:v]scale=${dimensions.width}:${dimensions.height}:force_original_aspect_ratio=decrease,pad=${dimensions.width}:${dimensions.height}:(ow-iw)/2:(oh-ih)/2`;
 
-      // Add basic filters if any
+      // Add basic filters if any (properly integrate drawtext and other filters into the chain)
       if (filterString && filterString.trim()) {
         complexFilter += `,${filterString}`;
       }
 
-      // Add overlay filters
-      let currentInput = "[base]";
+      // Create labeled output after applying text/shape filters
       complexFilter += `[base]`;
+
+      // Add image overlay filters
+      let currentInput = "[base]";
 
       this.imageOverlays.forEach((overlay, index) => {
         const imageInput = index + 1; // Input 0 is video, images start at 1
-        const outputLabel =
-          index === this.imageOverlays.length - 1 ? "" : `[out${index}]`;
+        const isLast = index === this.imageOverlays.length - 1;
+        const outputLabel = isLast ? "" : `[out${index}]`;
+        
+        // Scale the overlay image
         complexFilter += `;[${imageInput}:v]scale=${overlay.width}:${overlay.height}[img${index}]`;
+        
+        // Apply overlay
         complexFilter += `;${currentInput}[img${index}]overlay=${overlay.x}:${overlay.y}${outputLabel}`;
-        currentInput = `[out${index}]`;
+        
+        if (!isLast) {
+          currentInput = `[out${index}]`;
+        }
       });
 
       console.log(`[applySimpleVideoFilters] Complex filter: ${complexFilter}`);

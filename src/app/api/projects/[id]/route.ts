@@ -58,6 +58,9 @@ export async function GET(
             animate: scene.animate || false, // Include animate flag from database
             animationStatus: scene.animationStatus || undefined,
             animationPrompt: scene.animationPrompt || undefined,
+            useAnimatedVersion: scene.useAnimatedVersion,
+            backgroundHistory: scene.backgroundHistory || [],
+            animationHistory: scene.animationHistory || [],
             elements:
               scene.elements.map((element) => {
                 // Debug log the element data

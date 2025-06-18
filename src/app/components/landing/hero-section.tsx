@@ -2,7 +2,8 @@
 
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { signIn } from "next-auth/react";
+import { useRouter } from "next/navigation";
+import { useUser } from "@clerk/nextjs";
 import { Button } from "@/app/components/ui/button";
 import { Badge } from "@/app/components/ui/badge";
 import {
@@ -35,6 +36,8 @@ const features = [
 
 export default function HeroSection() {
   const [currentFeature, setCurrentFeature] = useState(0);
+  const router = useRouter();
+  const { isSignedIn, isLoaded } = useUser();
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -42,6 +45,18 @@ export default function HeroSection() {
     }, 3000);
     return () => clearInterval(interval);
   }, []);
+
+  const handleGetStarted = () => {
+    if (isLoaded) {
+      if (isSignedIn) {
+        // User is already signed in, redirect to dashboard
+        router.push("/dashboard");
+      } else {
+        // User is not signed in, redirect to sign-up page for new users
+        router.push("/sign-up");
+      }
+    }
+  };
 
   return (
     <section className="flex overflow-hidden relative justify-center items-center min-h-screen">
@@ -139,9 +154,9 @@ export default function HeroSection() {
             <Button
               size="lg"
               className="px-8 py-4 text-lg transition-all duration-300 group bg-gradient-primary text-primary-foreground hover:opacity-90"
-              onClick={() => signIn()}
+              onClick={handleGetStarted}
             >
-              Start Creating for Free
+              {isSignedIn ? "Go to Dashboard" : "Start Creating for Free"}
               <ArrowRight className="ml-2 w-5 h-5 transition-transform group-hover:translate-x-1" />
             </Button>
 

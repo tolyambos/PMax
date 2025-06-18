@@ -696,12 +696,20 @@ export class ElementRenderer {
     // Calculate starting Y position to center the text block vertically
     const startY = textY - totalTextHeight / 2 + lineHeight / 2;
 
-    // Build the x position expression based on text alignment
-    let xPosition = `(${textX}-text_w/2)`; // Default center alignment
+    // Build the x position based on text alignment
+    // Use fixed numeric positions instead of expressions for better compatibility
+    let xPosition = Math.round(textX).toString(); // Default center alignment
     if (textAlign === "left") {
-      xPosition = `${textX}`;
+      xPosition = Math.round(textX).toString();
     } else if (textAlign === "right") {
-      xPosition = `(${textX}-text_w)`;
+      // For right alignment, estimate text width and subtract from x position
+      // Use a conservative estimate: fontSize * 0.6 * text length
+      const estimatedTextWidth = fontSize * 0.6 * text.length;
+      xPosition = Math.round(textX - estimatedTextWidth).toString();
+    } else {
+      // For center alignment, estimate half text width and subtract
+      const estimatedTextWidth = fontSize * 0.6 * text.length;
+      xPosition = Math.round(textX - estimatedTextWidth / 2).toString();
     }
 
     // Rotation handling has been removed as requested by user
@@ -714,17 +722,15 @@ export class ElementRenderer {
     // Generate a drawtext command for each line
     lines.forEach((line, index) => {
       const escapedText = this.escapeFFmpegText(line);
-      const lineY = startY + index * lineHeight;
+      const lineY = Math.round(startY + index * lineHeight);
 
-      let drawTextCommand = [
-        "drawtext=",
-        `fontfile='${fontFilePath.replace(/'/g, "'\\''")}'`,
-        `:text='${escapedText}'`,
-        `:fontsize=${fontSize}`,
-        `:fontcolor=${this.normalizeColor(color)}@${opacity}`,
-        `:x=${xPosition}`,
-        `:y=${lineY}`,
-      ].join("");
+      let drawTextCommand =
+        `drawtext=fontfile='${fontFilePath.replace(/'/g, "'\\''")}'` +
+        `:text='${escapedText}'` +
+        `:fontsize=${Math.round(fontSize)}` +
+        `:fontcolor=${this.normalizeColor(color)}@${opacity}` +
+        `:x=${xPosition}` +
+        `:y=${lineY}`;
 
       // Add italic if needed
       if (italic) {
@@ -1143,49 +1149,9 @@ export class ElementRenderer {
       );
     }
 
-    // Draw the shape based on type
-    switch (shapeType) {
-      case "circle":
-        // Draw circle
-        const radius = Math.min(w, h) / 2;
-        const centerX = x + w / 2;
-        const centerY = y + h / 2;
-
-        // Use drawbox with forced square dimensions to create a crude circle
-        // FFmpeg's filtering capabilities are limited, so this is an approximation
-        // For better circles, you might need to overlay a PNG
-        const drawCmd = `drawbox=x=${centerX - radius}:y=${centerY - radius}:w=${radius * 2}:h=${radius * 2}:color=${normalizedColor}@${opacity}:t=fill`;
-        filterCommands.push(drawCmd);
-        break;
-
-      case "triangle":
-        // Draw triangle using a sequence of drawline commands
-        // This is an approximation as FFmpeg doesn't have a native triangle drawing command
-
-        // Calculate triangle points
-        const x1 = x + w / 2; // Top center
-        const y1 = y;
-        const x2 = x + w; // Bottom right
-        const y2 = y + h;
-        const x3 = x; // Bottom left
-        const y3 = y + h;
-
-        // Create commands to draw the three sides of the triangle
-        const draw1 = `drawline=x1=${x1}:y1=${y1}:x2=${x2}:y2=${y2}:color=${normalizedColor}@${opacity}:thickness=${Math.max(w, h) / 10}`;
-        const draw2 = `drawline=x1=${x2}:y1=${y2}:x2=${x3}:y2=${y3}:color=${normalizedColor}@${opacity}:thickness=${Math.max(w, h) / 10}`;
-        const draw3 = `drawline=x1=${x3}:y1=${y3}:x2=${x1}:y2=${y1}:color=${normalizedColor}@${opacity}:thickness=${Math.max(w, h) / 10}`;
-
-        // Since we can't fill the triangle in FFmpeg easily, we use thick lines
-        filterCommands.push(draw1, draw2, draw3);
-        break;
-
-      case "rectangle":
-      default:
-        // Draw rectangle
-        const rectCmd = `drawbox=x=${x}:y=${y}:w=${w}:h=${h}:color=${normalizedColor}@${opacity}:t=fill`;
-        filterCommands.push(rectCmd);
-        break;
-    }
+    // All shapes are rectangles now
+    const rectCmd = `drawbox=x=${x}:y=${y}:w=${w}:h=${h}:color=${normalizedColor}@${opacity}:t=fill`;
+    filterCommands.push(rectCmd);
   }
 
   /**

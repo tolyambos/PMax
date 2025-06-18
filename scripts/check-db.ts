@@ -22,8 +22,10 @@ async function main() {
       const newUser = await prisma.user.create({
         data: {
           id: 'dev-user-id',
+          clerkId: 'dev-clerk-id',
           name: 'Development User',
           email: 'dev@example.com',
+          role: 'USER',
         },
       });
       console.log('Created dev user:', newUser.id);

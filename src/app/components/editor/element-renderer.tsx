@@ -372,37 +372,7 @@ export function ElementRenderer({
           opacity: extractedStyle?.opacity || 0.8,
         };
 
-        // Adjust style based on shape type
-        if (extractedShapeType === "circle") {
-          shapeStyles = {
-            ...shapeStyles,
-            borderRadius: "50%",
-          };
-        } else if (extractedShapeType === "triangle") {
-          // For triangle, we use clip-path
-          return (
-            <div
-              style={{
-                ...shapeStyles,
-                clipPath: "polygon(50% 0%, 0% 100%, 100% 100%)",
-              }}
-              onMouseDown={handleMouseDown}
-              onMouseMove={handleMouseMove}
-              onMouseUp={handleMouseUp}
-              onClick={(e) => {
-                e.stopPropagation();
-                dispatch({ type: "SELECT_ELEMENT", payload: id });
-              }}
-              className={`element-renderer element-shape ${isSelected ? "element-selected" : ""} ${isGlobal ? "element-global" : ""}`}
-              data-element-id={id}
-              data-element-type="shape"
-              data-shape-type={extractedShapeType}
-              data-selected={isSelected ? "true" : "false"}
-            >
-              {renderElementControls()}
-            </div>
-          );
-        }
+        // All shapes are rectangles now - no special handling needed
 
         return (
           <div
@@ -417,7 +387,7 @@ export function ElementRenderer({
             className={`element-renderer element-shape ${isSelected ? "element-selected" : ""} ${isGlobal ? "element-global" : ""}`}
             data-element-id={id}
             data-element-type="shape"
-            data-shape-type={extractedShapeType}
+            data-shape-type="rectangle"
             data-selected={isSelected ? "true" : "false"}
           >
             {renderElementControls()}

@@ -279,21 +279,27 @@ export class VideoService {
       );
 
       console.log(`Video rendering complete: ${outputFile}`);
+      
+      // Note: The render directory will be cleaned up by the export route after upload/download
+      // We don't clean it up here since the export route needs the files
+      
       return outputFile;
     } catch (error) {
       console.error("Error rendering video:", error);
-      // Try to clean up any incomplete output files in the temp directory
+      // Clean up the entire render directory on error
       if (tempDir && fs.existsSync(tempDir)) {
         try {
-          const files = fs.readdirSync(tempDir);
-          for (const file of files) {
-            if (file.endsWith(".mp4") && file.includes("-incomplete")) {
-              const filePath = path.join(tempDir, file);
-              fs.unlinkSync(filePath);
-            }
-          }
+          const { CleanupService } = await import("../cleanup-service");
+          await CleanupService.cleanupRenderDirectory(tempDir);
         } catch (cleanupError) {
           console.error("Error during cleanup:", cleanupError);
+          // Fallback to basic cleanup
+          try {
+            fs.rmSync(tempDir, { recursive: true, force: true });
+            console.log("Cleaned up render directory using fallback method");
+          } catch (fallbackError) {
+            console.error("Fallback cleanup also failed:", fallbackError);
+          }
         }
       }
 

@@ -1,9 +1,26 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/app/utils/db";
-import { withAuth } from "@/app/utils/auth-middleware";
+import { requireAuth, canCreateProject } from "@/lib/auth";
 
-export const POST = withAuth(async (request: NextRequest, { user }) => {
+export async function POST(request: NextRequest) {
   try {
+    // Authenticate user and get permissions
+    const user = await requireAuth();
+
+    // Check if user can create projects
+    const canCreate = await canCreateProject(user);
+    if (!canCreate.allowed) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: canCreate.reason,
+          currentCount: canCreate.currentCount,
+          maxProjects: canCreate.maxProjects,
+        },
+        { status: 403 }
+      );
+    }
+
     const body = await request.json();
 
     // Validate required fields
@@ -18,7 +35,7 @@ export const POST = withAuth(async (request: NextRequest, { user }) => {
     }
 
     console.log(
-      `Creating project via API for user ${user.id} with name: ${body.name}`
+      `Creating project via API for user ${user.id} with name: ${body.name}. Current projects: ${canCreate.currentCount}/${canCreate.maxProjects}`
     );
 
     // Create the project
@@ -62,10 +79,13 @@ export const POST = withAuth(async (request: NextRequest, { user }) => {
       { status: 500 }
     );
   }
-});
+}
 
-export const GET = withAuth(async (request: NextRequest, { user }) => {
+export async function GET(request: NextRequest) {
   try {
+    // Authenticate user
+    const user = await requireAuth();
+
     // Get all projects for the authenticated user
     const projects = await prisma.project.findMany({
       where: {
@@ -112,4 +132,4 @@ export const GET = withAuth(async (request: NextRequest, { user }) => {
       { status: 500 }
     );
   }
-});
+}

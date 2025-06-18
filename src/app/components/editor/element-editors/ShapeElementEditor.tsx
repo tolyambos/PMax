@@ -5,13 +5,13 @@ import { Button } from "@/app/components/ui/button";
 import { Label } from "@/app/components/ui/label";
 import { Slider } from "@/app/components/ui/slider";
 import { ColorPicker } from "@/app/components/ui/color-picker";
-import { Square, Circle } from "lucide-react";
+import { Square } from "lucide-react";
 
 import { createElementContent } from "@/app/utils/element-utils";
 import { Element } from "./../types";
 
 // Define shape types
-export type ShapeType = "rectangle" | "circle" | "triangle";
+export type ShapeType = "rectangle";
 
 interface ShapeElementEditorProps {
   selectedElement?: Element;
@@ -133,45 +133,12 @@ export default function ShapeElementEditor({
 
   return (
     <div className="space-y-4">
+      {/* Shape is always rectangle - no need for selection */}
       <div className="space-y-2">
-        <Label htmlFor="shape-type">Shape Type</Label>
-        <div className="grid grid-cols-3 gap-2">
-          <Button
-            variant={shapeType === "rectangle" ? "default" : "outline"}
-            onClick={() => {
-              setShapeType("rectangle");
-              if (isEditMode) {
-                handleUpdateShape({ shapeType: "rectangle" });
-              }
-            }}
-          >
-            <Square className="mr-2 w-4 h-4" />
-            Rectangle
-          </Button>
-          <Button
-            variant={shapeType === "circle" ? "default" : "outline"}
-            onClick={() => {
-              setShapeType("circle");
-              if (isEditMode) {
-                handleUpdateShape({ shapeType: "circle" });
-              }
-            }}
-          >
-            <Circle className="mr-2 w-4 h-4" />
-            Circle
-          </Button>
-          <Button
-            variant={shapeType === "triangle" ? "default" : "outline"}
-            onClick={() => {
-              setShapeType("triangle");
-              if (isEditMode) {
-                handleUpdateShape({ shapeType: "triangle" });
-              }
-            }}
-          >
-            <div className="mr-2 w-4 h-4 transform rotate-180">▲</div>
-            Triangle
-          </Button>
+        <Label>Shape Type</Label>
+        <div className="flex items-center gap-2 p-2 rounded-md bg-muted/50">
+          <Square className="w-4 h-4" />
+          <span className="text-sm font-medium">Rectangle</span>
         </div>
       </div>
 

@@ -8,6 +8,7 @@ import { Settings } from "lucide-react";
 import ExportModal from "./export-modal";
 import EditorDBStatus from "./db-status";
 import SettingsModal from "@/app/components/settings/SettingsModal";
+import SaveStatusIndicator from "./save-status-indicator";
 
 interface EditorNavigationProps {
   projectName: string;
@@ -16,6 +17,7 @@ interface EditorNavigationProps {
   isLoading?: boolean;
   isSaving?: boolean;
   lastSaved?: Date | null;
+  hasUnsavedChanges?: boolean;
   onSave?: () => Promise<void>;
 }
 
@@ -26,6 +28,7 @@ export default function EditorNavigation({
   isLoading = false,
   isSaving: propIsSaving = false,
   lastSaved = null,
+  hasUnsavedChanges = false,
   onSave,
 }: EditorNavigationProps) {
   const [localIsSaving, setLocalIsSaving] = useState(false);
@@ -42,10 +45,7 @@ export default function EditorNavigation({
       try {
         setLocalIsSaving(true);
         await onSave();
-        toast({
-          title: "Project saved",
-          description: "All changes have been saved to the database.",
-        });
+        // No toast - the save status indicator handles this
       } catch (error) {
         toast({
           title: "Save failed",
@@ -61,10 +61,7 @@ export default function EditorNavigation({
 
       setTimeout(() => {
         setLocalIsSaving(false);
-        toast({
-          title: "Project saved",
-          description: "All changes have been saved successfully.",
-        });
+        // No toast - the save status indicator handles this
       }, 800);
     }
   };
@@ -81,23 +78,14 @@ export default function EditorNavigation({
 
       <div className="flex gap-4 items-center">
         {projectId && <EditorDBStatus projectId={projectId} />}
-        {lastSaved && (
-          <div className="ml-2 text-xs text-muted-foreground">
-            Last saved: {lastSaved.toLocaleTimeString()}
-          </div>
-        )}
+
+        <SaveStatusIndicator
+          isSaving={isSaving}
+          lastSaved={lastSaved}
+          hasUnsavedChanges={hasUnsavedChanges}
+        />
 
         <div className="flex gap-2 items-center">
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={handleSave}
-            disabled={isSaving || isLoading}
-            data-save-button="true"
-          >
-            {isSaving ? "Saving..." : isLoading ? "Loading..." : "Save"}
-          </Button>
-
           <Button
             size="sm"
             onClick={() => setIsExportModalOpen(true)}

@@ -15,12 +15,22 @@ export async function getCurrentUserId(): Promise<string | null> {
       });
 
       if (!existingUser) {
-        // Create the dev user
+        // Create the dev user with permissions
         await prisma.user.create({
           data: {
             id: devUserId,
+            clerkId: devUserId,
             name: "Development User",
             email: "dev@example.com",
+            role: "ADMIN",
+            permissions: {
+              create: {
+                canCreateProjects: true,
+                canUploadAssets: true,
+                maxProjects: 1000,
+                maxAssetStorage: BigInt(107374182400), // 100GB
+              },
+            },
           },
         });
       }

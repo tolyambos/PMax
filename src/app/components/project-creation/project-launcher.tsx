@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { motion } from "framer-motion";
+import Link from "next/link";
 import { Button } from "@/app/components/ui/button";
 import { Card, CardContent } from "@/app/components/ui/card";
 import {
@@ -15,7 +16,6 @@ import {
   Palette,
   Clock,
 } from "lucide-react";
-import ProjectDashboard from "./project-dashboard";
 import ProjectWizard from "./project-wizard";
 
 const QUICK_START_OPTIONS = [
@@ -89,9 +89,9 @@ interface ProjectLauncherProps {
 export default function ProjectLauncher({
   onProjectSelect,
 }: ProjectLauncherProps) {
-  const [currentView, setCurrentView] = useState<
-    "launcher" | "wizard" | "dashboard"
-  >("launcher");
+  const [currentView, setCurrentView] = useState<"launcher" | "wizard">(
+    "launcher"
+  );
   const [selectedStarterType, setSelectedStarterType] = useState<string>("");
 
   const handleQuickStart = (optionId: string) => {
@@ -119,10 +119,6 @@ export default function ProjectLauncher({
     }
   };
 
-  const handleViewProjects = () => {
-    setCurrentView("dashboard");
-  };
-
   if (currentView === "wizard") {
     return (
       <ProjectWizard
@@ -130,10 +126,6 @@ export default function ProjectLauncher({
         onCancel={() => setCurrentView("launcher")}
       />
     );
-  }
-
-  if (currentView === "dashboard") {
-    return <ProjectDashboard onProjectSelect={(id) => onProjectSelect?.(id)} />;
   }
 
   return (
@@ -167,21 +159,25 @@ export default function ProjectLauncher({
           <div className="flex flex-col gap-4 justify-center mb-8 sm:flex-row">
             <Button
               size="lg"
-              onClick={() => handleQuickStart("ai-wizard")}
+              asChild
               className="px-8 py-6 text-lg bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 dark:text-white"
             >
-              <Wand2 className="mr-2 w-5 h-5 dark:text-white" />
-              Start Creating Now
+              <Link href="/wizard">
+                <Wand2 className="mr-2 w-5 h-5 dark:text-white" />
+                Start Creating Now
+              </Link>
             </Button>
 
             <Button
               variant="outline"
               size="lg"
-              onClick={handleViewProjects}
+              asChild
               className="px-8 py-6 text-lg"
             >
-              <Video className="mr-2 w-5 h-5" />
-              View My Projects
+              <Link href="/projects">
+                <Video className="mr-2 w-5 h-5" />
+                View My Projects
+              </Link>
             </Button>
           </div>
 
@@ -325,16 +321,20 @@ export default function ProjectLauncher({
           <div className="flex flex-col gap-4 justify-center sm:flex-row">
             <Button
               size="lg"
-              onClick={() => handleQuickStart("ai-wizard")}
+              asChild
               className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 dark:text-white"
             >
-              <Wand2 className="mr-2 w-5 h-5 dark:text-white" />
-              Create Your First Video
+              <Link href="/wizard">
+                <Wand2 className="mr-2 w-5 h-5 dark:text-white" />
+                Create Your First Video
+              </Link>
             </Button>
 
-            <Button variant="outline" size="lg" onClick={handleViewProjects}>
-              <Play className="mr-2 w-5 h-5 dark:text-white" />
-              Watch Examples
+            <Button variant="outline" size="lg" asChild>
+              <Link href="/projects">
+                <Play className="mr-2 w-5 h-5 dark:text-white" />
+                View Projects
+              </Link>
             </Button>
           </div>
         </motion.div>

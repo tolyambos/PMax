@@ -115,8 +115,14 @@ export function ElementToolbar({
           )}
           {selectedElement.type === "image" && (
             <ImageElementEditor
+              key={`${selectedElement.id}-${selectedElement.width}-${selectedElement.height}`}
               element={selectedElement}
               onUpdate={(updates) => {
+                console.log("🎯 ElementToolbar: onUpdate called with:", {
+                  sceneId,
+                  selectedElementId: selectedElement.id,
+                  updates,
+                });
                 if (onUpdateElement) {
                   onUpdateElement(sceneId, selectedElement.id, updates);
                 }

@@ -2,63 +2,41 @@ import { initTRPC, TRPCError } from "@trpc/server";
 import { type NextRequest } from "next/server";
 import superjson from "superjson";
 import { ZodError } from "zod";
-import { prisma } from "@/utils/db";
+import { prisma } from "@/lib/prisma";
+import { auth } from "@clerk/nextjs/server";
 
-// In development, we'll use a simple mock authentication system
-// This uses cookies to store the userId for server-side access
 export const createTRPCContext = async (opts: { req: NextRequest }) => {
-  const { req } = opts;
+  const { userId: clerkUserId } = auth();
 
   try {
-    // For development, use a fixed dev user ID
-    const devUserId = "dev-user-id";
+    if (clerkUserId) {
+      // Find user by clerkId
+      const user = await prisma.user.findUnique({
+        where: { clerkId: clerkUserId },
+      });
 
-    // Always ensure dev user exists in development
-    if (process.env.NODE_ENV === "development") {
-      try {
-        // First check if user exists
-        const existingUser = await prisma.user.findUnique({
-          where: { id: devUserId },
-        });
-
-        if (!existingUser) {
-          console.log("Creating development user");
-          await prisma.user.create({
-            data: {
-              id: devUserId,
-              name: "Development User",
-              email: "dev@example.com",
-            },
-          });
-        }
-      } catch (userError) {
-        console.error("Error ensuring dev user exists:", userError);
-        // Continue anyway
+      if (user) {
+        return {
+          prisma,
+          userId: user.id,
+        };
+      } else {
+        // User exists in Clerk but not in database
+        // This will be handled by the webhook or manual sync
+        console.log("User not found in database, needs sync:", clerkUserId);
+        return {
+          prisma,
+          userId: null,
+        };
       }
-
-      console.log("Using dev user for tRPC context");
-      return {
-        prisma,
-        userId: devUserId,
-      };
     }
 
-    // For production, this would be replaced with actual auth
     return {
       prisma,
       userId: null,
     };
   } catch (error) {
     console.error("Error setting up tRPC context:", error);
-
-    // Always return dev user in development
-    if (process.env.NODE_ENV === "development") {
-      return {
-        prisma,
-        userId: "dev-user-id", // Fallback for development
-      };
-    }
-
     return {
       prisma,
       userId: null,

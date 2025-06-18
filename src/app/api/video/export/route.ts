@@ -401,13 +401,19 @@ export async function POST(req: Request) {
 
         console.log("Video uploaded to S3:", s3Url);
 
-        // Clean up the temporary file
+        // Clean up the entire render directory
         try {
-          await fs.promises.unlink(actualVideoFilePath);
-          console.log("Cleaned up temporary video file");
+          const renderDir = path.dirname(actualVideoFilePath);
+          if (renderDir.includes("render-")) {
+            await fs.promises.rm(renderDir, { recursive: true, force: true });
+            console.log("Cleaned up entire render directory:", renderDir);
+          } else {
+            await fs.promises.unlink(actualVideoFilePath);
+            console.log("Cleaned up temporary video file");
+          }
         } catch (cleanupError) {
           console.error(
-            "Failed to clean up temporary video file:",
+            "Failed to clean up temporary files:",
             cleanupError
           );
         }
@@ -435,13 +441,19 @@ export async function POST(req: Request) {
           `attachment; filename="${projectId}.mp4"`
         );
 
-        // Clean up the temporary file
+        // Clean up the entire render directory
         try {
-          await fs.promises.unlink(actualVideoFilePath);
-          console.log("Cleaned up temporary video file");
+          const renderDir = path.dirname(actualVideoFilePath);
+          if (renderDir.includes("render-")) {
+            await fs.promises.rm(renderDir, { recursive: true, force: true });
+            console.log("Cleaned up entire render directory:", renderDir);
+          } else {
+            await fs.promises.unlink(actualVideoFilePath);
+            console.log("Cleaned up temporary video file");
+          }
         } catch (cleanupError) {
           console.error(
-            "Failed to clean up temporary video file:",
+            "Failed to clean up temporary files:",
             cleanupError
           );
         }
@@ -450,6 +462,29 @@ export async function POST(req: Request) {
       }
     } catch (renderingError: unknown) {
       console.error("Error rendering video:", renderingError);
+
+      // Clean up any partial render directories on error
+      try {
+        const projectRoot = process.cwd();
+        const rendersDir = path.join(projectRoot, "renders");
+        if (fs.existsSync(rendersDir)) {
+          const renderDirs = fs.readdirSync(rendersDir)
+            .filter(dir => dir.startsWith("render-"))
+            .map(dir => path.join(rendersDir, dir));
+          
+          // Clean up recent render directories (last 10 minutes)
+          const cutoffTime = Date.now() - (10 * 60 * 1000);
+          for (const renderDir of renderDirs) {
+            const stats = fs.statSync(renderDir);
+            if (stats.mtime.getTime() > cutoffTime) {
+              await fs.promises.rm(renderDir, { recursive: true, force: true });
+              console.log("Cleaned up failed render directory:", renderDir);
+            }
+          }
+        }
+      } catch (cleanupError) {
+        console.error("Failed to clean up render directories:", cleanupError);
+      }
 
       // Safely extract error message
       const errorMessage =

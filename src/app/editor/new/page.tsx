@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import MainNavigation from "@/app/components/navigation/main-nav";
 import { Button } from "@/app/components/ui/button";
 import { Loader2 } from "lucide-react";
 import { useToast } from "@/app/components/ui/use-toast";
@@ -648,20 +649,14 @@ export default function NewProjectPage() {
   };
 
   return (
-    <div className="flex flex-col min-h-screen">
-      <div className="flex items-center px-6 h-16 border-b">
-        <h1 className="text-xl font-bold">New Project</h1>
-        <Button
-          variant="ghost"
-          className="ml-auto"
-          onClick={() => router.push("/")}
-          disabled={isCreating}
-        >
-          Cancel
-        </Button>
-      </div>
+    <div className="min-h-screen bg-background">
+      <MainNavigation />
 
-      <div className="container flex flex-col flex-1 py-12 max-w-2xl">
+      <div className="container flex flex-col flex-1 py-8 max-w-2xl">
+        <div className="mb-6">
+          <h1 className="text-3xl font-bold mb-2">New Project</h1>
+          <p className="text-muted-foreground">Create an AI-powered video advertisement</p>
+        </div>
         {/* Step indicator */}
         {step < 4 && (
           <div className="mb-8">

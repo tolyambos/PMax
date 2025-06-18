@@ -48,7 +48,8 @@ type EditorAction =
   | { type: "UNDO" }
   | { type: "REDO" }
   | { type: "SET_LAST_SAVED"; payload: Date }
-  | { type: "SET_SAVING"; payload: boolean };
+  | { type: "SET_SAVING"; payload: boolean }
+  | { type: "SET_UNSAVED_CHANGES"; payload: boolean };
 
 // Define editor state
 interface EditorState {
@@ -58,6 +59,7 @@ interface EditorState {
   globalElements: Set<string>;
   isSaving: boolean;
   lastSaved: Date | null;
+  hasUnsavedChanges: boolean;
   undoStack: EditorState[];
   redoStack: EditorState[];
 }
@@ -79,6 +81,7 @@ const initialState: EditorState = {
   globalElements: new Set<string>(),
   isSaving: false,
   lastSaved: null,
+  hasUnsavedChanges: false,
   undoStack: [],
   redoStack: [],
 };
@@ -92,6 +95,7 @@ type EditorContextType = {
     globalElements: Set<string>;
     isSaving: boolean;
     lastSaved: Date | null;
+    hasUnsavedChanges: boolean;
     undoStack: EditorState[];
     redoStack: EditorState[];
   };
@@ -129,6 +133,7 @@ function editorReducer(state: EditorState, action: EditorAction): EditorState {
         ...state,
         scenes: [...state.scenes, action.payload],
         selectedSceneId: action.payload.id,
+        hasUnsavedChanges: true,
       };
 
     case "ADD_SCENES":
@@ -142,12 +147,14 @@ function editorReducer(state: EditorState, action: EditorAction): EditorState {
           ...state,
           scenes: [...state.scenes, ...action.payload],
           selectedSceneId: action.payload[0].id,
+          hasUnsavedChanges: true,
         };
       } else {
         // This is a complete scene update, replace all scenes
         return {
           ...state,
           scenes: action.payload,
+          hasUnsavedChanges: true,
         };
       }
 
@@ -173,6 +180,7 @@ function editorReducer(state: EditorState, action: EditorAction): EditorState {
         ...state,
         scenes: state.scenes.filter((scene) => scene.id !== action.payload),
         selectedSceneId: nextSelectedSceneId,
+        hasUnsavedChanges: true,
         // Clear selected element if it was in the deleted scene
         selectedElementId:
           state.selectedElementId &&
@@ -191,12 +199,14 @@ function editorReducer(state: EditorState, action: EditorAction): EditorState {
             ? { ...scene, ...action.payload.updates }
             : scene
         ),
+        hasUnsavedChanges: true,
       };
 
     case "REORDER_SCENES":
       return {
         ...state,
         scenes: action.payload,
+        hasUnsavedChanges: true,
       };
 
     case "SELECT_SCENE":
@@ -218,6 +228,7 @@ function editorReducer(state: EditorState, action: EditorAction): EditorState {
         ...state,
         scenes: updatedScenes,
         selectedElementId: action.payload.element.id,
+        hasUnsavedChanges: true,
       };
     }
 
@@ -241,6 +252,7 @@ function editorReducer(state: EditorState, action: EditorAction): EditorState {
         ...state,
         scenes: updatedScenes,
         globalElements: updatedGlobalElements,
+        hasUnsavedChanges: true,
         selectedElementId:
           state.selectedElementId === action.payload.elementId
             ? null
@@ -249,22 +261,37 @@ function editorReducer(state: EditorState, action: EditorAction): EditorState {
     }
 
     case "UPDATE_ELEMENT": {
+      console.log(
+        "🔧 Reducer: UPDATE_ELEMENT action received:",
+        action.payload
+      );
+
       const updatedScenes = state.scenes.map((scene) =>
         scene.id === action.payload.sceneId
           ? {
               ...scene,
-              elements: scene.elements.map((el) =>
-                el.id === action.payload.elementId
-                  ? { ...el, ...action.payload.updates }
-                  : el
-              ),
+              elements: scene.elements.map((el) => {
+                if (el.id === action.payload.elementId) {
+                  const updatedElement = { ...el, ...action.payload.updates };
+                  console.log(
+                    "🎯 Reducer: Updating element from:",
+                    el,
+                    "to:",
+                    updatedElement
+                  );
+                  return updatedElement;
+                }
+                return el;
+              }),
             }
           : scene
       );
 
+      console.log("✅ Reducer: State updated with new scenes");
       return {
         ...state,
         scenes: updatedScenes,
+        hasUnsavedChanges: true,
       };
     }
 
@@ -287,6 +314,7 @@ function editorReducer(state: EditorState, action: EditorAction): EditorState {
       return {
         ...state,
         globalElements: updatedGlobalElements,
+        hasUnsavedChanges: true,
       };
     }
 
@@ -322,6 +350,7 @@ function editorReducer(state: EditorState, action: EditorAction): EditorState {
       return {
         ...state,
         scenes: updatedScenes,
+        hasUnsavedChanges: true,
       };
     }
 
@@ -363,12 +392,19 @@ function editorReducer(state: EditorState, action: EditorAction): EditorState {
       return {
         ...state,
         lastSaved: action.payload,
+        hasUnsavedChanges: false,
       };
 
     case "SET_SAVING":
       return {
         ...state,
         isSaving: action.payload,
+      };
+
+    case "SET_UNSAVED_CHANGES":
+      return {
+        ...state,
+        hasUnsavedChanges: action.payload,
       };
 
     default:
@@ -562,6 +598,9 @@ export function EditorProvider({
               : scene.animationStatus === "completed" ||
                 scene.animationStatus === "processing" ||
                 scene.animationStatus === "ready",
+          useAnimatedVersion: scene.useAnimatedVersion || false,
+          backgroundHistory: scene.backgroundHistory || [],
+          animationHistory: scene.animationHistory || [],
           // Convert elements
           elements: elements,
         };
@@ -786,6 +825,9 @@ export function EditorProvider({
 
                 return finalValue;
               })(),
+              // Include history fields from the scene data
+              backgroundHistory: scene.backgroundHistory || [],
+              animationHistory: scene.animationHistory || [],
               // Set the processed elements
               elements: processedElements,
             };
@@ -1074,10 +1116,6 @@ export function EditorProvider({
 
           // Success! Update state to reflect saved status
           dispatch({ type: "SET_LAST_SAVED", payload: new Date() });
-          toast({
-            title: "Changes saved",
-            description: "All changes have been saved to the database.",
-          });
         } catch (error) {
           console.error("Error syncing to database:", error);
           toast({

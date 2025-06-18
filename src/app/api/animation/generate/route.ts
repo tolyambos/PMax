@@ -292,9 +292,27 @@ export async function POST(req: Request) {
         finalVideoUrl = s3Utils.generateS3Url(bucket, videoKey);
 
         console.log(`Animation uploaded to S3 successfully: ${finalVideoUrl}`);
+
+        // Clean up the temporary animation file after successful upload
+        try {
+          const fs = await import("fs");
+          await fs.promises.unlink(animationFilePath);
+          console.log(`Cleaned up temporary animation file: ${animationFilePath}`);
+        } catch (cleanupError) {
+          console.error("Failed to clean up temporary animation file:", cleanupError);
+        }
       } catch (s3Error) {
         console.error("Error uploading animation to S3:", s3Error);
         console.log("Falling back to original Runway URL");
+        
+        // Clean up the temporary file even on S3 upload failure
+        try {
+          const fs = await import("fs");
+          await fs.promises.unlink(animationFilePath);
+          console.log(`Cleaned up temporary animation file after S3 failure: ${animationFilePath}`);
+        } catch (cleanupError) {
+          console.error("Failed to clean up temporary animation file:", cleanupError);
+        }
         // Continue with Runway URL as fallback
       }
 

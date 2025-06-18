@@ -65,7 +65,7 @@ export function parseElementContent(element: any): {
   extractedContent: any;
   extractedText: string | null;
   extractedStyle: { [key: string]: string | number } | null;
-  extractedShapeType: "rectangle" | "circle" | "triangle" | null;
+  extractedShapeType: "rectangle" | null;
   extractedCtaType: "button" | "banner" | "tag" | null;
   extractedFontFamily: string | number | null;
   extractedFontWeight: string | number | null;
@@ -73,7 +73,7 @@ export function parseElementContent(element: any): {
   let extractedContent: any = null;
   let extractedText = "";
   let extractedStyle: { [key: string]: string | number } | null = null;
-  let extractedShapeType: "rectangle" | "circle" | "triangle" | null = null;
+  let extractedShapeType: "rectangle" | null = null;
   let extractedCtaType: "button" | "banner" | "tag" | null = null;
   let extractedFontFamily: string | number | null = null;
   let extractedFontWeight: string | number | null = null;
@@ -239,8 +239,8 @@ export function normalizePercentage(
     return defaultValue;
   }
 
-  // Ensure value is between 0 and 100
-  return Math.max(0, Math.min(100, numericValue));
+  // Ensure value is at least 0, but allow values > 100 for sizing
+  return Math.max(0, numericValue);
 }
 
 /**

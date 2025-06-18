@@ -11,7 +11,10 @@ export function useElementUpdates() {
   // Handler for updating elements with immediate UI feedback
   const handleUpdateElement = useCallback(
     (sceneId: string, elementId: string, updates: any) => {
-      console.log("Updating element:", { elementId, updates });
+      console.log("🔄 useElementUpdates: Updating element:", {
+        elementId,
+        updates,
+      });
 
       // Immediately dispatch the update to the state
       dispatch({
@@ -26,6 +29,8 @@ export function useElementUpdates() {
           },
         },
       });
+
+      console.log("✅ useElementUpdates: Dispatched UPDATE_ELEMENT action");
 
       // Force a re-render in the UI
       const elementInCanvas = document.querySelector(

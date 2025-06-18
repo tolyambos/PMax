@@ -6,20 +6,48 @@ import { s3Utils } from "@/lib/s3-utils";
 
 export async function POST(request: NextRequest) {
   try {
-    // Check authentication - use dev user ID in development
-    let userId: string;
+    // Check authentication using Clerk
+    const authResult = auth();
+    if (!authResult.userId) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+    const clerkUserId = authResult.userId;
 
-    if (process.env.NODE_ENV === "development") {
-      // Use a development user ID
-      userId = "dev-user-id";
-      console.log("Using development user ID for upload:", userId);
-    } else {
-      // In production, use Clerk auth
-      const authResult = auth();
-      if (!authResult.userId) {
-        return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-      }
-      userId = authResult.userId;
+    // Ensure user exists in database and get the database user ID
+    let userId: string;
+    try {
+      // Check if this would be the first user
+      const userCount = await prisma.user.count();
+      const isFirstUser = userCount === 0;
+      
+      const user = await prisma.user.upsert({
+        where: { clerkId: clerkUserId },
+        update: {},
+        create: {
+          clerkId: clerkUserId,
+          email: "", // Will be updated by webhook
+          name: "User", // Will be updated by webhook
+          role: isFirstUser ? "ADMIN" : "USER",
+          permissions: {
+            create: {
+              canCreateProjects: isFirstUser, // Only admin (first user) can create projects by default
+              canUploadAssets: true,
+              maxProjects: isFirstUser ? 1000 : 0, // Admin gets 1000, regular users get 0 by default
+              maxAssetStorage: isFirstUser ? 107374182400 : 1073741824, // 100GB for admin, 1GB for users
+            },
+          },
+        },
+        include: {
+          permissions: true,
+        },
+      });
+      userId = user.id; // Use the database user ID, not the Clerk ID
+    } catch (syncError) {
+      console.error("Error syncing user:", syncError);
+      return NextResponse.json(
+        { error: "Failed to authenticate user" },
+        { status: 500 }
+      );
     }
 
     // Parse the form data
@@ -49,8 +77,8 @@ export async function POST(request: NextRequest) {
     // Get the appropriate S3 bucket for the file type
     const bucket = s3Utils.getBucketForAssetType(fileType);
 
-    // Generate S3 key (path within bucket)
-    const s3Key = s3Utils.generateAssetKey(userId, fileName, fileType);
+    // Generate S3 key (path within bucket) - use Clerk ID for folder structure
+    const s3Key = s3Utils.generateAssetKey(clerkUserId, fileName, fileType);
 
     // Get content type
     const contentType = file.type || `${fileType}/*`;

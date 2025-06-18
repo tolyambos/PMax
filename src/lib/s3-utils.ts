@@ -2,7 +2,6 @@
 /* eslint-disable max-depth */
 /* eslint-disable no-console */
 import {
-  S3Client,
   GetObjectCommand,
   PutObjectCommand,
   DeleteObjectCommand,
@@ -12,6 +11,7 @@ import {
   CopyObjectCommand,
 } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
+import { s3 } from "./s3";
 import fs from "fs";
 import path from "path";
 import { pipeline } from "stream";
@@ -51,15 +51,13 @@ class S3Utils {
   private async ensureBucketExists(bucket: string) {
     try {
       // Check if bucket exists
-      const s3Client = new S3Client({ region: "eu-central-1" });
-      await s3Client.send(new HeadBucketCommand({ Bucket: bucket }));
+      await s3.send(new HeadBucketCommand({ Bucket: bucket }));
     } catch (error: any) {
       if (error.$metadata?.httpStatusCode === 404) {
         // Bucket doesn't exist, create it
         console.log(`Creating bucket: ${bucket}`);
         try {
-          const s3Client = new S3Client({ region: "eu-central-1" });
-          await s3Client.send(new CreateBucketCommand({ Bucket: bucket }));
+          await s3.send(new CreateBucketCommand({ Bucket: bucket }));
           console.log(`Successfully created bucket: ${bucket}`);
         } catch (createError) {
           console.error(`Failed to create bucket ${bucket}:`, createError);
@@ -163,7 +161,7 @@ class S3Utils {
       highWaterMark: CHUNK_SIZE,
     });
 
-    const s3Client = new S3Client({ region: "eu-central-1" });
+    const s3Client = s3;
     const command = new PutObjectCommand({
       Bucket: bucket,
       Key: bucketKey,
@@ -239,7 +237,7 @@ class S3Utils {
       await this.uploadWithStream(bucket, bucketKey, filePath);
 
       // Verify the upload was successful
-      const s3Client = new S3Client({ region: "eu-central-1" });
+      const s3Client = s3;
       const headCommand = new HeadObjectCommand({
         Bucket: bucket,
         Key: bucketKey,
@@ -280,7 +278,7 @@ class S3Utils {
       cleanKey = decodeURIComponent(cleanKey);
 
       // First check if the object exists using HeadObject (more efficient)
-      const s3Client = new S3Client({ region: "eu-central-1" });
+      const s3Client = s3;
       const headCommand = new HeadObjectCommand({
         Bucket: bucket,
         Key: cleanKey,
@@ -343,7 +341,7 @@ class S3Utils {
       contentType,
     });
 
-    const s3Client = new S3Client({ region: "eu-central-1" });
+    const s3Client = s3;
     const command = new PutObjectCommand({
       Bucket: bucket,
       Key: bucketKey,
@@ -393,7 +391,7 @@ class S3Utils {
       // Ensure bucket exists before uploading
       await this.ensureBucketExists(bucket);
 
-      const s3Client = new S3Client({ region: "eu-central-1" });
+      const s3Client = s3;
       const command = new PutObjectCommand({
         Bucket: bucket,
         Key: bucketKey,
@@ -456,7 +454,7 @@ class S3Utils {
 
   public async deleteObject(bucket: string, key: string): Promise<void> {
     try {
-      const s3Client = new S3Client({ region: "eu-central-1" });
+      const s3Client = s3;
       await s3Client.send(
         new DeleteObjectCommand({
           Bucket: bucket,
@@ -497,7 +495,7 @@ class S3Utils {
 
     try {
       // Use the CopyObjectCommand to copy the object within S3
-      const s3Client = new S3Client({ region: "eu-central-1" });
+      const s3Client = s3;
       const command = new CopyObjectCommand({
         Bucket: bucket,
         CopySource: `${bucket}/${sourceKey}`,
@@ -565,7 +563,7 @@ class S3Utils {
     key: string,
     expiresIn: number = 3600
   ): Promise<string> {
-    const s3Client = new S3Client({ region: "eu-central-1" });
+    const s3Client = s3;
     const command = new GetObjectCommand({
       Bucket: bucket,
       Key: key,
@@ -612,7 +610,7 @@ class S3Utils {
 
   /**
    * Refresh an S3 URL to get a fresh presigned URL (server-side safe)
-   * This method constructs the full API URL for server-side contexts
+   * This method directly generates presigned URLs for server-side contexts
    */
   async refreshS3Url(url: string): Promise<string> {
     if (
@@ -625,28 +623,28 @@ class S3Utils {
     }
 
     try {
-      // Construct full URL for server-side context
-      const baseUrl =
-        process.env.NEXTAUTH_URL ||
-        process.env.AUTH_URL ||
-        "http://localhost:3000";
-      const apiUrl = `${baseUrl}/api/s3/presigned-url`;
+      // For server-side contexts, directly generate the presigned URL
+      // instead of making an API call that might fail due to auth
+      const { bucket, bucketKey } = this.extractBucketAndKeyFromUrl(url);
 
-      const response = await fetch(apiUrl, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ url }),
-      });
+      console.log(
+        `[S3Utils.refreshS3Url] Attempting to refresh URL for bucket: ${bucket}, key: ${bucketKey}`
+      );
+      console.log(`[S3Utils.refreshS3Url] Original URL: ${url}`);
 
-      if (response.ok) {
-        const result = await response.json();
-        return result.presignedUrl || url;
-      }
+      // Generate presigned URL directly using S3 client
+      const presignedUrl = await this.getPresignedUrl(bucket, bucketKey);
+      console.log(
+        `[S3Utils.refreshS3Url] Successfully refreshed URL for ${bucketKey}`
+      );
+      console.log(`[S3Utils.refreshS3Url] New presigned URL: ${presignedUrl.substring(0, 100)}...`);
+      return presignedUrl;
     } catch (error) {
       console.error("[S3Utils.refreshS3Url] Error refreshing S3 URL:", error);
+      console.error("[S3Utils.refreshS3Url] Original URL:", url);
+      // Return original URL as fallback
+      return url;
     }
-
-    return url;
   }
 
   // Helper to generate a unique key for uploaded assets

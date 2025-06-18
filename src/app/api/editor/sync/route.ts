@@ -294,8 +294,17 @@ export async function POST(req: Request) {
           ...rest
         } = scene;
 
-        // Extract useAnimatedVersion safely
+        // Extract additional fields safely with type assertions
         const useAnimatedVersion = (scene as any).useAnimatedVersion;
+        const backgroundHistory = (scene as any).backgroundHistory;
+        const animationHistory = (scene as any).animationHistory;
+        
+        console.log(`[sync] Scene ${id} history data:`, {
+          backgroundHistoryLength: backgroundHistory?.length || 0,
+          animationHistoryLength: animationHistory?.length || 0,
+          hasBackgroundHistory: !!backgroundHistory,
+          hasAnimationHistory: !!animationHistory
+        });
 
         // Log the elements for this scene
         console.log(
@@ -304,6 +313,52 @@ export async function POST(req: Request) {
 
         let createdScene;
         try {
+          // Get current scene to check if we should update history
+          const currentScene = await tx.scene.findUnique({
+            where: { id },
+            select: {
+              backgroundHistory: true,
+              animationHistory: true,
+            },
+          });
+
+          // Parse current database history
+          let currentBgHistory = [];
+          let currentAnimHistory = [];
+          
+          if (currentScene?.backgroundHistory) {
+            try {
+              currentBgHistory = typeof currentScene.backgroundHistory === 'string' 
+                ? JSON.parse(currentScene.backgroundHistory as string)
+                : (currentScene.backgroundHistory as any[]);
+            } catch (e) {
+              console.log(`[sync] Error parsing current background history for scene ${id}:`, e);
+            }
+          }
+          
+          if (currentScene?.animationHistory) {
+            try {
+              currentAnimHistory = typeof currentScene.animationHistory === 'string'
+                ? JSON.parse(currentScene.animationHistory as string)
+                : (currentScene.animationHistory as any[]);
+            } catch (e) {
+              console.log(`[sync] Error parsing current animation history for scene ${id}:`, e);
+            }
+          }
+
+          // Only update history if the editor has newer/more data
+          const shouldUpdateBgHistory = backgroundHistory && backgroundHistory.length > currentBgHistory.length;
+          const shouldUpdateAnimHistory = animationHistory && animationHistory.length > currentAnimHistory.length;
+          
+          console.log(`[sync] Scene ${id} history update decision:`, {
+            shouldUpdateBgHistory,
+            shouldUpdateAnimHistory,
+            editorBgCount: backgroundHistory?.length || 0,
+            dbBgCount: currentBgHistory.length,
+            editorAnimCount: animationHistory?.length || 0,
+            dbAnimCount: currentAnimHistory.length
+          });
+
           // Create or update scene
           createdScene = await tx.scene.upsert({
             where: { id },
@@ -319,6 +374,8 @@ export async function POST(req: Request) {
               useAnimatedVersion: useAnimatedVersion || null, // Save user's export choice
               animationStatus: animationStatus || null,
               animationPrompt: animationPrompt || null,
+              backgroundHistory: backgroundHistory || [],
+              animationHistory: animationHistory || [],
             },
             update: {
               id,
@@ -332,6 +389,9 @@ export async function POST(req: Request) {
               useAnimatedVersion: useAnimatedVersion || null, // Update user's export choice
               animationStatus: animationStatus || null,
               animationPrompt: animationPrompt || null,
+              // Only update history if editor has newer data
+              ...(shouldUpdateBgHistory && { backgroundHistory: backgroundHistory }),
+              ...(shouldUpdateAnimHistory && { animationHistory: animationHistory }),
             },
           });
 

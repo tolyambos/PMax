@@ -58,13 +58,14 @@ export default function ExportModal({
   }, [isOpen, state.scenes]);
 
   // Force re-render when any scene's useAnimatedVersion changes
+  const sceneAnimationStates = state.scenes.map((s) => s.useAnimatedVersion).join(',');
   useEffect(() => {
     if (isOpen) {
       console.log(
         "[Export Modal] Scene animation states changed, re-rendering..."
       );
     }
-  }, [isOpen, ...state.scenes.map((s) => s.useAnimatedVersion)]);
+  }, [isOpen, sceneAnimationStates]);
 
   const handleExport = async () => {
     // Set global flag to prevent storage cleanup during export

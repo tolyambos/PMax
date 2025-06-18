@@ -9,6 +9,81 @@ import {
   FALLBACK_STORYBOARD_PROMPT,
 } from "@/app/utils/prompts";
 
+// Function to transform static image prompts into animation-specific prompts
+function transformStaticToAnimationPrompt(staticPrompt: string | null): string | null {
+  if (!staticPrompt) return null;
+  
+  const prompt = staticPrompt.toLowerCase();
+  
+  // Product beauty shots
+  if (prompt.includes("close-up beauty shot") || prompt.includes("beauty shot")) {
+    return staticPrompt.replace(
+      /close-up beauty shot/gi, 
+      "Gentle camera push-in and slow rotation around"
+    ).replace(
+      /on a minimal background/gi,
+      "with subtle depth of field and soft lighting transitions"
+    );
+  }
+  
+  // Person using product
+  if (prompt.includes("person using") || prompt.includes("lifestyle setting")) {
+    return staticPrompt.replace(
+      /person using/gi,
+      "Smooth cinematic shot of person gracefully using"
+    ).replace(
+      /in a.*environment/gi,
+      "with natural movement and dynamic lighting"
+    );
+  }
+  
+  // Split screen scenarios
+  if (prompt.includes("split screen")) {
+    return staticPrompt.replace(
+      /split screen showing/gi,
+      "Dynamic transitions between multiple scenarios showing"
+    ).replace(
+      /being used in multiple settings/gi,
+      "with smooth camera movements and seamless transitions"
+    );
+  }
+  
+  // Close-up detail shots
+  if (prompt.includes("close-up detail") || prompt.includes("close-up of")) {
+    return staticPrompt.replace(
+      /close-up.*of/gi,
+      "Smooth macro camera movement revealing"
+    ).replace(
+      /unique selling point/gi,
+      "innovative features with subtle focus pulls"
+    );
+  }
+  
+  // Call-to-action shots
+  if (prompt.includes("call-to-action") || prompt.includes("pricing")) {
+    return staticPrompt.replace(
+      /shown with/gi,
+      "Animated presentation with"
+    ).replace(
+      /pricing and call to action/gi,
+      "smooth text animations and engaging visual effects"
+    );
+  }
+  
+  // Generic enhancement for any other prompts
+  const animationEnhancements = [
+    "with gentle camera movement",
+    "with subtle lighting effects", 
+    "with smooth transitions",
+    "with cinematic depth",
+    "with dynamic composition"
+  ];
+  
+  const randomEnhancement = animationEnhancements[Math.floor(Math.random() * animationEnhancements.length)];
+  
+  return `${staticPrompt} ${randomEnhancement}`;
+}
+
 // Define project schema
 const ProjectRequestSchema = z.object({
   name: z.string().min(1),
@@ -133,50 +208,41 @@ export async function POST(req: Request) {
       isProductVideo // Flag for product video type
     );
 
-    // Import Prisma client
+    // Import Prisma client and auth utilities
     const { prisma } = await import("@/app/utils/db");
+    const { auth } = await import("@clerk/nextjs/server");
+    const { ensureUserInDatabase, canCreateProject } = await import(
+      "@/lib/auth"
+    );
 
-    // For development, use a fixed user ID but ensure the user exists
-    let userId = "dev-user-id";
+    // Get authenticated user
+    const { userId: clerkUserId } = auth();
 
-    // Ensure the dev user exists in the database
-    try {
-      await prisma.user.upsert({
-        where: { id: userId },
-        update: {},
-        create: {
-          id: userId,
-          name: "Development User",
-          email: "dev@pmax.local",
-        },
-      });
-      console.log(`Ensured dev user exists: ${userId}`);
-    } catch (userError) {
-      console.error("Error ensuring dev user exists:", userError);
-      // Try with a different approach - find or create by email
-      try {
-        const existingUser = await prisma.user.findFirst({
-          where: { email: "dev@pmax.local" },
-        });
-
-        if (existingUser) {
-          userId = existingUser.id;
-          console.log(`Using existing dev user: ${userId}`);
-        } else {
-          const newUser = await prisma.user.create({
-            data: {
-              name: "Development User",
-              email: "dev@pmax.local",
-            },
-          });
-          userId = newUser.id;
-          console.log(`Created new dev user: ${userId}`);
-        }
-      } catch (fallbackError) {
-        console.error("Error creating/finding dev user:", fallbackError);
-        throw new Error("Unable to establish user for project creation");
-      }
+    if (!clerkUserId) {
+      return NextResponse.json(
+        { error: "Authentication required", success: false },
+        { status: 401 }
+      );
     }
+
+    // Ensure user exists in database
+    const user = await ensureUserInDatabase(clerkUserId);
+
+    // Check if user can create projects (includes permission and limit checks)
+    const canCreate = await canCreateProject(user);
+    if (!canCreate.allowed) {
+      return NextResponse.json(
+        {
+          error: canCreate.reason,
+          success: false,
+          currentCount: canCreate.currentCount,
+          maxProjects: canCreate.maxProjects,
+        },
+        { status: 403 }
+      );
+    }
+
+    const userId = user.id;
 
     // 2. Generate images for scenes using Runware and upload to S3
     const scenes = await generateScenesFromConcept(
@@ -192,15 +258,6 @@ export async function POST(req: Request) {
     console.log(`Returning ${scenes.length} generated scenes to client`);
 
     // 3. Create the project in the database
-
-    // In production, implement proper authentication check here
-    if (process.env.NODE_ENV !== "development") {
-      // For now, return an error in production until auth is implemented
-      return NextResponse.json(
-        { error: "Authentication required", success: false },
-        { status: 401 }
-      );
-    }
 
     // Use Prisma transaction to ensure data consistency
     let result;
@@ -356,8 +413,8 @@ export async function POST(req: Request) {
             };
           }
 
-          // Use the scene prompt directly for animation
-          const animationPrompt = scene.prompt || "animate this scene";
+          // Transform static prompt into animation-specific prompt
+          const animationPrompt = transformStaticToAnimationPrompt(scene.prompt) || "animate this scene";
           console.log(
             `🎬 Using scene prompt for animation ${index + 1}: ${animationPrompt.substring(0, 100)}...`
           );

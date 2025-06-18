@@ -8,20 +8,38 @@ import { auth } from "@clerk/nextjs";
  */
 export async function GET() {
   try {
-    // Get user ID - in development we use a dev user ID
-    let userId: string;
+    // Check authentication using Clerk (same as upload route)
+    const authResult = auth();
+    if (!authResult.userId) {
+      return NextResponse.json(
+        { success: false, error: "Unauthorized" },
+        { status: 401 }
+      );
+    }
+    const clerkUserId = authResult.userId;
 
-    if (process.env.NODE_ENV === "development") {
-      userId = "dev-user-id";
-    } else {
-      const authResult = auth();
-      if (!authResult.userId) {
+    // Get the database user ID from the Clerk user ID
+    let userId: string;
+    try {
+      const user = await prisma.user.findUnique({
+        where: { clerkId: clerkUserId },
+        select: { id: true },
+      });
+
+      if (!user) {
         return NextResponse.json(
-          { success: false, error: "Unauthorized" },
-          { status: 401 }
+          { success: false, error: "User not found" },
+          { status: 404 }
         );
       }
-      userId = authResult.userId;
+
+      userId = user.id;
+    } catch (error) {
+      console.error("Error finding user:", error);
+      return NextResponse.json(
+        { success: false, error: "Failed to authenticate user" },
+        { status: 500 }
+      );
     }
 
     // Fetch assets from the database

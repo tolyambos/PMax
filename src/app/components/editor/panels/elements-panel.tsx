@@ -192,9 +192,7 @@ function ElementsList({
                 onAddElement={() => {}}
                 sceneId={scene.id}
                 selectedElement={element}
-                onUpdateElement={(elementId: string, updates: any) =>
-                  onUpdateElement(scene.id, elementId, updates)
-                }
+                onUpdateElement={onUpdateElement}
                 onMakeElementGlobal={() => handleMakeElementGlobal(element)}
               />
 
@@ -304,6 +302,13 @@ export default function ElementsPanel({
         )
       : null;
   const selectedElementToUse = selectedElementFromContext;
+
+  console.log("🔍 ElementsPanel: Selected element computed:", {
+    selectedElementId: state.selectedElementId,
+    selectedElement: selectedElementToUse,
+    width: selectedElementToUse?.width,
+    height: selectedElementToUse?.height,
+  });
 
   // Combined update handler that uses both options
   const handleUpdateElement = useCallback(

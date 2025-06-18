@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { Button } from "@/app/components/ui/button";
+import MainNavigation from "@/app/components/navigation/main-nav";
 import AssetGrid from "@/app/components/assets/asset-grid";
 import UploadButton from "@/app/components/assets/upload-button";
 import { useRouter } from "next/navigation";
@@ -20,27 +21,13 @@ export default function AssetsPage() {
   };
 
   return (
-    <main className="flex flex-col min-h-screen">
-      <div className="flex items-center px-6 h-16 border-b">
-        <Link href="/" className="text-xl font-bold">
-          PMax
-        </Link>
-        <div className="flex gap-4 items-center ml-auto">
-          <Link href="/">
-            <Button variant="outline" size="sm">
-              Back to Home
-            </Button>
-          </Link>
-          <UploadButton />
-          <Button variant="ghost" size="sm" onClick={handleLogout}>
-            Logout
-          </Button>
-        </div>
-      </div>
-
+    <div className="min-h-screen bg-background">
+      <MainNavigation />
+      
       <div className="container flex flex-col flex-1 py-8">
         <div className="flex justify-between items-center mb-8">
           <h1 className="text-3xl font-bold">Media Library</h1>
+          <UploadButton />
         </div>
 
         <div className="flex mb-6 space-x-2">
@@ -60,6 +47,6 @@ export default function AssetsPage() {
 
         <AssetGrid />
       </div>
-    </main>
+    </div>
   );
 }

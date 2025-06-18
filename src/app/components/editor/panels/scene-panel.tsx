@@ -30,7 +30,6 @@ import {
 import { ScrollArea } from "@/app/components/ui/scroll-area";
 import { useEditor } from "../context/editor-context";
 import { useSceneManagement } from "../hooks/use-scene-management";
-import { useAssetManagement } from "../hooks/use-asset-management";
 import { useVideoFormat } from "@/app/contexts/format-context";
 import AIPromptModal from "../ai-prompt-modal";
 import {
@@ -38,30 +37,17 @@ import {
   ImageIcon,
   Wand2,
   Play,
-  Pause,
-  RotateCw,
   Upload,
-  Settings,
   Clock,
   Film,
   Loader2,
   CheckCircle,
-  AlertCircle,
-  Download,
   Plus,
-  Eye,
-  EyeOff,
   FileImage,
-  RefreshCw,
   Layers,
   Video,
-  Timer,
   Zap,
-  History,
-  Grid3X3,
   ArrowRight,
-  ExternalLink,
-  ArrowDown,
   Mic,
   X,
   Image,
@@ -97,22 +83,18 @@ export default function ScenePanel({
   toast,
   scenes,
   selectedScene,
-  selectedSceneId,
   onAddScenes,
   onUpdateSceneDuration,
   onUpdateSceneBackground,
-  onToggleAnimation,
 }: ScenePanelProps) {
   const { state, dispatch, handleUpdateSceneDuration, syncToDatabase } =
     useEditor();
   const {
     updateSceneDuration,
     updateSceneBackground,
-    toggleSceneAnimation,
     generateSceneAnimation,
     isGenerating,
   } = useSceneManagement();
-  const { setAssetAsBackground } = useAssetManagement();
   const { currentFormat } = useVideoFormat();
 
   // Local state
@@ -144,7 +126,6 @@ export default function ScenePanel({
       sourceImageUrl?: string;
     }>
   >([]);
-  const [currentDuration, setCurrentDuration] = useState(3);
   const [isAIModalOpen, setIsAIModalOpen] = useState(false);
   const [aiPromptType, setAIPromptType] = useState<"scene" | "background">(
     "background"
@@ -226,157 +207,359 @@ export default function ScenePanel({
     []
   );
 
+  // Helper function to process background history from any source
+  const processBackgroundHistory = async (dbHistory: any[]) => {
+    console.log(`[processBackgroundHistory] Starting with dbHistory:`, dbHistory);
+    
+    // Deduplicate history based on URL (extract S3 key for comparison)
+    const uniqueHistory = new Map();
+
+    // Process database history
+    for (const item of dbHistory) {
+      const s3Key = extractS3Key(item.url);
+      if (s3Key && !uniqueHistory.has(s3Key)) {
+        uniqueHistory.set(s3Key, item);
+      }
+    }
+
+    let fullHistory = Array.from(uniqueHistory.values());
+    console.log(`[processBackgroundHistory] After deduplication:`, fullHistory);
+
+    // Add original image if not in history and no existing original found
+    const hasOriginalInHistory = fullHistory.some((item) => item.isOriginal);
+    console.log(`[processBackgroundHistory] hasOriginalInHistory:`, hasOriginalInHistory);
+
+    if (selectedSceneToUse.imageUrl && !hasOriginalInHistory) {
+      const originalKey = extractS3Key(selectedSceneToUse.imageUrl);
+      if (originalKey && !uniqueHistory.has(originalKey)) {
+        console.log(`[processBackgroundHistory] Adding original image to history`);
+        const freshOriginalUrl = await getFreshPresignedUrl(
+          selectedSceneToUse.imageUrl
+        );
+
+        fullHistory = [
+          {
+            url: freshOriginalUrl,
+            prompt: selectedSceneToUse.prompt || "Original image",
+            timestamp: 0,
+            isOriginal: true,
+          },
+          ...fullHistory,
+        ];
+
+        // Save this original image to history if it's not already there
+        console.log(`[processBackgroundHistory] Saving original to database`);
+        await saveBackgroundHistoryEntry({
+          url: selectedSceneToUse.imageUrl,
+          prompt: selectedSceneToUse.prompt || "Original image",
+          timestamp: 0,
+          isOriginal: true,
+        });
+      }
+    }
+
+    // Sort by timestamp (newest first, except original which stays first)
+    fullHistory.sort((a, b) => {
+      if (a.isOriginal) return -1;
+      if (b.isOriginal) return 1;
+      return b.timestamp - a.timestamp;
+    });
+
+    console.log(`[processBackgroundHistory] Final sorted history:`, fullHistory);
+    setBackgroundHistory(fullHistory);
+
+    // Also create refreshed version for display
+    const refreshedHistory = await Promise.all(
+      fullHistory.map(async (item) => {
+        try {
+          const refreshedUrl = await getFreshPresignedUrl(item.url);
+          return { ...item, url: refreshedUrl };
+        } catch (error) {
+          console.error("Failed to refresh background history URL:", error);
+          return item; // Fallback to original
+        }
+      })
+    );
+    setRefreshedBackgroundHistory(refreshedHistory);
+  };
+
   const loadBackgroundHistory = async () => {
     if (!selectedSceneToUse?.id) return;
 
+    console.log(
+      `[loadBackgroundHistory] Loading history for scene ${selectedSceneToUse.id}`
+    );
+
     try {
+      // Always call API to ensure proper JSON parsing and S3 URL refreshing
       const response = await fetch(
         `/api/scenes/${selectedSceneToUse.id}/background-history`
       );
+      console.log(
+        `[loadBackgroundHistory] API Response status: ${response.status}`
+      );
+
       if (response.ok) {
         const result = await response.json();
         const dbHistory = result.data.history || [];
-
-        // Deduplicate history based on URL (extract S3 key for comparison)
-        const uniqueHistory = new Map();
-
-        // Process database history
-        for (const item of dbHistory) {
-          const s3Key = extractS3Key(item.url);
-          if (s3Key && !uniqueHistory.has(s3Key)) {
-            uniqueHistory.set(s3Key, item);
-          }
-        }
-
-        let fullHistory = Array.from(uniqueHistory.values());
-
-        // Add original image if not in history and no existing original found
-        const hasOriginalInHistory = fullHistory.some(
-          (item) => item.isOriginal
+        console.log(
+          `[loadBackgroundHistory] Loaded ${dbHistory.length} history items from API`
         );
-
-        if (selectedSceneToUse.imageUrl && !hasOriginalInHistory) {
-          const originalKey = extractS3Key(selectedSceneToUse.imageUrl);
-          if (originalKey && !uniqueHistory.has(originalKey)) {
-            const freshOriginalUrl = await getFreshPresignedUrl(
-              selectedSceneToUse.imageUrl
-            );
-
-            fullHistory = [
-              {
-                url: freshOriginalUrl,
-                prompt: "Original image",
-                timestamp: 0,
-                isOriginal: true,
-              },
-              ...fullHistory,
-            ];
+        console.log(
+          `[loadBackgroundHistory] API Response:`, {
+            success: result.success,
+            historyCount: dbHistory.length,
+            firstItem: dbHistory[0],
+            result: result
           }
-        }
-
-        // Sort by timestamp (newest first, except original which stays first)
-        fullHistory.sort((a, b) => {
-          if (a.isOriginal) return -1;
-          if (b.isOriginal) return 1;
-          return b.timestamp - a.timestamp;
-        });
-
-        setBackgroundHistory(fullHistory);
-
-        // Also create refreshed version for display
-        const refreshedHistory = await Promise.all(
-          fullHistory.map(async (item) => {
-            try {
-              const refreshedUrl = await getFreshPresignedUrl(item.url);
-              return { ...item, url: refreshedUrl };
-            } catch (error) {
-              console.error("Failed to refresh background history URL:", error);
-              return item; // Fallback to original
-            }
-          })
         );
-        setRefreshedBackgroundHistory(refreshedHistory);
+        await processBackgroundHistory(dbHistory);
       } else {
-        // If error or no history, clear the background history
-        setBackgroundHistory([]);
-        setRefreshedBackgroundHistory([]);
+        // If error or no history, create initial history with original image if it exists
+        if (response.status !== 404) {
+          console.error(
+            `Failed to load background history (${response.status}):`,
+            await response.text().catch(() => "Unknown error")
+          );
+        }
+
+        // For 404 or other errors, check if we have an image to show
+        // Note: This might be an edited image if the scene was already modified
+        if (selectedSceneToUse.imageUrl) {
+          const freshUrl = await getFreshPresignedUrl(
+            selectedSceneToUse.imageUrl
+          );
+
+          // For 404 errors, we can't know if this is truly the original or an edited version
+          // Mark it as "Current background" to be accurate
+          const entry = {
+            url: freshUrl,
+            prompt: selectedSceneToUse.prompt || "Current background",
+            timestamp: Date.now(),
+            isOriginal: false, // Don't mark as original since we can't be sure
+          };
+
+          setBackgroundHistory([entry]);
+          setRefreshedBackgroundHistory([entry]);
+
+          // Don't save on 404 - let the user's next action create the history
+        } else {
+          setBackgroundHistory([]);
+          setRefreshedBackgroundHistory([]);
+        }
       }
     } catch (error) {
       console.error("Failed to load background history:", error);
-      setBackgroundHistory([]);
-      setRefreshedBackgroundHistory([]);
+
+      // Even on error, show the current image if it exists
+      if (selectedSceneToUse.imageUrl) {
+        try {
+          const freshUrl = await getFreshPresignedUrl(
+            selectedSceneToUse.imageUrl
+          );
+
+          const entry = {
+            url: freshUrl,
+            prompt: selectedSceneToUse.prompt || "Current background",
+            timestamp: Date.now(),
+            isOriginal: false,
+          };
+
+          setBackgroundHistory([entry]);
+          setRefreshedBackgroundHistory([entry]);
+        } catch (urlError) {
+          console.error("Failed to refresh image URL:", urlError);
+          setBackgroundHistory([]);
+          setRefreshedBackgroundHistory([]);
+        }
+      } else {
+        setBackgroundHistory([]);
+        setRefreshedBackgroundHistory([]);
+      }
     }
+  };
+
+  // Helper function to clean URLs for database storage
+  const cleanUrlForDatabase = (inputUrl: string): string => {
+    let cleanUrl = inputUrl;
+    
+    // Remove presigned query parameters if present
+    if (cleanUrl.includes('?X-Amz-')) {
+      cleanUrl = cleanUrl.split('?')[0];
+    }
+    
+    // Remove any other query parameters that might cause JSON issues
+    if (cleanUrl.includes('?')) {
+      cleanUrl = cleanUrl.split('?')[0];
+    }
+    
+    // Ensure the URL doesn't contain characters that would break JSON
+    cleanUrl = cleanUrl.replace(/[\x00-\x1f\x7f-\x9f]/g, '');
+    
+    return cleanUrl;
   };
 
   const saveBackgroundHistoryEntry = async (entry: {
     url: string;
     prompt: string;
     timestamp: number;
+    isOriginal?: boolean;
   }) => {
     if (!selectedSceneToUse?.id) return;
 
     try {
+      const cleanUrl = cleanUrlForDatabase(entry.url);
+      
+      const cleanedEntry = {
+        ...entry,
+        url: cleanUrl
+      };
+      
+      console.log(`[saveBackgroundHistoryEntry] Saving entry:`, {
+        original: entry,
+        cleaned: cleanedEntry
+      });
+      
       // Check if this URL already exists in history (by S3 key)
-      const entryKey = extractS3Key(entry.url);
+      const entryKey = extractS3Key(cleanedEntry.url);
       const isDuplicate = backgroundHistory.some((item) => {
         const itemKey = extractS3Key(item.url);
         return entryKey && itemKey && entryKey === itemKey;
       });
 
+      console.log(`[saveBackgroundHistoryEntry] Duplicate check:`, {
+        entryKey,
+        isDuplicate,
+        currentHistoryCount: backgroundHistory.length
+      });
+
       if (!isDuplicate) {
-        await fetch(`/api/scenes/${selectedSceneToUse.id}/background-history`, {
+        const response = await fetch(`/api/scenes/${selectedSceneToUse.id}/background-history`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(entry),
+          body: JSON.stringify(cleanedEntry),
         });
+        
+        console.log(`[saveBackgroundHistoryEntry] POST response status: ${response.status}`);
+        
+        if (!response.ok) {
+          const errorText = await response.text();
+          console.error(`[saveBackgroundHistoryEntry] Failed to save:`, errorText);
+        } else {
+          const result = await response.json();
+          console.log(`[saveBackgroundHistoryEntry] Save successful:`, result);
+        }
+      } else {
+        console.log(`[saveBackgroundHistoryEntry] Skipping duplicate entry`);
       }
     } catch (error) {
-      console.error("Failed to save background history:", error);
+      console.error("[saveBackgroundHistoryEntry] Error:", error);
     }
+  };
+
+  // Helper function to process animation history from any source
+  const processAnimationHistory = async (
+    dbHistory: any[],
+    currentAnimation?: any
+  ) => {
+    let fullHistory = [...dbHistory];
+
+    if (
+      currentAnimation?.videoUrl &&
+      !dbHistory.some(
+        (item: any) => item.videoUrl === currentAnimation.videoUrl
+      )
+    ) {
+      const freshVideoUrl = await getFreshPresignedUrl(
+        currentAnimation.videoUrl
+      );
+
+      fullHistory = [
+        {
+          videoUrl: freshVideoUrl,
+          animationPrompt:
+            currentAnimation.animationPrompt || "Original animation",
+          animationStatus: currentAnimation.animationStatus || "completed",
+          timestamp: 0,
+          isOriginal: true,
+        },
+        ...dbHistory,
+      ];
+    }
+
+    // Generate fresh presigned URLs for all S3 videos in history
+    const historyWithFreshUrls = await Promise.all(
+      fullHistory.map(async (item: any) => {
+        let freshVideoUrl = item.videoUrl;
+
+        // Check if this is an S3 URL that needs a fresh presigned URL
+        if (
+          item.videoUrl &&
+          (item.videoUrl.includes("wasabisys.com") ||
+            item.videoUrl.includes("amazonaws.com") ||
+            item.videoUrl.includes("s3."))
+        ) {
+          try {
+            freshVideoUrl = await getFreshPresignedUrl(item.videoUrl);
+            console.log(
+              `[processAnimationHistory] Generated fresh URL for history item: ${item.videoUrl}`
+            );
+          } catch (error) {
+            console.error(
+              `[processAnimationHistory] Failed to generate fresh URL for ${item.videoUrl}:`,
+              error
+            );
+            // Keep original URL as fallback
+          }
+        }
+
+        return {
+          ...item,
+          videoUrl: freshVideoUrl,
+        };
+      })
+    );
+
+    setAnimationHistory(historyWithFreshUrls);
   };
 
   const loadAnimationHistory = useCallback(async () => {
     if (!selectedSceneToUse?.id) return;
 
+    console.log(
+      `[loadAnimationHistory] Loading animation history for scene ${selectedSceneToUse.id}`
+    );
+
     try {
+      // Always call API to ensure proper JSON parsing and S3 URL refreshing
       const response = await fetch(
         `/api/scenes/${selectedSceneToUse.id}/animation-history`
+      );
+      console.log(
+        `[loadAnimationHistory] API Response status: ${response.status}`
       );
 
       if (response.ok) {
         const result = await response.json();
         const dbHistory = result.data.history || [];
-
-        let fullHistory = [...dbHistory];
         const currentAnimation = result.data.currentAnimation;
-
-        if (
-          currentAnimation?.videoUrl &&
-          !dbHistory.some(
-            (item: any) => item.videoUrl === currentAnimation.videoUrl
-          )
-        ) {
-          const freshVideoUrl = await getFreshPresignedUrl(
-            currentAnimation.videoUrl
+        console.log(
+          `[loadAnimationHistory] Loaded ${dbHistory.length} animation history items from API`
+        );
+        await processAnimationHistory(dbHistory, currentAnimation);
+      } else {
+        // If error or no history, clear the animation history
+        if (response.status !== 404) {
+          console.error(
+            `Failed to load animation history (${response.status}):`,
+            await response.text().catch(() => "Unknown error")
           );
-
-          fullHistory = [
-            {
-              videoUrl: freshVideoUrl,
-              animationPrompt:
-                currentAnimation.animationPrompt || "Original animation",
-              animationStatus: currentAnimation.animationStatus || "completed",
-              timestamp: 0,
-              isOriginal: true,
-            },
-            ...dbHistory,
-          ];
         }
-
-        setAnimationHistory(fullHistory);
+        setAnimationHistory([]);
       }
     } catch (error) {
       console.error("[loadAnimationHistory] Failed:", error);
+      setAnimationHistory([]);
     }
   }, [selectedSceneToUse?.id, getFreshPresignedUrl, setAnimationHistory]);
 
@@ -476,17 +659,36 @@ export default function ScenePanel({
         });
 
         if (!isDuplicate) {
-          setBackgroundHistory((prev) => [...prev, historyEntry]);
+          const newHistory = [...backgroundHistory, historyEntry];
+          setBackgroundHistory(newHistory);
+
+          // Update the scene's background history in the editor context FIRST
+          dispatch({
+            type: "UPDATE_SCENE",
+            payload: {
+              sceneId: selectedSceneToUse.id,
+              updates: {
+                backgroundHistory: newHistory,
+              },
+            },
+          });
+          
+          // Save to API
+          await saveBackgroundHistoryEntry(historyEntry);
+
+          toast({
+            title: "Background generated!",
+            description: `Created: "${finalPrompt}"`,
+          });
+
+          // Don't sync immediately - the background history API already saved to database
+          // Sync will happen automatically via the editor's autosave mechanism
+        } else {
+          toast({
+            title: "Background generated!",
+            description: `Created: "${finalPrompt}"`,
+          });
         }
-        await saveBackgroundHistoryEntry(historyEntry);
-
-        toast({
-          title: "Background generated!",
-          description: `Created: "${finalPrompt}"`,
-        });
-
-        // Manually trigger sync to database
-        await syncToDatabase();
 
         // Refresh current scene URLs to ensure the image displays properly
         await refreshCurrentSceneUrls();
@@ -545,17 +747,36 @@ export default function ScenePanel({
         });
 
         if (!isDuplicate) {
-          setBackgroundHistory((prev) => [...prev, historyEntry]);
+          const newHistory = [...backgroundHistory, historyEntry];
+          setBackgroundHistory(newHistory);
+
+          // Update the scene's background history in the editor context FIRST
+          dispatch({
+            type: "UPDATE_SCENE",
+            payload: {
+              sceneId: selectedSceneToUse.id,
+              updates: {
+                backgroundHistory: newHistory,
+              },
+            },
+          });
+          
+          // Save to API
+          await saveBackgroundHistoryEntry(historyEntry);
+
+          toast({
+            title: "Background edited!",
+            description: `Applied: "${finalPrompt}"`,
+          });
+
+          // Don't sync immediately - the background history API already saved to database
+          // Sync will happen automatically via the editor's autosave mechanism
+        } else {
+          toast({
+            title: "Background edited!",
+            description: `Applied: "${finalPrompt}"`,
+          });
         }
-        await saveBackgroundHistoryEntry(historyEntry);
-
-        toast({
-          title: "Background edited!",
-          description: `Applied: "${finalPrompt}"`,
-        });
-
-        // Manually trigger sync to database
-        await syncToDatabase();
       }
 
       if (!promptToUse) {
@@ -576,7 +797,6 @@ export default function ScenePanel({
   const handleDurationChange = (value: number[]) => {
     if (selectedSceneToUse?.id) {
       const newDuration = value[0];
-      setCurrentDuration(newDuration);
 
       updateSceneDuration(selectedSceneToUse.id, newDuration);
       onUpdateSceneDuration?.(selectedSceneToUse.id, newDuration);
@@ -670,28 +890,6 @@ export default function ScenePanel({
         title: "Upload failed",
         description: "Failed to upload background image",
         variant: "destructive",
-      });
-    }
-  };
-
-  const restoreBackground = async (
-    historyItem: (typeof backgroundHistory)[0]
-  ) => {
-    if (selectedSceneToUse?.id) {
-      updateSceneBackground(selectedSceneToUse.id, historyItem.url);
-      onUpdateSceneBackground?.(selectedSceneToUse.id, historyItem.url);
-
-      dispatch({
-        type: "UPDATE_SCENE",
-        payload: {
-          sceneId: selectedSceneToUse.id,
-          updates: { imageUrl: historyItem.url },
-        },
-      });
-
-      toast({
-        title: "Background restored",
-        description: `Restored: "${historyItem.prompt}"`,
       });
     }
   };
@@ -1053,7 +1251,6 @@ Create a concise, effective video prompt for animation creation based on the inp
   // Effects
   useEffect(() => {
     if (selectedSceneToUse) {
-      setCurrentDuration(selectedSceneToUse.duration);
       setSelectedStaticImage(selectedSceneToUse.imageUrl || null);
       setUseAnimatedVersion(
         selectedSceneToUse.useAnimatedVersion ?? !!selectedSceneToUse.videoUrl
@@ -1214,7 +1411,7 @@ Create a concise, effective video prompt for animation creation based on the inp
               </div>
               <div>
                 <h2 className="text-xl font-bold">Scene {sceneIndex}</h2>
-                <p className="text-xs text-muted-foreground">
+                <p className="text-sm text-muted-foreground">
                   {selectedSceneToUse.elements.length} elements •{" "}
                   {selectedSceneToUse.duration}s
                 </p>
@@ -1234,7 +1431,7 @@ Create a concise, effective video prompt for animation creation based on the inp
             <Card className="bg-gradient-to-br border-2 border-purple-200 dark:border-purple-800 from-purple-50/50 to-blue-50/50 dark:from-purple-950/30 dark:to-blue-950/30">
               <CardHeader className="pb-4">
                 <div className="flex justify-between items-center">
-                  <CardTitle className="flex gap-2 items-center text-xl">
+                  <CardTitle className="flex gap-2 items-center text-lg">
                     <Layers className="w-5 h-5" />
                     Scene Display Mode
                   </CardTitle>
@@ -1245,7 +1442,7 @@ Create a concise, effective video prompt for animation creation based on the inp
                       </Badge>
                     )}
                     {selectedSceneToUse.videoUrl && (
-                      <Badge variant="outline" className="text-xs">
+                      <Badge variant="outline" className="text-sm font-medium">
                         Animated
                       </Badge>
                     )}
@@ -1525,74 +1722,173 @@ Create a concise, effective video prompt for animation creation based on the inp
                   </Button>
                 </div>
 
-                {/* Background Selection */}
+                {/* Enhanced Background & Animation Selection */}
                 {backgroundHistory.length > 0 && (
-                  <div className="pt-4 space-y-3 border-t">
+                  <div className="pt-4 space-y-4 border-t">
                     <Label className="flex gap-2 items-center text-sm font-medium">
-                      <FileImage className="w-4 h-4 text-blue-600 dark:text-blue-400" />
-                      Select Background Version
+                      <Layers className="w-4 h-4 text-blue-600 dark:text-blue-400" />
+                      Background Versions & Animations
                     </Label>
-                    <div className="grid grid-cols-3 gap-2">
-                      {backgroundHistory.slice(0, 6).map((item, index) => {
-                        const refreshedItem =
-                          refreshedBackgroundHistory[index] || item;
-                        const isSelected =
-                          selectedStaticImage === item.url ||
-                          (selectedSceneToUse.imageUrl === item.url &&
-                            !selectedStaticImage);
+                    
+                    {/* Background versions with their animations */}
+                    <div className="space-y-3">
+                      {backgroundHistory.slice(0, 6).map((item, bgIndex) => {
+                        const refreshedItem = refreshedBackgroundHistory[bgIndex] || item;
+                        const isBackgroundSelected = selectedStaticImage === item.url ||
+                          (selectedSceneToUse.imageUrl === item.url && !selectedStaticImage);
+
+                        // Find animations for this specific background image
+                        const animationsForThisImage = animationHistory.filter((anim) => {
+                          const staticKey = extractS3Key(item.url);
+                          const animationSourceKey = extractS3Key(anim.sourceImageUrl || "");
+                          return (
+                            anim.sourceImageUrl === item.url ||
+                            (staticKey && animationSourceKey && staticKey === animationSourceKey)
+                          );
+                        });
 
                         return (
-                          <div
-                            key={index}
-                            className={`relative cursor-pointer rounded-lg overflow-hidden border-2 transition-all ${
-                              isSelected
-                                ? "border-blue-500 shadow-md scale-105"
-                                : "border-transparent hover:border-gray-300 dark:hover:border-gray-600"
-                            }`}
-                            onClick={async () => {
-                              setSelectedStaticImage(item.url);
-                              // Always update scene state when selecting a static image
-                              if (selectedSceneToUse?.id) {
-                                dispatch({
-                                  type: "UPDATE_SCENE",
-                                  payload: {
-                                    sceneId: selectedSceneToUse.id,
-                                    updates: {
-                                      imageUrl: item.url,
-                                      videoUrl: !useAnimatedVersion
-                                        ? undefined
-                                        : selectedSceneToUse.videoUrl,
-                                      animationStatus: !useAnimatedVersion
-                                        ? "none"
-                                        : selectedSceneToUse.animationStatus,
-                                      animate: useAnimatedVersion,
-                                      useAnimatedVersion: useAnimatedVersion,
-                                    },
-                                  },
-                                });
-                                updateSceneBackground(
-                                  selectedSceneToUse.id,
-                                  item.url
-                                );
-                                // Manually trigger sync to database
-                                await syncToDatabase();
-                              }
-                            }}
-                          >
-                            <img
-                              src={refreshedItem.url}
-                              alt={item.prompt}
-                              className="object-cover w-full h-20"
-                            />
-                            <div className="absolute inset-0 bg-gradient-to-t to-transparent from-black/60" />
-                            <div className="absolute right-1 bottom-1 left-1">
-                              <p className="text-[10px] text-white font-medium truncate">
-                                {item.isOriginal ? "Original" : item.prompt}
-                              </p>
+                          <div key={bgIndex} className="p-3 rounded-lg border bg-muted/30">
+                            {/* Background image header */}
+                            <div className="flex gap-3 items-center mb-3">
+                              <div
+                                className={`relative cursor-pointer rounded-lg overflow-hidden border-2 transition-all ${
+                                  isBackgroundSelected
+                                    ? "border-blue-500 shadow-md"
+                                    : "border-transparent hover:border-gray-300 dark:hover:border-gray-600"
+                                }`}
+                                onClick={async () => {
+                                  setSelectedStaticImage(item.url);
+
+                                  // Get the most recent animation for this background
+                                  const latestAnimation = animationsForThisImage.length > 0
+                                    ? animationsForThisImage.sort((a, b) => b.timestamp - a.timestamp)[0]
+                                    : null;
+
+                                  // Update scene state when selecting a static image
+                                  if (selectedSceneToUse?.id) {
+                                    dispatch({
+                                      type: "UPDATE_SCENE",
+                                      payload: {
+                                        sceneId: selectedSceneToUse.id,
+                                        updates: {
+                                          imageUrl: item.url,
+                                          videoUrl: latestAnimation?.videoUrl || undefined,
+                                          animationStatus: latestAnimation ? "completed" : undefined,
+                                          animationPrompt: latestAnimation?.animationPrompt || undefined,
+                                          animate: latestAnimation ? true : false,
+                                          useAnimatedVersion: false, // Default to static version
+                                        },
+                                      },
+                                    });
+                                    updateSceneBackground(selectedSceneToUse.id, item.url);
+                                    setUseAnimatedVersion(false);
+                                    await syncToDatabase();
+                                  }
+                                }}
+                              >
+                                <img
+                                  src={refreshedItem.url}
+                                  alt={item.prompt}
+                                  className="object-cover w-16 h-16"
+                                />
+                                {isBackgroundSelected && (
+                                  <div className="absolute top-1 right-1">
+                                    <CheckCircle className="w-3 h-3 text-white drop-shadow-md" />
+                                  </div>
+                                )}
+                              </div>
+                              
+                              <div className="flex-1">
+                                <p className="text-sm font-medium">
+                                  {item.isOriginal ? "Original" : item.prompt}
+                                </p>
+                                <p className="text-xs text-muted-foreground">
+                                  {animationsForThisImage.length} animation{animationsForThisImage.length !== 1 ? 's' : ''} available
+                                </p>
+                              </div>
                             </div>
-                            {isSelected && (
-                              <div className="absolute top-1 right-1">
-                                <CheckCircle className="w-4 h-4 text-white drop-shadow-md" />
+
+                            {/* Animation versions for this background */}
+                            {animationsForThisImage.length > 0 && (
+                              <div className="ml-1 space-y-2">
+                                <Label className="text-xs text-muted-foreground">Animation Versions:</Label>
+                                <div className="grid grid-cols-2 gap-2">
+                                  {animationsForThisImage.map((anim, animIndex) => {
+                                    const isAnimationSelected = 
+                                      selectedSceneToUse?.videoUrl === anim.videoUrl && 
+                                      selectedSceneToUse?.imageUrl === item.url &&
+                                      useAnimatedVersion;
+
+                                    return (
+                                      <div
+                                        key={animIndex}
+                                        className={`relative cursor-pointer rounded-lg border-2 p-2 transition-all ${
+                                          isAnimationSelected
+                                            ? "border-purple-500 bg-purple-50 dark:bg-purple-900/20"
+                                            : "border-gray-200 dark:border-gray-700 hover:border-purple-300 dark:hover:border-purple-600"
+                                        }`}
+                                        onClick={async () => {
+                                          if (selectedSceneToUse?.id) {
+                                            // Set the background and animation
+                                            dispatch({
+                                              type: "UPDATE_SCENE",
+                                              payload: {
+                                                sceneId: selectedSceneToUse.id,
+                                                updates: {
+                                                  imageUrl: item.url,
+                                                  videoUrl: anim.videoUrl,
+                                                  animationPrompt: anim.animationPrompt,
+                                                  animationStatus: "completed",
+                                                  animate: true,
+                                                  useAnimatedVersion: true,
+                                                },
+                                              },
+                                            });
+                                            
+                                            setSelectedStaticImage(item.url);
+                                            setUseAnimatedVersion(true);
+                                            
+                                            toast({
+                                              title: "Animation selected",
+                                              description: `Using: "${anim.animationPrompt}"`,
+                                            });
+                                            
+                                            await syncToDatabase();
+                                          }
+                                        }}
+                                      >
+                                        <div className="flex gap-2 items-center">
+                                          <Film className="w-4 h-4 text-purple-600" />
+                                          <div className="flex-1 min-w-0">
+                                            <p className="text-xs font-medium truncate">
+                                              {anim.animationPrompt}
+                                            </p>
+                                            <p className="text-[10px] text-muted-foreground">
+                                              {new Date(anim.timestamp).toLocaleDateString()}
+                                            </p>
+                                          </div>
+                                          <Button
+                                            variant="ghost"
+                                            size="sm"
+                                            onClick={(e) => {
+                                              e.stopPropagation();
+                                              window.open(anim.videoUrl, "_blank");
+                                            }}
+                                            className="p-0 w-6 h-6"
+                                          >
+                                            <Play className="w-3 h-3" />
+                                          </Button>
+                                        </div>
+                                        {isAnimationSelected && (
+                                          <div className="absolute top-1 right-1">
+                                            <CheckCircle className="w-3 h-3 text-purple-600" />
+                                          </div>
+                                        )}
+                                      </div>
+                                    );
+                                  })}
+                                </div>
                               </div>
                             )}
                           </div>
@@ -1607,7 +1903,7 @@ Create a concise, effective video prompt for animation creation based on the inp
             {/* Background Creation Tabs */}
             <Card className="border-2 border-purple-200 dark:border-purple-800">
               <CardHeader>
-                <CardTitle className="flex gap-2 items-center">
+                <CardTitle className="flex gap-2 items-center text-lg">
                   <Wand2 className="w-5 h-5 text-purple-600 dark:text-purple-400" />
                   Background Creator
                 </CardTitle>
@@ -1890,9 +2186,9 @@ Create a concise, effective video prompt for animation creation based on the inp
             {selectedStaticImage && (
               <Card className="bg-gradient-to-br border-2 border-purple-500 dark:border-purple-700 from-purple-50/50 to-pink-50/50 dark:from-purple-950/30 dark:to-pink-950/30">
                 <CardHeader>
-                  <CardTitle className="flex gap-2 items-center">
+                  <CardTitle className="flex gap-2 items-center text-lg">
                     <Video className="w-5 h-5 text-purple-600 dark:text-purple-400" />
-                    Create Animation from Selected Background
+                    Create Animation
                   </CardTitle>
                   {animationsForSelectedImage.length > 0 && (
                     <p className="mt-1 text-sm text-muted-foreground">
@@ -2076,7 +2372,7 @@ Create a concise, effective video prompt for animation creation based on the inp
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="mb-4 text-center">
-                  <div className="text-3xl font-bold">
+                  <div className="text-4xl font-bold">
                     {selectedSceneToUse.duration}s
                   </div>
                 </div>

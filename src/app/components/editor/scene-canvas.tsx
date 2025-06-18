@@ -139,6 +139,19 @@ export default function SceneCanvas() {
   // Handle keyboard navigation
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
+      // Don't handle navigation if user is typing in an input field
+      const activeElement = document.activeElement;
+      const isTyping =
+        activeElement &&
+        (activeElement.tagName === "INPUT" ||
+          activeElement.tagName === "TEXTAREA" ||
+          activeElement.getAttribute("contenteditable") === "true" ||
+          activeElement.getAttribute("role") === "textbox");
+
+      if (isTyping) {
+        return; // Don't interfere with text editing
+      }
+
       if (e.key === "ArrowRight" && currentSceneIndex < scenes.length - 1) {
         setCurrentSceneIndex(currentSceneIndex + 1);
         selectScene(scenes[currentSceneIndex + 1].id);
@@ -434,7 +447,7 @@ export default function SceneCanvas() {
             )}
 
             {/* Scene duration indicator */}
-            <div className="absolute bottom-4 left-4 px-2 py-1 text-xs text-white rounded bg-black/70">
+            <div className="absolute bottom-4 left-4 px-4 py-3 text-3xl font-bold text-white rounded-lg border opacity-80 bg-black/90 border-white/20">
               {currentScene.duration}s
             </div>
 
@@ -442,12 +455,12 @@ export default function SceneCanvas() {
             {currentScene.animationStatus &&
               currentScene.animationStatus !== "pending" && (
                 <div
-                  className={`absolute top-4 right-4 rounded px-2 py-1 text-xs text-white ${
+                  className={`absolute top-4 right-4 rounded-lg px-4 py-3 text-2xl opacity-80 font-bold text-white border border-white/20 ${
                     currentScene.animationStatus === "completed"
-                      ? "bg-green-500/80"
+                      ? "bg-green-500/90"
                       : currentScene.animationStatus === "processing"
-                        ? "bg-yellow-500/80"
-                        : "bg-red-500/80"
+                        ? "bg-yellow-500/90"
+                        : "bg-red-500/90"
                   }`}
                 >
                   {currentScene.animationStatus === "completed"
@@ -460,8 +473,8 @@ export default function SceneCanvas() {
 
             {/* AI Prompt indicator */}
             {currentScene.prompt && (
-              <div className="absolute bottom-4 right-4 max-w-[90%] truncate rounded bg-black/70 px-2 py-1 text-xs text-white">
-                AI: {currentScene.prompt.substring(0, 30)}...
+              <div className="absolute bottom-4 right-4 max-w-[90%] truncate rounded-lg bg-black/90 px-4 py-3 text-2xl opacity-80 font-bold text-white border border-white/20">
+                AI: {currentScene.prompt.substring(0, 40)}...
               </div>
             )}
           </div>

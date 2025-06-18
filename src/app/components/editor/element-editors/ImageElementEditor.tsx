@@ -45,6 +45,11 @@ export default function ImageElementEditor({
   onUpdate,
   sceneFormat = "9:16",
 }: ImageElementEditorProps) {
+  console.log("ImageElementEditor render:", {
+    elementId: element.id,
+    width: element.width,
+    height: element.height,
+  });
   const [editPrompt, setEditPrompt] = useState("");
   const [isEditing, setIsEditing] = useState(false);
   const [editHistory, setEditHistory] = useState<
@@ -205,11 +210,14 @@ export default function ImageElementEditor({
 
   const handleWidthChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const width = Number(e.target.value);
+    console.log("Width change:", width, "Keep proportions:", keepProportions);
     if (keepProportions && element.width && element.height) {
       const aspectRatio = element.width / element.height;
       const height = width / aspectRatio;
+      console.log("Updating with proportions:", { width, height });
       onUpdate({ width, height });
     } else {
+      console.log("Updating width only:", { width });
       onUpdate({ width });
     }
   };

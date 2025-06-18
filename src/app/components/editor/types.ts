@@ -16,6 +16,8 @@ export type Scene = {
   isNewScene?: boolean; // Flag used when creating new scenes
   projectId?: string; // For database connection
   useAnimatedVersion?: boolean; // User's choice: true = use animation in export, false = use static
+  backgroundHistory?: any[]; // History of background edits
+  animationHistory?: any[]; // History of animations for this scene
 };
 
 export type Element = {

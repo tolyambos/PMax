@@ -281,7 +281,7 @@ export default function ModernScenePanel({ toast }: ScenePanelProps) {
               </p>
             </div>
           </div>
-          <Badge variant="outline" className="text-xs">
+          <Badge variant="outline" className="text-sm font-medium">
             {selectedScene.duration}s
           </Badge>
         </div>
@@ -456,7 +456,7 @@ export default function ModernScenePanel({ toast }: ScenePanelProps) {
             <div className="flex gap-2 items-center">
               <Clock className="w-4 h-4" />
               <span>Duration & Timing</span>
-              <Badge variant="outline" className="mr-2 ml-auto">
+              <Badge variant="outline" className="mr-2 ml-auto text-sm font-medium">
                 {selectedScene.duration}s
               </Badge>
             </div>
@@ -474,7 +474,7 @@ export default function ModernScenePanel({ toast }: ScenePanelProps) {
                   className="w-full"
                 />
               </div>
-              <div className="flex justify-between text-xs text-muted-foreground">
+              <div className="flex justify-between text-sm text-muted-foreground">
                 <span>1s</span>
                 <span>{selectedScene.duration}s</span>
                 <span>10s</span>

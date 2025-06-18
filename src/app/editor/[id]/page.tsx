@@ -4,12 +4,11 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { useToast } from "@/app/components/ui/use-toast";
-import EditorNavigation from "@/app/components/editor/navigation";
+import NavigationWrapper from "@/app/components/editor/navigation-wrapper";
 import { EditorProvider } from "@/app/components/editor/context/editor-context";
 import SceneCanvas from "@/app/components/editor/scene-canvas";
 import Timeline from "@/app/components/editor/timeline";
 import SidePanel from "@/app/components/editor/side-panel";
-import SyncStatus from "@/app/components/editor/sync-status";
 import { FormatProvider } from "../../contexts/format-context";
 import { mockScenes } from "@/app/mock-data";
 import { api as trpc } from "@/app/utils/trpc";
@@ -223,7 +222,7 @@ export default function EditorPage({ params }: { params: { id: string } }) {
       <EditorProvider projectId={params.id}>
         <div className="flex overflow-hidden flex-col h-screen">
           {/* Navigation */}
-          <EditorNavigation
+          <NavigationWrapper
             projectName={projectName}
             projectId={params.id}
             onLogout={handleLogout}
@@ -277,9 +276,6 @@ export default function EditorPage({ params }: { params: { id: string } }) {
               globalElements={new Set()} // The SidePanel will get globalElements from context
             />
           </div>
-
-          {/* Sync status indicator */}
-          <SyncStatus isSaving={isSaving} lastSaved={lastSaved} />
         </div>
       </EditorProvider>
     </FormatProvider>

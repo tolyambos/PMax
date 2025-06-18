@@ -39,8 +39,18 @@ export async function ensureMockUser(): Promise<boolean> {
     await prisma.user.create({
       data: {
         id: "user-123",
+        clerkId: "user-123",
         name: "Development User",
         email: "dev@example.com",
+        role: "ADMIN",
+        permissions: {
+          create: {
+            canCreateProjects: true,
+            canUploadAssets: true,
+            maxProjects: 1000,
+            maxAssetStorage: BigInt(107374182400), // 100GB
+          },
+        },
       },
     });
 

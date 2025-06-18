@@ -125,7 +125,7 @@ export type ElementType =
 /**
  * Shape types for rendering
  */
-export type ShapeType = "rectangle" | "circle" | "triangle";
+export type ShapeType = "rectangle";
 
 /**
  * CTA (Call to Action) types

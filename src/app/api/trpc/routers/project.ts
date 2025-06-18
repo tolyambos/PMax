@@ -1,6 +1,7 @@
 import { z } from "zod";
 import { createTRPCRouter, protectedProcedure } from "@/app/api/trpc/trpc";
 import { generateVideoFromPrompt } from "@/app/utils/ai";
+import { canCreateProject } from "@/lib/auth";
 
 export const projectRouter = createTRPCRouter({
   create: protectedProcedure
@@ -15,8 +16,25 @@ export const projectRouter = createTRPCRouter({
     .mutation(async ({ ctx, input }) => {
       try {
         const { userId } = ctx;
+        
+        // Get user with permissions for permission checking
+        const user = await ctx.prisma.user.findUnique({
+          where: { id: userId },
+          include: { permissions: true },
+        });
+
+        if (!user) {
+          throw new Error("User not found");
+        }
+
+        // Check if user can create projects
+        const canCreate = await canCreateProject(user);
+        if (!canCreate.allowed) {
+          throw new Error(canCreate.reason || "Permission denied");
+        }
+
         console.log(
-          `Creating project for user ${userId} with name: ${input.name}`
+          `Creating project for user ${userId} with name: ${input.name}. Current projects: ${canCreate.currentCount}/${canCreate.maxProjects}`
         );
 
         // Create the project with simplified data for safer serialization
@@ -181,35 +199,8 @@ export const projectRouter = createTRPCRouter({
         if (!projectId || projectId === "undefined") {
           console.log("Invalid project ID provided:", projectId);
 
-          // Create a new project since we don't have a valid ID
-          const newProject = await ctx.prisma.project.create({
-            data: {
-              name: "New Project",
-              description: "Auto-created for missing ID",
-              userId: ctx.userId,
-              format: "9:16",
-            },
-          });
-
-          console.log(
-            `Created new project with ID: ${newProject.id} due to invalid input ID`
-          );
-
-          return {
-            id: newProject.id,
-            name: newProject.name,
-            description: newProject.description || "",
-            userId: newProject.userId,
-            format: newProject.format,
-            duration: newProject.duration,
-            thumbnail: newProject.thumbnail || "",
-            videoUrl: newProject.videoUrl || "",
-            published: newProject.published,
-            prompt: newProject.prompt || "",
-            createdAt: newProject.createdAt.toISOString(),
-            updatedAt: newProject.updatedAt.toISOString(),
-            scenes: [],
-          };
+          // Don't auto-create projects - return error instead
+          throw new Error("Invalid project ID provided. Please create a project first.");
         }
 
         // For any non-standard IDs, we'll handle them specially
@@ -322,34 +313,8 @@ export const projectRouter = createTRPCRouter({
             }
           }
 
-          // If no existing project or couldn't fetch details, create a new one
-          const newProject = await ctx.prisma.project.create({
-            data: {
-              name: "New Project",
-              description: "Auto-created for editor",
-              userId: ctx.userId,
-              format: "9:16",
-            },
-          });
-
-          console.log(`Created new project with ID: ${newProject.id}`);
-
-          // Return the newly created project
-          return {
-            id: newProject.id,
-            name: newProject.name,
-            description: newProject.description || "",
-            userId: newProject.userId,
-            format: newProject.format,
-            duration: newProject.duration,
-            thumbnail: newProject.thumbnail || "",
-            videoUrl: newProject.videoUrl || "",
-            published: newProject.published,
-            prompt: newProject.prompt || "",
-            createdAt: newProject.createdAt.toISOString(),
-            updatedAt: newProject.updatedAt.toISOString(),
-            scenes: [],
-          };
+          // If no existing project, don't auto-create - return error instead
+          throw new Error("No projects found. Please create a project first.");
         }
 
         // For standard project IDs, fetch from database normally
@@ -371,34 +336,7 @@ export const projectRouter = createTRPCRouter({
 
         if (!project) {
           console.log(`Project not found: ${projectId}`);
-
-          // Instead of throwing an error, return a new project
-          const newProject = await ctx.prisma.project.create({
-            data: {
-              name: "New Project",
-              description: "Auto-created (project not found)",
-              userId: ctx.userId,
-              format: "9:16",
-            },
-          });
-
-          console.log(`Created fallback project with ID: ${newProject.id}`);
-
-          return {
-            id: newProject.id,
-            name: newProject.name,
-            description: newProject.description || "",
-            userId: newProject.userId,
-            format: newProject.format,
-            duration: newProject.duration,
-            thumbnail: newProject.thumbnail || "",
-            videoUrl: newProject.videoUrl || "",
-            published: newProject.published,
-            prompt: newProject.prompt || "",
-            createdAt: newProject.createdAt.toISOString(),
-            updatedAt: newProject.updatedAt.toISOString(),
-            scenes: [],
-          };
+          throw new Error("Project not found");
         }
 
         // Only check user ownership in production
@@ -475,42 +413,7 @@ export const projectRouter = createTRPCRouter({
       } catch (error) {
         console.error("Error fetching project by ID:", error);
 
-        // In development, instead of throwing an error, create a new project
-        if (process.env.NODE_ENV === "development") {
-          console.log("Creating fallback project due to error");
-          try {
-            const fallbackProject = await ctx.prisma.project.create({
-              data: {
-                name: "Error Recovery Project",
-                description: "Created after database query error",
-                userId: ctx.userId || "dev-user-id",
-                format: "9:16",
-              },
-            });
-
-            console.log(
-              `Created fallback project with ID: ${fallbackProject.id}`
-            );
-
-            return {
-              id: fallbackProject.id,
-              name: fallbackProject.name,
-              description: fallbackProject.description || "",
-              userId: fallbackProject.userId,
-              format: fallbackProject.format,
-              duration: fallbackProject.duration,
-              thumbnail: fallbackProject.thumbnail || "",
-              videoUrl: fallbackProject.videoUrl || "",
-              published: fallbackProject.published,
-              prompt: fallbackProject.prompt || "",
-              createdAt: fallbackProject.createdAt.toISOString(),
-              updatedAt: fallbackProject.updatedAt.toISOString(),
-              scenes: [],
-            };
-          } catch (fallbackError) {
-            console.error("Failed to create fallback project:", fallbackError);
-          }
-        }
+        // Don't auto-create projects in any environment to prevent permission bypass
 
         throw new Error(
           "Failed to fetch project: " +

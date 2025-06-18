@@ -114,7 +114,7 @@ export default function Navigation() {
                   className="bg-gradient-primary text-primary-foreground"
                   asChild
                 >
-                  <Link href="/sign-in">
+                  <Link href="/sign-up">
                     <UserPlus className="mr-2 w-4 h-4" />
                     Get Started
                   </Link>
@@ -216,7 +216,7 @@ export default function Navigation() {
                     className="w-full bg-gradient-primary text-primary-foreground"
                     asChild
                   >
-                    <Link href="/sign-in">
+                    <Link href="/sign-up">
                       <UserPlus className="mr-2 w-4 h-4" />
                       Get Started
                     </Link>
