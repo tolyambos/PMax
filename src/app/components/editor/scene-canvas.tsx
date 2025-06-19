@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useEffect, useState } from "react";
+import { useRef, useEffect, useState, useCallback } from "react";
 import { CSSProperties } from "react";
 import Image from "next/image";
 import { S3AssetMemoized } from "@/components/S3Asset";
@@ -20,6 +20,9 @@ import {
   Grid,
   LucideHelpCircle,
   X,
+  ZoomIn,
+  ZoomOut,
+  RotateCcw,
 } from "lucide-react";
 import {
   Tooltip,
@@ -40,6 +43,7 @@ export default function SceneCanvas() {
   const [previewMode, setPreviewMode] = useState<"normal" | "fullscreen">(
     "normal"
   );
+  const [userZoom, setUserZoom] = useState(1); // User-controlled zoom level
 
   // Get the element manipulation functions for dragging, resizing, and rotating
   const { handleDragStart, handleResizeStart, handleRotateStart } =
@@ -74,11 +78,13 @@ export default function SceneCanvas() {
   const FULLSCREEN_HEIGHT =
     typeof window !== "undefined" ? window.innerHeight * 0.85 : 800; // Use 85% of viewport height for fullscreen
 
-  // Adjust the zoom scale based on preview mode
-  const zoomScale =
+  // Adjust the zoom scale based on preview mode and user zoom
+  const baseZoomScale =
     previewMode === "fullscreen"
       ? FULLSCREEN_HEIGHT / videoHeight
       : MAX_CONTAINER_HEIGHT / videoHeight;
+
+  const zoomScale = baseZoomScale * userZoom;
 
   // Define the canvas dimensions using zoom scale
   const canvasWidth = videoWidth * zoomScale;
@@ -88,7 +94,7 @@ export default function SceneCanvas() {
   const containerStyle: CSSProperties = {
     width: `${canvasWidth}px`,
     height: `${canvasHeight}px`,
-    overflow: "hidden",
+    overflow: userZoom > 1 ? "auto" : "hidden", // Allow scrolling when zoomed in
     position:
       previewMode === "fullscreen" ? ("fixed" as const) : ("relative" as const),
     top: previewMode === "fullscreen" ? "50%" : "auto",
@@ -103,6 +109,8 @@ export default function SceneCanvas() {
         : "0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)",
     zIndex: previewMode === "fullscreen" ? 50 : 1,
     transition: "all 0.3s ease", // Smooth transition for all properties
+    maxHeight: previewMode === "fullscreen" ? "90vh" : "600px", // Limit height to enable scrolling
+    maxWidth: previewMode === "fullscreen" ? "90vw" : "100%", // Limit width to enable scrolling
   };
 
   // Canvas style with exact video dimensions
@@ -136,38 +144,6 @@ export default function SceneCanvas() {
     display: showGrid ? "block" : "none",
   };
 
-  // Handle keyboard navigation
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      // Don't handle navigation if user is typing in an input field
-      const activeElement = document.activeElement;
-      const isTyping =
-        activeElement &&
-        (activeElement.tagName === "INPUT" ||
-          activeElement.tagName === "TEXTAREA" ||
-          activeElement.getAttribute("contenteditable") === "true" ||
-          activeElement.getAttribute("role") === "textbox");
-
-      if (isTyping) {
-        return; // Don't interfere with text editing
-      }
-
-      if (e.key === "ArrowRight" && currentSceneIndex < scenes.length - 1) {
-        setCurrentSceneIndex(currentSceneIndex + 1);
-        selectScene(scenes[currentSceneIndex + 1].id);
-      } else if (e.key === "ArrowLeft" && currentSceneIndex > 0) {
-        setCurrentSceneIndex(currentSceneIndex - 1);
-        selectScene(scenes[currentSceneIndex - 1].id);
-      } else if (e.key === "Escape" && previewMode === "fullscreen") {
-        // Exit fullscreen mode when Escape key is pressed
-        setPreviewMode("normal");
-      }
-    };
-
-    window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [currentSceneIndex, scenes, selectScene, previewMode]);
-
   // Handle preview playback
   useEffect(() => {
     if (isPlaying) {
@@ -193,6 +169,72 @@ export default function SceneCanvas() {
   const toggleFullscreen = () => {
     setPreviewMode((prev) => (prev === "normal" ? "fullscreen" : "normal"));
   };
+
+  // Zoom control functions using useCallback to avoid dependency issues
+  const zoomIn = useCallback(() => {
+    setUserZoom((prevZoom) => Math.min(prevZoom + 0.1, 2)); // Max 200% zoom
+  }, []);
+
+  const zoomOut = useCallback(() => {
+    setUserZoom((prevZoom) => Math.max(prevZoom - 0.1, 0.25)); // Min 25% zoom
+  }, []);
+
+  const resetZoom = useCallback(() => {
+    setUserZoom(1);
+  }, []);
+
+  // Handle keyboard navigation and zoom shortcuts
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      // Don't handle navigation if user is typing in an input field
+      const activeElement = document.activeElement;
+      const isTyping =
+        activeElement &&
+        (activeElement.tagName === "INPUT" ||
+          activeElement.tagName === "TEXTAREA" ||
+          activeElement.getAttribute("contenteditable") === "true" ||
+          activeElement.getAttribute("role") === "textbox");
+
+      if (isTyping) {
+        return; // Don't interfere with text editing
+      }
+
+      // Scene navigation
+      if (e.key === "ArrowRight" && currentSceneIndex < scenes.length - 1) {
+        setCurrentSceneIndex(currentSceneIndex + 1);
+        selectScene(scenes[currentSceneIndex + 1].id);
+      } else if (e.key === "ArrowLeft" && currentSceneIndex > 0) {
+        setCurrentSceneIndex(currentSceneIndex - 1);
+        selectScene(scenes[currentSceneIndex - 1].id);
+      } else if (e.key === "Escape" && previewMode === "fullscreen") {
+        // Exit fullscreen mode when Escape key is pressed
+        setPreviewMode("normal");
+      }
+
+      // Zoom shortcuts
+      if ((e.ctrlKey || e.metaKey) && e.key === "=") {
+        e.preventDefault();
+        zoomIn();
+      } else if ((e.ctrlKey || e.metaKey) && e.key === "-") {
+        e.preventDefault();
+        zoomOut();
+      } else if ((e.ctrlKey || e.metaKey) && e.key === "0") {
+        e.preventDefault();
+        resetZoom();
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [
+    currentSceneIndex,
+    scenes,
+    selectScene,
+    previewMode,
+    zoomIn,
+    zoomOut,
+    resetZoom,
+  ]);
 
   // Start preview playback
   const startPreview = () => {
@@ -281,6 +323,63 @@ export default function SceneCanvas() {
               </TooltipContent>
             </Tooltip>
           </TooltipProvider>
+
+          {/* Zoom controls */}
+          <div className="flex gap-1 items-center px-2 mx-2 border-x">
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={zoomOut}
+                    disabled={userZoom <= 0.25}
+                  >
+                    <ZoomOut className="w-5 h-5" />
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>Zoom out (Ctrl+-)</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={resetZoom}
+                    className="px-2 min-w-[60px]"
+                  >
+                    {Math.round(userZoom * 100)}%
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>Reset zoom (Ctrl+0)</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={zoomIn}
+                    disabled={userZoom >= 2}
+                  >
+                    <ZoomIn className="w-5 h-5" />
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>Zoom in (Ctrl+=)</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+          </div>
         </div>
 
         <div className="flex items-center space-x-1">
@@ -325,10 +424,40 @@ export default function SceneCanvas() {
         </div>
       </div>
 
-      {/* Canvas container */}
-      <div className="scene-canvas-wrapper" style={{ position: "relative" }}>
+      {/* Zoom indicator */}
+      {userZoom > 1 && (
+        <div className="mb-2 text-center">
+          <span className="px-2 py-1 text-xs rounded text-muted-foreground bg-muted">
+            📍 Scroll or drag to navigate the zoomed view
+          </span>
+        </div>
+      )}
+
+      {/* Canvas container with scroll wrapper */}
+      <div
+        className="scene-canvas-wrapper"
+        style={{
+          position: "relative",
+          width: "100%",
+          maxWidth: previewMode === "fullscreen" ? "90vw" : "100%",
+          maxHeight: previewMode === "fullscreen" ? "90vh" : "600px",
+          overflow: userZoom > 1 ? "auto" : "hidden",
+          border: userZoom > 1 ? "2px dashed rgba(59, 130, 246, 0.3)" : "none",
+          borderRadius: "0.5rem",
+          margin: "0 auto",
+          cursor: userZoom > 1 ? "grab" : "default",
+        }}
+      >
         {/* Scene canvas with zoom */}
-        <div style={containerStyle}>
+        <div
+          style={{
+            ...containerStyle,
+            overflow: "visible", // Let parent handle scrolling
+            maxHeight: "none",
+            maxWidth: "none",
+            border: "1px solid #e2e8f0",
+          }}
+        >
           <div
             ref={canvasRef}
             className="scene-canvas"

@@ -234,7 +234,7 @@ export default function EditorPage({ params }: { params: { id: string } }) {
 
           <div className="flex overflow-hidden flex-1">
             {/* Main Editor Area */}
-            <div className="flex overflow-hidden flex-col flex-1">
+            <div className="flex overflow-hidden relative flex-col flex-1">
               <div className="flex flex-1 justify-center items-center p-6 bg-muted/30">
                 {isLoading || projectQuery.isLoading ? (
                   <div className="flex justify-center items-center">
@@ -246,15 +246,18 @@ export default function EditorPage({ params }: { params: { id: string } }) {
                 )}
               </div>
 
-              <Timeline
-                scenes={[]} // The Timeline will get scenes from context
-                selectedSceneId={null} // The Timeline will get selectedSceneId from context
-                onSelectScene={() => {}} // The Timeline will use context
-                onReorderScenes={() => {}} // The Timeline will use context
-                onDeleteScene={() => {}} // The Timeline will use context
-                onAddScene={() => {}} // The Timeline will use context
-                onAddAssetToScene={() => {}} // The Timeline will use context
-              />
+              {/* Timeline - sticky on desktop, fixed on mobile */}
+              <div className="w-full md:sticky md:bottom-0 md:z-10">
+                <Timeline
+                  scenes={[]} // The Timeline will get scenes from context
+                  selectedSceneId={null} // The Timeline will get selectedSceneId from context
+                  onSelectScene={() => {}} // The Timeline will use context
+                  onReorderScenes={() => {}} // The Timeline will use context
+                  onDeleteScene={() => {}} // The Timeline will use context
+                  onAddScene={() => {}} // The Timeline will use context
+                  onAddAssetToScene={() => {}} // The Timeline will use context
+                />
+              </div>
             </div>
 
             {/* Side Panel */}

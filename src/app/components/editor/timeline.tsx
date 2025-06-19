@@ -7,6 +7,7 @@ import { S3AssetMemoized } from "@/components/S3Asset";
 import { Asset } from "@/app/components/assets/asset-library";
 import { useEditor } from "./context/editor-context";
 import { useSceneManagement } from "./hooks/use-scene-management";
+import { useVideoFormat } from "@/app/contexts/format-context";
 import AIPromptModal from "./ai-prompt-modal";
 import { PlusCircle, X, RotateCcw, Wand2 } from "lucide-react";
 import { v4 as uuidv4 } from "uuid";
@@ -35,6 +36,7 @@ export default function Timeline(
   // Use the editor context for scene data
   const { state, dispatch } = useEditor();
   const { scenes, selectedSceneId } = state;
+  const { formatDetails } = useVideoFormat();
 
   // Use the scene management hook for scene operations
   const { addEmptyScene, deleteScene, getTotalDuration, selectScene } =
@@ -51,6 +53,19 @@ export default function Timeline(
 
   // Calculate total duration
   const totalDuration = getTotalDuration();
+
+  // Calculate dynamic width for scenes based on duration - horizontal rectangles
+  const calculateSceneWidth = (duration: number) => {
+    const minWidth = 80; // Minimum width for horizontal rectangle
+    const maxWidth = 160; // Maximum width for longer scenes
+    const baseWidthPerSecond = 20; // 20px per second
+
+    const calculatedWidth = Math.max(
+      minWidth,
+      Math.min(maxWidth, duration * baseWidthPerSecond)
+    );
+    return calculatedWidth;
+  };
 
   const handleSceneClick = (sceneId: string) => {
     selectScene(sceneId);
@@ -260,145 +275,164 @@ export default function Timeline(
     }
   };
 
+  // Fixed height for a clean, consistent timeline look
+  const timelineHeight = "h-16 sm:h-18 md:h-20";
+
   return (
     <div
-      className="flex flex-col p-4 h-32 border-t bg-muted/30"
+      className={`flex flex-col p-2 mb-4 border-t backdrop-blur-sm sm:p-3 bg-background/95 ${timelineHeight}`}
       ref={timelineRef}
     >
-      <div className="flex justify-between items-center mb-2">
-        <div className="text-sm font-medium">Timeline</div>
-        <div className="text-xs text-muted-foreground">
-          Total Duration: {totalDuration}s
-        </div>
+      <div className="flex justify-between items-center mb-1 sm:mb-2">
+        <div className="text-xs font-medium sm:text-sm">Timeline</div>
+        <div className="text-xs text-muted-foreground">{totalDuration}s</div>
       </div>
 
-      <div className="flex overflow-x-auto flex-1 gap-2">
-        {scenes.map((scene) => (
-          <div
-            key={scene.id}
-            className={`group relative flex-shrink-0 cursor-pointer overflow-hidden rounded-md border ${selectedSceneId === scene.id ? "ring-2 ring-primary" : ""}`}
-            style={{ width: `${Math.max(100, scene.duration * 60)}px` }}
-            onClick={() => handleSceneClick(scene.id)}
-            onDragOver={handleDragOver}
-            onDrop={(e) => handleSceneDrop(e, scene.id)}
-            draggable={true}
-            onDragStart={(e) => handleSceneDragStart(e, scene)}
-          >
-            {/* Action buttons - visible on hover */}
-            <div className="flex absolute top-1 right-1 z-50 gap-1 opacity-0 transition-opacity group-hover:opacity-100">
-              {/* Regenerate button */}
+      {/* Timeline scroll container with indicators */}
+      <div className="relative flex-1">
+        <div className="flex overflow-x-auto flex-1 gap-1 sm:gap-2 scroll-smooth scrollbar-thin">
+          {scenes.map((scene) => (
+            <div
+              key={scene.id}
+              className={`group relative flex-shrink-0 cursor-pointer overflow-hidden rounded-md border ${selectedSceneId === scene.id ? "ring-2 ring-primary" : ""}`}
+              style={{
+                width: `${calculateSceneWidth(scene.duration)}px`,
+                height: "48px", // Fixed height for horizontal rectangles (3rem = 48px)
+              }}
+              onClick={() => handleSceneClick(scene.id)}
+              onDragOver={handleDragOver}
+              onDrop={(e) => handleSceneDrop(e, scene.id)}
+              draggable={true}
+              onDragStart={(e) => handleSceneDragStart(e, scene)}
+            >
+              {/* Action buttons - visible on hover, always visible on touch devices */}
+              <div className="flex absolute top-0.5 sm:top-1 right-0.5 sm:right-1 z-50 gap-0.5 sm:gap-1 opacity-100 sm:opacity-0 transition-opacity sm:group-hover:opacity-100">
+                {/* Regenerate button */}
+                <div
+                  className="flex justify-center items-center w-5 h-5 text-xs font-bold text-white rounded-full shadow-md cursor-pointer sm:w-6 sm:h-6 bg-blue-500/80 hover:bg-blue-600 touch-manipulation"
+                  onClick={(e) => handleRegenerateScene(scene.id, e)}
+                  title="Regenerate Scene with AI"
+                >
+                  <RotateCcw className="w-2.5 h-2.5 sm:w-3 sm:h-3" />
+                </div>
+
+                {/* Delete button */}
+                {scenes.length > 1 && (
+                  <div
+                    className="flex justify-center items-center w-5 h-5 text-xs font-bold text-white rounded-full shadow-md cursor-pointer sm:w-6 sm:h-6 bg-red-500/80 hover:bg-red-600 touch-manipulation"
+                    onClick={(e) => {
+                      // Stop all event propagation and prevent default
+                      e.stopPropagation();
+                      e.preventDefault();
+                      if (e.nativeEvent)
+                        e.nativeEvent.stopImmediatePropagation();
+
+                      // Add a slight delay to prevent interference with other event handlers
+                      setTimeout(() => {
+                        console.log("Delete clicked for scene:", scene.id);
+                        deleteScene(scene.id);
+                      }, 50);
+
+                      return false;
+                    }}
+                    title="Delete Scene"
+                  >
+                    <X className="w-2.5 h-2.5 sm:w-3 sm:h-3" />
+                  </div>
+                )}
+              </div>
+              {/* Highlight the drop zone when dragging over */}
               <div
-                className="flex justify-center items-center w-6 h-6 text-xs font-bold text-white rounded-full shadow-md cursor-pointer bg-blue-500/80 hover:bg-blue-600"
-                onClick={(e) => handleRegenerateScene(scene.id, e)}
-                title="Regenerate Scene with AI"
+                className="absolute inset-0 z-10 opacity-0 transition-opacity bg-primary/20"
+                onDragOver={(e) => {
+                  e.preventDefault();
+                  e.currentTarget.style.opacity = "1";
+                  e.dataTransfer.dropEffect = "copy";
+                }}
+                onDragLeave={(e) => {
+                  e.preventDefault();
+                  e.currentTarget.style.opacity = "0";
+                }}
+                onDrop={(e) => {
+                  e.preventDefault();
+                  e.currentTarget.style.opacity = "0";
+                  handleSceneDrop(e, scene.id);
+                }}
               >
-                <RotateCcw className="w-3 h-3" />
+                <div className="flex justify-center items-center h-full">
+                  <div className="p-2 text-xs font-medium rounded-md bg-background">
+                    Drop to add to scene
+                  </div>
+                </div>
               </div>
 
-              {/* Delete button */}
-              {scenes.length > 1 && (
-                <div
-                  className="flex justify-center items-center w-6 h-6 text-xs font-bold text-white rounded-full shadow-md cursor-pointer bg-red-500/80 hover:bg-red-600"
-                  onClick={(e) => {
-                    // Stop all event propagation and prevent default
-                    e.stopPropagation();
-                    e.preventDefault();
-                    if (e.nativeEvent) e.nativeEvent.stopImmediatePropagation();
+              {scene.imageUrl ? (
+                <div className="overflow-hidden relative w-full h-full">
+                  <S3AssetMemoized
+                    url={scene.imageUrl}
+                    alt={`Scene ${scene.order + 1}`}
+                    width={200}
+                    height={120}
+                    className="object-cover w-full h-full"
+                    style={{ objectFit: "cover" }}
+                  />
+                </div>
+              ) : (
+                <div className="flex justify-center items-center w-full h-full bg-card text-muted-foreground">
+                  <span className="text-xs">Scene {scene.order + 1}</span>
+                </div>
+              )}
 
-                    // Add a slight delay to prevent interference with other event handlers
-                    setTimeout(() => {
-                      console.log("Delete clicked for scene:", scene.id);
-                      deleteScene(scene.id);
-                    }, 50);
+              <div className="absolute right-0 bottom-0 left-0 px-1 sm:px-2 py-0.5 sm:py-1 text-xs text-center text-white bg-black/70">
+                {scene.duration}s
+              </div>
 
-                    return false;
-                  }}
-                  title="Delete Scene"
-                >
-                  <X className="w-3 h-3" />
+              {/* Show indicator for elements in the scene */}
+              {scene.elements && scene.elements.length > 0 && (
+                <div className="flex absolute top-1 sm:top-2 left-0.5 sm:left-1 justify-center items-center w-4 h-4 sm:w-5 sm:h-5 text-xs rounded-full bg-primary text-primary-foreground">
+                  {scene.elements.length}
                 </div>
               )}
             </div>
-            {/* Highlight the drop zone when dragging over */}
-            <div
-              className="absolute inset-0 z-10 opacity-0 transition-opacity bg-primary/20"
-              onDragOver={(e) => {
-                e.preventDefault();
-                e.currentTarget.style.opacity = "1";
-                e.dataTransfer.dropEffect = "copy";
+          ))}
+
+          {/* Add Scene Buttons */}
+          <div className="flex flex-shrink-0 gap-1 sm:gap-2">
+            {/* AI Generate Scene Button */}
+            <button
+              className="flex flex-col justify-center items-center w-16 h-full bg-gradient-to-b from-blue-50 to-blue-100 rounded-md border border-dashed transition-colors sm:w-20 md:w-24 text-muted-foreground hover:border-primary hover:text-primary hover:from-blue-100 hover:to-blue-200 touch-manipulation"
+              onClick={() => {
+                setRegeneratingSceneId("new-scene");
+                setAIPromptType("scene");
+                setIsAIModalOpen(true);
               }}
-              onDragLeave={(e) => {
-                e.preventDefault();
-                e.currentTarget.style.opacity = "0";
-              }}
-              onDrop={(e) => {
-                e.preventDefault();
-                e.currentTarget.style.opacity = "0";
-                handleSceneDrop(e, scene.id);
-              }}
+              title="Generate new scenes with AI"
             >
-              <div className="flex justify-center items-center h-full">
-                <div className="p-2 text-xs font-medium rounded-md bg-background">
-                  Drop to add to scene
-                </div>
-              </div>
-            </div>
+              <Wand2 className="mb-0.5 sm:mb-1 w-3 sm:w-4 md:w-5 h-3 sm:h-4 md:h-5" />
+              <span className="hidden text-xs font-medium sm:inline">
+                AI Scene
+              </span>
+              <span className="text-xs font-medium sm:hidden">AI</span>
+            </button>
 
-            {scene.imageUrl ? (
-              <div className="relative w-full h-full">
-                <S3AssetMemoized
-                  url={scene.imageUrl}
-                  alt={`Scene ${scene.order + 1}`}
-                  width={200}
-                  height={120}
-                  className="object-cover w-full h-full"
-                />
-              </div>
-            ) : (
-              <div className="flex justify-center items-center w-full h-full bg-card text-muted-foreground">
-                Scene {scene.order + 1}
-              </div>
-            )}
-
-            <div className="absolute right-0 bottom-0 left-0 px-2 py-1 text-xs text-center text-white bg-black/70">
-              {scene.duration}s
-            </div>
-
-            {/* Show indicator for elements in the scene */}
-            {scene.elements && scene.elements.length > 0 && (
-              <div className="flex absolute top-2 right-2 justify-center items-center w-5 h-5 text-xs rounded-full bg-primary text-primary-foreground">
-                {scene.elements.length}
-              </div>
-            )}
+            {/* Empty Scene Button */}
+            <button
+              className="flex flex-col justify-center items-center w-14 h-full rounded-md border border-dashed transition-colors sm:w-16 md:w-20 text-muted-foreground hover:border-primary hover:text-primary touch-manipulation"
+              onClick={addEmptyScene}
+              title="Add empty scene"
+            >
+              <PlusCircle className="mb-0.5 sm:mb-1 w-3 sm:w-4 md:w-5 h-3 sm:h-4 md:h-5" />
+              <span className="hidden text-xs font-medium sm:inline">
+                Empty
+              </span>
+              <span className="text-xs font-medium sm:hidden">+</span>
+            </button>
           </div>
-        ))}
-
-        {/* Add Scene Buttons */}
-        <div className="flex flex-shrink-0 gap-2">
-          {/* AI Generate Scene Button */}
-          <button
-            className="flex flex-col justify-center items-center w-24 h-full bg-gradient-to-b from-blue-50 to-blue-100 rounded-md border border-dashed transition-colors text-muted-foreground hover:border-primary hover:text-primary hover:from-blue-100 hover:to-blue-200"
-            onClick={() => {
-              setRegeneratingSceneId("new-scene");
-              setAIPromptType("scene");
-              setIsAIModalOpen(true);
-            }}
-            title="Generate new scenes with AI"
-          >
-            <Wand2 className="mb-1 w-5 h-5" />
-            <span className="text-xs font-medium">AI Scene</span>
-          </button>
-
-          {/* Empty Scene Button */}
-          <button
-            className="flex flex-col justify-center items-center w-20 h-full rounded-md border border-dashed transition-colors text-muted-foreground hover:border-primary hover:text-primary"
-            onClick={addEmptyScene}
-            title="Add empty scene"
-          >
-            <PlusCircle className="mb-1 w-5 h-5" />
-            <span className="text-xs font-medium">Empty</span>
-          </button>
         </div>
+
+        {/* Scroll indicators */}
+        <div className="absolute left-0 top-0 bottom-0 w-8 bg-gradient-to-r from-background to-transparent pointer-events-none opacity-0 transition-opacity [.scrollbar-thin:has(>div:not(:first-child)):hover>&]:opacity-100" />
+        <div className="absolute right-0 top-0 bottom-0 w-8 bg-gradient-to-l from-background to-transparent pointer-events-none opacity-0 transition-opacity [.scrollbar-thin:has(>div:not(:last-child)):hover>&]:opacity-100" />
       </div>
 
       {/* AI Prompt Modal for regeneration */}
