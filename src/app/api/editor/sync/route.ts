@@ -418,27 +418,19 @@ export async function POST(req: Request) {
             // Add safety check for undefined/non-string element.id
             let elementId = element?.id;
 
-            // Special handling for IDs to prevent duplication
+            // Special handling for IDs
             if (elementId && typeof elementId === "string") {
-              // Only handle true timestamp suffixes, not scene IDs or other valid suffixes
-              // Timestamp suffixes are purely numeric and typically 13+ digits (unix timestamp in ms)
-              if (elementId.includes("-") && /\d{13,}$/.test(elementId)) {
-                const parts = elementId.split("-");
-                const lastPart = parts[parts.length - 1];
-                // Double-check this is actually a timestamp (unix timestamp range)
-                const timestamp = parseInt(lastPart);
-                if (timestamp > 1000000000000 && timestamp < 9999999999999) {
-                  const baseId = parts.slice(0, -1).join("-");
-                  console.log(
-                    `Removing timestamp from element ID: ${elementId} -> ${baseId}`
-                  );
-                  elementId = baseId;
-                }
-              }
-
-              // Only set to undefined for new frontend elements that need server-generated IDs
-              if (elementId.startsWith("element-")) {
+              // Check if this is a simple temporary element ID that needs database generation
+              // Temporary IDs are like: "element-temp-123" or start with "temp-"
+              if (elementId.startsWith("temp-") || elementId.includes("-temp-")) {
+                console.log(`Temporary element detected, will generate server ID: ${elementId}`);
                 elementId = undefined;
+              } else {
+                // This is either:
+                // 1. A proper element ID from frontend (element-uuid format)
+                // 2. An existing database element ID  
+                // Keep the full ID to maintain database references
+                console.log(`Preserving element ID for database sync: ${elementId}`);
               }
             }
 
@@ -672,6 +664,9 @@ export async function POST(req: Request) {
       }
 
       return updatedProject;
+    }, {
+      timeout: 30000, // Increase timeout to 30 seconds for complex sync operations
+      maxWait: 5000, // Maximum time to wait for a transaction slot
     });
 
     return NextResponse.json({
