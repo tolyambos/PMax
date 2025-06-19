@@ -4,6 +4,76 @@
  */
 
 /**
+ * Get detailed style-specific instructions for image generation
+ */
+export function getStyleInstructions(style: string): string {
+  const styleGuides: Record<string, string> = {
+    cinematic: `
+- Film-like quality with dramatic lighting and shadow play
+- Professional cinematography techniques: depth of field, bokeh effects
+- Moody atmosphere with carefully controlled color grading
+- Dynamic camera angles: low angle shots, dutch angles, dramatic perspectives
+- High contrast between light and dark areas (chiaroscuro lighting)
+- Rich, saturated colors with cinematic color palettes (teal and orange, blue and amber)
+- Atmospheric effects: lens flares, volumetric lighting, fog/haze for depth
+- Wide aspect ratio framing with letterbox feel
+- Epic scale and grandeur in composition
+- Hollywood blockbuster production value`,
+
+    realistic: `
+- True-to-life photography with natural lighting conditions
+- Authentic textures and materials with accurate surface properties
+- Realistic shadows and reflections following physics
+- Natural color temperature and white balance
+- Documentary-style composition with candid feel
+- Environmental lighting: golden hour, blue hour, overcast, direct sunlight
+- Practical depth of field based on camera optics
+- No artificial enhancements or stylization
+- Photojournalistic quality with authentic moments
+- Real-world proportions and perspective`,
+
+    minimalist: `
+- Clean, uncluttered composition with negative space
+- Simple geometric shapes and forms
+- Limited color palette: monochromatic or 2-3 colors maximum
+- Flat lighting with soft shadows or no shadows
+- Focus on essential elements only
+- Scandinavian/Japanese aesthetic influence
+- Plenty of white or neutral space
+- Bold typography integration possibilities
+- Strong emphasis on balance and symmetry
+- Modern, sophisticated elegance`,
+
+    vibrant: `
+- Bold, saturated colors with high contrast
+- Dynamic energy through color combinations
+- Bright, punchy lighting with colorful highlights
+- Pop art influence with graphic elements
+- Neon accents and glowing effects
+- Festival/carnival atmosphere possibilities
+- Multiple light sources with color gels
+- High key lighting for maximum brightness
+- Playful, energetic composition
+- Eye-catching visual impact with "wow" factor`,
+
+    "3D rendered": `
+- Photorealistic 3D graphics with ray-traced lighting
+- Perfect surfaces with customizable materials
+- Ambient occlusion for depth and realism
+- Global illumination for accurate light bouncing
+- Subsurface scattering for translucent materials
+- Clean, artifact-free renders
+- Studio lighting setup possibilities
+- Infinite depth of field or selective focus
+- Impossible camera angles and perspectives
+- Futuristic or fantastical elements integration
+`,
+  };
+
+  return styleGuides[style] || styleGuides["realistic"];
+}
+
+/**
  * Prompt for generating video animation from an image prompt
  */
 export const VIDEO_PROMPT_GENERATION = `You are a video motion expert specializing in Runway Gen-4 video generation. Your task is to transform a detailed image prompt into an effective video generation prompt that will create compelling motion for the scene.
@@ -53,7 +123,10 @@ export const ANALYZE_AD_REQUEST_PROMPT = (
   format: string,
   numScenes: number,
   totalDuration: number
-) => `
+) => {
+  const styleInstructions = getStyleInstructions(style);
+
+  return `
 Please analyze the following advertisement request and create a detailed concept:
 
 - Product/Brand: ${productName}
@@ -65,9 +138,14 @@ Please analyze the following advertisement request and create a detailed concept
 - Number of Scenes: ${numScenes}
 - Total Duration: ${totalDuration} seconds
 
-Based on this information, especially the key points, create a cohesive and creative
-ad narrative that incorporates all elements specified by the user.
+VISUAL STYLE REQUIREMENTS - ${style.toUpperCase()}:
+${styleInstructions}
+
+Based on this information, especially the key points and the specific ${style} visual style requirements above, 
+create a cohesive and creative ad narrative that incorporates all elements specified by the user.
+All scenes must follow the ${style} style guidelines exactly.
 `;
+};
 
 /**
  * Prompt for generating scene descriptions based on the analysis
@@ -75,12 +153,23 @@ ad narrative that incorporates all elements specified by the user.
 export const GENERATE_STORYBOARD_PROMPT = (
   analysisPrompt: string,
   numScenes: number,
-  totalDuration: number
-) => `
+  totalDuration: number,
+  style?: string
+) => {
+  // Extract style from analysis prompt if not provided
+  const styleMatch = analysisPrompt.match(/Visual Style: (\w+)/);
+  const detectedStyle =
+    style || (styleMatch ? styleMatch[1].toLowerCase() : "realistic");
+  const styleInstructions = getStyleInstructions(detectedStyle);
+
+  return `
 ${analysisPrompt}
 
 Generate a complete storyboard with exactly ${numScenes} scenes.
 The total duration must be exactly ${totalDuration} seconds.
+
+MANDATORY STYLE REQUIREMENTS - ${detectedStyle.toUpperCase()}:
+${styleInstructions}
 
 PROFESSIONAL VISUAL QUALITY STANDARDS:
 Each scene description must incorporate professional photography and cinematography elements:
@@ -95,22 +184,26 @@ Each scene description must incorporate professional photography and cinematogra
 - Strong background contrast to enhance subject prominence
 - Cinematic depth of field and focus techniques
 
+CRITICAL: Every scene MUST incorporate the ${detectedStyle} style requirements listed above. 
+The style should be evident in lighting, composition, color grading, and overall aesthetic.
+
 For each scene, provide:
-1. A detailed visual description that incorporates professional quality standards
+1. A detailed visual description that incorporates BOTH the ${detectedStyle} style AND professional quality standards
 2. Duration in seconds (between 1-5 seconds per scene)
 
 Make your scene descriptions as vivid and specific as possible, incorporating all the key points
 and elements mentioned in the description. Be creative and make sure the images will be 
-visually compelling with rich, detailed descriptions that follow professional photography standards.
+visually compelling with rich, detailed descriptions that follow the ${detectedStyle} style guidelines.
 
 IMPORTANT: Focus entirely on detailed visual descriptions with professional quality elements. Do not include any text overlays or voice-overs.
 
 Format your response as a JSON array of scene objects with these properties:
-- description: Detailed visual description for image generation with professional quality standards
+- description: Detailed visual description for image generation with ${detectedStyle} style and professional quality standards
 - duration: Scene duration in seconds
 
 NOTE: Make sure the sum of all scene durations equals exactly ${totalDuration} seconds.
 `;
+};
 
 /**
  * Fallback prompt for when the analysis prompt isn't available
@@ -162,12 +255,17 @@ NOTE: Make sure the sum of all scene durations equals exactly ${totalDuration} s
 /**
  * Prompt for generating background images
  */
-export const GENERATE_BACKGROUND_PROMPT = (prompt: string, style: string) => `
+export const GENERATE_BACKGROUND_PROMPT = (prompt: string, style: string) => {
+  // Enhanced style-specific instructions
+  const styleInstructions = getStyleInstructions(style);
+
+  return `
 Create a high-quality, visually appealing background image based on this description:
 
 ${prompt}
 
-Style: ${style}
+STYLE REQUIREMENTS - ${style.toUpperCase()}:
+${styleInstructions}
 
 PROFESSIONAL QUALITY REQUIREMENTS:
 - Ultra sharp, crystal clear, high definition imagery
@@ -184,6 +282,7 @@ The image should be beautiful, professional, and eye-catching.
 Make sure the background works well with text overlays and product placement.
 Ensure professional lighting conditions and avoid any blurry, pixelated, or distorted elements.
 `;
+};
 
 /**
  * Prompt for generating image assets

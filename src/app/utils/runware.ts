@@ -6,7 +6,7 @@ import path from "path";
 
 // Define schemas using Zod for type validation
 const RunwareImageOptionsSchema = z.object({
-  prompt: z.string().min(1).max(1950),
+  prompt: z.string().min(1).max(2950),
   negativePrompt: z.string().optional().default(""),
   width: z.number().min(128).max(2048).multipleOf(64).default(1024),
   height: z.number().min(128).max(2048).multipleOf(64).default(1024),
@@ -15,7 +15,7 @@ const RunwareImageOptionsSchema = z.object({
 });
 
 const RunwareVideoOptionsSchema = z.object({
-  prompt: z.string().min(1).max(1950),
+  prompt: z.string().min(1).max(2950),
   negativePrompt: z.string().optional().default(""),
   duration: z.number().min(1).max(20).default(4),
   format: z.enum(["9:16", "16:9", "1:1", "4:5"]).optional().default("9:16"),

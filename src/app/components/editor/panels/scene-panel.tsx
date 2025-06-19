@@ -32,6 +32,7 @@ import { useEditor } from "../context/editor-context";
 import { useSceneManagement } from "../hooks/use-scene-management";
 import { useVideoFormat } from "@/app/contexts/format-context";
 import AIPromptModal from "../ai-prompt-modal";
+import SceneRegenerateModal from "../scene-regenerate-modal";
 import {
   Sparkles,
   ImageIcon,
@@ -52,6 +53,7 @@ import {
   X,
   Image,
   Copy,
+  RotateCcw,
 } from "lucide-react";
 
 type ScenePanelProps = {
@@ -94,6 +96,7 @@ export default function ScenePanel({
     updateSceneBackground,
     generateSceneAnimation,
     isGenerating,
+    deleteScene,
   } = useSceneManagement();
   const { currentFormat } = useVideoFormat();
 
@@ -130,6 +133,9 @@ export default function ScenePanel({
   const [aiPromptType, setAIPromptType] = useState<"scene" | "background">(
     "background"
   );
+  const [isSceneRegenerateModalOpen, setIsSceneRegenerateModalOpen] =
+    useState(false);
+  const [isRegenerating, setIsRegenerating] = useState(false);
   const [localAnimationPrompt, setLocalAnimationPrompt] = useState<string>("");
   const [selectedStaticImage, setSelectedStaticImage] = useState<string | null>(
     null
@@ -209,8 +215,11 @@ export default function ScenePanel({
 
   // Helper function to process background history from any source
   const processBackgroundHistory = async (dbHistory: any[]) => {
-    console.log(`[processBackgroundHistory] Starting with dbHistory:`, dbHistory);
-    
+    console.log(
+      `[processBackgroundHistory] Starting with dbHistory:`,
+      dbHistory
+    );
+
     // Deduplicate history based on URL (extract S3 key for comparison)
     const uniqueHistory = new Map();
 
@@ -227,12 +236,17 @@ export default function ScenePanel({
 
     // Add original image if not in history and no existing original found
     const hasOriginalInHistory = fullHistory.some((item) => item.isOriginal);
-    console.log(`[processBackgroundHistory] hasOriginalInHistory:`, hasOriginalInHistory);
+    console.log(
+      `[processBackgroundHistory] hasOriginalInHistory:`,
+      hasOriginalInHistory
+    );
 
     if (selectedSceneToUse.imageUrl && !hasOriginalInHistory) {
       const originalKey = extractS3Key(selectedSceneToUse.imageUrl);
       if (originalKey && !uniqueHistory.has(originalKey)) {
-        console.log(`[processBackgroundHistory] Adding original image to history`);
+        console.log(
+          `[processBackgroundHistory] Adding original image to history`
+        );
         const freshOriginalUrl = await getFreshPresignedUrl(
           selectedSceneToUse.imageUrl
         );
@@ -265,7 +279,10 @@ export default function ScenePanel({
       return b.timestamp - a.timestamp;
     });
 
-    console.log(`[processBackgroundHistory] Final sorted history:`, fullHistory);
+    console.log(
+      `[processBackgroundHistory] Final sorted history:`,
+      fullHistory
+    );
     setBackgroundHistory(fullHistory);
 
     // Also create refreshed version for display
@@ -305,14 +322,12 @@ export default function ScenePanel({
         console.log(
           `[loadBackgroundHistory] Loaded ${dbHistory.length} history items from API`
         );
-        console.log(
-          `[loadBackgroundHistory] API Response:`, {
-            success: result.success,
-            historyCount: dbHistory.length,
-            firstItem: dbHistory[0],
-            result: result
-          }
-        );
+        console.log(`[loadBackgroundHistory] API Response:`, {
+          success: result.success,
+          historyCount: dbHistory.length,
+          firstItem: dbHistory[0],
+          result: result,
+        });
         await processBackgroundHistory(dbHistory);
       } else {
         // If error or no history, create initial history with original image if it exists
@@ -382,20 +397,20 @@ export default function ScenePanel({
   // Helper function to clean URLs for database storage
   const cleanUrlForDatabase = (inputUrl: string): string => {
     let cleanUrl = inputUrl;
-    
+
     // Remove presigned query parameters if present
-    if (cleanUrl.includes('?X-Amz-')) {
-      cleanUrl = cleanUrl.split('?')[0];
+    if (cleanUrl.includes("?X-Amz-")) {
+      cleanUrl = cleanUrl.split("?")[0];
     }
-    
+
     // Remove any other query parameters that might cause JSON issues
-    if (cleanUrl.includes('?')) {
-      cleanUrl = cleanUrl.split('?')[0];
+    if (cleanUrl.includes("?")) {
+      cleanUrl = cleanUrl.split("?")[0];
     }
-    
+
     // Ensure the URL doesn't contain characters that would break JSON
-    cleanUrl = cleanUrl.replace(/[\x00-\x1f\x7f-\x9f]/g, '');
-    
+    cleanUrl = cleanUrl.replace(/[\x00-\x1f\x7f-\x9f]/g, "");
+
     return cleanUrl;
   };
 
@@ -409,17 +424,17 @@ export default function ScenePanel({
 
     try {
       const cleanUrl = cleanUrlForDatabase(entry.url);
-      
+
       const cleanedEntry = {
         ...entry,
-        url: cleanUrl
+        url: cleanUrl,
       };
-      
+
       console.log(`[saveBackgroundHistoryEntry] Saving entry:`, {
         original: entry,
-        cleaned: cleanedEntry
+        cleaned: cleanedEntry,
       });
-      
+
       // Check if this URL already exists in history (by S3 key)
       const entryKey = extractS3Key(cleanedEntry.url);
       const isDuplicate = backgroundHistory.some((item) => {
@@ -430,21 +445,29 @@ export default function ScenePanel({
       console.log(`[saveBackgroundHistoryEntry] Duplicate check:`, {
         entryKey,
         isDuplicate,
-        currentHistoryCount: backgroundHistory.length
+        currentHistoryCount: backgroundHistory.length,
       });
 
       if (!isDuplicate) {
-        const response = await fetch(`/api/scenes/${selectedSceneToUse.id}/background-history`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(cleanedEntry),
-        });
-        
-        console.log(`[saveBackgroundHistoryEntry] POST response status: ${response.status}`);
-        
+        const response = await fetch(
+          `/api/scenes/${selectedSceneToUse.id}/background-history`,
+          {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(cleanedEntry),
+          }
+        );
+
+        console.log(
+          `[saveBackgroundHistoryEntry] POST response status: ${response.status}`
+        );
+
         if (!response.ok) {
           const errorText = await response.text();
-          console.error(`[saveBackgroundHistoryEntry] Failed to save:`, errorText);
+          console.error(
+            `[saveBackgroundHistoryEntry] Failed to save:`,
+            errorText
+          );
         } else {
           const result = await response.json();
           console.log(`[saveBackgroundHistoryEntry] Save successful:`, result);
@@ -672,7 +695,7 @@ export default function ScenePanel({
               },
             },
           });
-          
+
           // Save to API
           await saveBackgroundHistoryEntry(historyEntry);
 
@@ -760,7 +783,7 @@ export default function ScenePanel({
               },
             },
           });
-          
+
           // Save to API
           await saveBackgroundHistoryEntry(historyEntry);
 
@@ -931,6 +954,216 @@ export default function ScenePanel({
             "Generated background has been applied to the current scene",
         });
       }
+    }
+  };
+
+  // Optimize prompt for generation to avoid character limits
+  const optimizePromptForGeneration = async (
+    prompt: string,
+    style: string
+  ): Promise<string> => {
+    // If prompt is reasonable length, just add essential style keywords
+    if (prompt.length <= 1500) {
+      const styleKeywords = {
+        realistic: "photorealistic, high quality, professional photography",
+        cinematic: "cinematic lighting, dramatic, film-like quality",
+        minimalist: "clean, minimal, simple composition",
+        vibrant: "vibrant colors, high contrast, energetic",
+        "3D rendered": "3D render, photorealistic CGI, studio lighting",
+      };
+
+      const keywords =
+        styleKeywords[style as keyof typeof styleKeywords] || "high quality";
+      return `${prompt}, ${keywords}`;
+    }
+
+    // For very long prompts, truncate and add essential keywords
+    const truncated = prompt.substring(0, 1400);
+    const styleKeywords = {
+      realistic: "photorealistic",
+      cinematic: "cinematic",
+      minimalist: "minimal",
+      vibrant: "vibrant",
+      "3D rendered": "3D render",
+    };
+
+    const keyword = styleKeywords[style as keyof typeof styleKeywords] || "";
+    return `${truncated}... ${keyword} style, high quality`;
+  };
+
+  // Handle scene regeneration
+  const handleRegenerateScene = () => {
+    setIsSceneRegenerateModalOpen(true);
+  };
+
+  // Handle actual scene regeneration with new parameters
+  const handleSceneRegeneration = async (params: {
+    prompt: string;
+    style: string;
+    duration: number;
+  }) => {
+    if (!selectedSceneToUse?.id) return;
+
+    setIsRegenerating(true);
+
+    try {
+      // Optimize prompt: keep it concise but descriptive
+      const optimizedPrompt = await optimizePromptForGeneration(
+        params.prompt,
+        params.style
+      );
+
+      // Call the background generation endpoint with optimized prompt
+      const response = await fetch("/api/ai/generate-background", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          prompt: optimizedPrompt,
+          style: params.style,
+          format: currentFormat,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to regenerate scene");
+      }
+
+      const result = await response.json();
+
+      if (result.success && result.background && result.background.imageUrl) {
+        const rawImageUrl = result.background.imageUrl;
+
+        // Refresh the main scene image URL for immediate display
+        const newImageUrl = await getFreshPresignedUrl(rawImageUrl);
+
+        // Add to background history (use raw URL for database storage)
+        const historyEntry = {
+          url: rawImageUrl,
+          prompt: `Scene regenerated: ${params.prompt}`,
+          timestamp: Date.now(),
+          isOriginal: false,
+        };
+
+        // Check for duplicates using S3 key extraction
+        const extractS3Key = (url: string): string | null => {
+          try {
+            if (url.includes("s3.") || url.includes("wasabisys.com")) {
+              const parts = url.split("/");
+              return parts.slice(-1)[0].split("?")[0];
+            }
+            return null;
+          } catch {
+            return null;
+          }
+        };
+
+        const entryKey = extractS3Key(historyEntry.url);
+        const isDuplicate = backgroundHistory.some((item) => {
+          const itemKey = extractS3Key(item.url);
+          return entryKey && itemKey && entryKey === itemKey;
+        });
+
+        // Update local background history if not duplicate
+        let newHistory = backgroundHistory;
+        let newRefreshedHistory = refreshedBackgroundHistory;
+
+        if (!isDuplicate) {
+          newHistory = [...backgroundHistory, historyEntry];
+          setBackgroundHistory(newHistory);
+
+          // Create refreshed version for display
+          try {
+            const refreshedUrl = await getFreshPresignedUrl(historyEntry.url);
+            const refreshedEntry = { ...historyEntry, url: refreshedUrl };
+            newRefreshedHistory = [
+              ...refreshedBackgroundHistory,
+              refreshedEntry,
+            ];
+            setRefreshedBackgroundHistory(newRefreshedHistory);
+          } catch (error) {
+            console.error("Failed to refresh regenerated image URL:", error);
+            // Fallback: add original URL to refreshed history
+            newRefreshedHistory = [...refreshedBackgroundHistory, historyEntry];
+            setRefreshedBackgroundHistory(newRefreshedHistory);
+          }
+
+          // Save to database
+          await saveBackgroundHistoryEntry(historyEntry);
+        }
+
+        // Update the scene with new content including updated history
+        const updates = {
+          imageUrl: newImageUrl,
+          prompt: params.prompt,
+          style: params.style,
+          duration: params.duration,
+          backgroundHistory: newHistory,
+          // Reset animation status since we have a new image
+          animationStatus: "none",
+          animationPrompt: "",
+          videoUrl: undefined,
+        };
+
+        // Update the scene directly using dispatch
+        dispatch({
+          type: "UPDATE_SCENE",
+          payload: {
+            sceneId: selectedSceneToUse.id,
+            updates,
+          },
+        });
+
+        toast({
+          title: "Scene regenerated",
+          description:
+            "Your scene has been successfully regenerated with new content.",
+        });
+
+        setIsSceneRegenerateModalOpen(false);
+      } else {
+        throw new Error(result.error || "Failed to generate scene");
+      }
+    } catch (error) {
+      console.error("Error regenerating scene:", error);
+      toast({
+        title: "Regeneration failed",
+        description:
+          error instanceof Error
+            ? error.message
+            : "Failed to regenerate scene. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsRegenerating(false);
+    }
+  };
+
+  // Handle scene deletion
+  const handleDeleteScene = () => {
+    if (!selectedSceneToUse?.id) return;
+    if (state.scenes && state.scenes.length <= 1) {
+      toast({
+        title: "Cannot delete scene",
+        description: "You must have at least one scene in your project.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    // Ask for confirmation before deleting
+    if (
+      window.confirm(
+        `Are you sure you want to delete Scene ${sceneIndex}? This action cannot be undone.`
+      )
+    ) {
+      deleteScene(selectedSceneToUse.id);
+      toast({
+        title: "Scene deleted",
+        description:
+          "The scene has been successfully removed from your project.",
+      });
     }
   };
 
@@ -1417,10 +1650,62 @@ Create a concise, effective video prompt for animation creation based on the inp
                 </p>
               </div>
             </div>
-            <Badge variant="secondary" className="text-xs">
-              <Zap className="mr-1 w-3 h-3" />
-              AI Enhanced
-            </Badge>
+            <div className="flex gap-2 items-center">
+              {/* Scene Action Buttons */}
+              <div className="flex gap-1 items-center">
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={handleRegenerateScene}
+                      className="p-0 w-8 h-8"
+                    >
+                      <RotateCcw className="w-4 h-4" />
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>Regenerate scene with AI</p>
+                  </TooltipContent>
+                </Tooltip>
+
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={handleDeleteScene}
+                      className={`h-8 w-8 p-0 ${
+                        (state.scenes && state.scenes.length <= 1) ||
+                        !state.scenes
+                          ? "text-muted-foreground/50 cursor-not-allowed"
+                          : "text-destructive hover:text-destructive hover:bg-destructive/10"
+                      }`}
+                      disabled={
+                        (state.scenes && state.scenes.length <= 1) ||
+                        !state.scenes
+                      }
+                    >
+                      <X className="w-4 h-4" />
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>
+                      {!state.scenes
+                        ? `No scenes data`
+                        : state.scenes.length <= 1
+                          ? `Cannot delete the only scene (count: ${state.scenes.length})`
+                          : `Delete scene (count: ${state.scenes.length})`}
+                    </p>
+                  </TooltipContent>
+                </Tooltip>
+              </div>
+
+              <Badge variant="secondary" className="text-xs">
+                <Zap className="mr-1 w-3 h-3" />
+                AI Enhanced
+              </Badge>
+            </div>
           </div>
         </div>
 
@@ -1729,26 +2014,38 @@ Create a concise, effective video prompt for animation creation based on the inp
                       <Layers className="w-4 h-4 text-blue-600 dark:text-blue-400" />
                       Background Versions & Animations
                     </Label>
-                    
+
                     {/* Background versions with their animations */}
                     <div className="space-y-3">
                       {backgroundHistory.slice(0, 6).map((item, bgIndex) => {
-                        const refreshedItem = refreshedBackgroundHistory[bgIndex] || item;
-                        const isBackgroundSelected = selectedStaticImage === item.url ||
-                          (selectedSceneToUse.imageUrl === item.url && !selectedStaticImage);
+                        const refreshedItem =
+                          refreshedBackgroundHistory[bgIndex] || item;
+                        const isBackgroundSelected =
+                          selectedStaticImage === item.url ||
+                          (selectedSceneToUse.imageUrl === item.url &&
+                            !selectedStaticImage);
 
                         // Find animations for this specific background image
-                        const animationsForThisImage = animationHistory.filter((anim) => {
-                          const staticKey = extractS3Key(item.url);
-                          const animationSourceKey = extractS3Key(anim.sourceImageUrl || "");
-                          return (
-                            anim.sourceImageUrl === item.url ||
-                            (staticKey && animationSourceKey && staticKey === animationSourceKey)
-                          );
-                        });
+                        const animationsForThisImage = animationHistory.filter(
+                          (anim) => {
+                            const staticKey = extractS3Key(item.url);
+                            const animationSourceKey = extractS3Key(
+                              anim.sourceImageUrl || ""
+                            );
+                            return (
+                              anim.sourceImageUrl === item.url ||
+                              (staticKey &&
+                                animationSourceKey &&
+                                staticKey === animationSourceKey)
+                            );
+                          }
+                        );
 
                         return (
-                          <div key={bgIndex} className="p-3 rounded-lg border bg-muted/30">
+                          <div
+                            key={bgIndex}
+                            className="p-3 rounded-lg border group bg-muted/30"
+                          >
                             {/* Background image header */}
                             <div className="flex gap-3 items-center mb-3">
                               <div
@@ -1761,9 +2058,12 @@ Create a concise, effective video prompt for animation creation based on the inp
                                   setSelectedStaticImage(item.url);
 
                                   // Get the most recent animation for this background
-                                  const latestAnimation = animationsForThisImage.length > 0
-                                    ? animationsForThisImage.sort((a, b) => b.timestamp - a.timestamp)[0]
-                                    : null;
+                                  const latestAnimation =
+                                    animationsForThisImage.length > 0
+                                      ? animationsForThisImage.sort(
+                                          (a, b) => b.timestamp - a.timestamp
+                                        )[0]
+                                      : null;
 
                                   // Update scene state when selecting a static image
                                   if (selectedSceneToUse?.id) {
@@ -1773,15 +2073,26 @@ Create a concise, effective video prompt for animation creation based on the inp
                                         sceneId: selectedSceneToUse.id,
                                         updates: {
                                           imageUrl: item.url,
-                                          videoUrl: latestAnimation?.videoUrl || undefined,
-                                          animationStatus: latestAnimation ? "completed" : undefined,
-                                          animationPrompt: latestAnimation?.animationPrompt || undefined,
-                                          animate: latestAnimation ? true : false,
+                                          videoUrl:
+                                            latestAnimation?.videoUrl ||
+                                            undefined,
+                                          animationStatus: latestAnimation
+                                            ? "completed"
+                                            : undefined,
+                                          animationPrompt:
+                                            latestAnimation?.animationPrompt ||
+                                            undefined,
+                                          animate: latestAnimation
+                                            ? true
+                                            : false,
                                           useAnimatedVersion: false, // Default to static version
                                         },
                                       },
                                     });
-                                    updateSceneBackground(selectedSceneToUse.id, item.url);
+                                    updateSceneBackground(
+                                      selectedSceneToUse.id,
+                                      item.url
+                                    );
                                     setUseAnimatedVersion(false);
                                     await syncToDatabase();
                                   }
@@ -1798,13 +2109,61 @@ Create a concise, effective video prompt for animation creation based on the inp
                                   </div>
                                 )}
                               </div>
-                              
+
                               <div className="flex-1">
-                                <p className="text-sm font-medium">
-                                  {item.isOriginal ? "Original" : item.prompt}
-                                </p>
+                                <div className="flex gap-2 items-center">
+                                  {item.isOriginal ? (
+                                    <p className="text-sm font-medium">
+                                      Original
+                                    </p>
+                                  ) : (
+                                    <Tooltip>
+                                      <TooltipTrigger asChild>
+                                        <p className="text-sm font-medium truncate cursor-pointer max-w-[200px]">
+                                          {item.prompt}
+                                        </p>
+                                      </TooltipTrigger>
+                                      <TooltipContent
+                                        side="top"
+                                        className="max-w-xs"
+                                      >
+                                        <p className="text-xs">{item.prompt}</p>
+                                      </TooltipContent>
+                                    </Tooltip>
+                                  )}
+
+                                  {!item.isOriginal && item.prompt && (
+                                    <Tooltip>
+                                      <TooltipTrigger asChild>
+                                        <button
+                                          onClick={(e) => {
+                                            e.stopPropagation();
+                                            navigator.clipboard.writeText(
+                                              item.prompt
+                                            );
+                                            toast({
+                                              title: "Copied to clipboard",
+                                              description:
+                                                "Prompt copied successfully",
+                                            });
+                                          }}
+                                          className="p-1 rounded opacity-0 transition-colors hover:bg-muted group-hover:opacity-100"
+                                        >
+                                          <Copy className="w-3 h-3 text-muted-foreground hover:text-foreground" />
+                                        </button>
+                                      </TooltipTrigger>
+                                      <TooltipContent>
+                                        <p>Copy prompt to clipboard</p>
+                                      </TooltipContent>
+                                    </Tooltip>
+                                  )}
+                                </div>
                                 <p className="text-xs text-muted-foreground">
-                                  {animationsForThisImage.length} animation{animationsForThisImage.length !== 1 ? 's' : ''} available
+                                  {animationsForThisImage.length} animation
+                                  {animationsForThisImage.length !== 1
+                                    ? "s"
+                                    : ""}{" "}
+                                  available
                                 </p>
                               </div>
                             </div>
@@ -1812,82 +2171,135 @@ Create a concise, effective video prompt for animation creation based on the inp
                             {/* Animation versions for this background */}
                             {animationsForThisImage.length > 0 && (
                               <div className="ml-1 space-y-2">
-                                <Label className="text-xs text-muted-foreground">Animation Versions:</Label>
+                                <Label className="text-xs text-muted-foreground">
+                                  Animation Versions:
+                                </Label>
                                 <div className="grid grid-cols-2 gap-2">
-                                  {animationsForThisImage.map((anim, animIndex) => {
-                                    const isAnimationSelected = 
-                                      selectedSceneToUse?.videoUrl === anim.videoUrl && 
-                                      selectedSceneToUse?.imageUrl === item.url &&
-                                      useAnimatedVersion;
+                                  {animationsForThisImage.map(
+                                    (anim, animIndex) => {
+                                      const isAnimationSelected =
+                                        selectedSceneToUse?.videoUrl ===
+                                          anim.videoUrl &&
+                                        selectedSceneToUse?.imageUrl ===
+                                          item.url &&
+                                        useAnimatedVersion;
 
-                                    return (
-                                      <div
-                                        key={animIndex}
-                                        className={`relative cursor-pointer rounded-lg border-2 p-2 transition-all ${
-                                          isAnimationSelected
-                                            ? "border-purple-500 bg-purple-50 dark:bg-purple-900/20"
-                                            : "border-gray-200 dark:border-gray-700 hover:border-purple-300 dark:hover:border-purple-600"
-                                        }`}
-                                        onClick={async () => {
-                                          if (selectedSceneToUse?.id) {
-                                            // Set the background and animation
-                                            dispatch({
-                                              type: "UPDATE_SCENE",
-                                              payload: {
-                                                sceneId: selectedSceneToUse.id,
-                                                updates: {
-                                                  imageUrl: item.url,
-                                                  videoUrl: anim.videoUrl,
-                                                  animationPrompt: anim.animationPrompt,
-                                                  animationStatus: "completed",
-                                                  animate: true,
-                                                  useAnimatedVersion: true,
+                                      return (
+                                        <div
+                                          key={animIndex}
+                                          className={`group relative cursor-pointer rounded-lg border-2 p-2 transition-all ${
+                                            isAnimationSelected
+                                              ? "bg-purple-50 border-purple-500 dark:bg-purple-900/20"
+                                              : "border-gray-200 dark:border-gray-700 hover:border-purple-300 dark:hover:border-purple-600"
+                                          }`}
+                                          onClick={async () => {
+                                            if (selectedSceneToUse?.id) {
+                                              // Set the background and animation
+                                              dispatch({
+                                                type: "UPDATE_SCENE",
+                                                payload: {
+                                                  sceneId:
+                                                    selectedSceneToUse.id,
+                                                  updates: {
+                                                    imageUrl: item.url,
+                                                    videoUrl: anim.videoUrl,
+                                                    animationPrompt:
+                                                      anim.animationPrompt,
+                                                    animationStatus:
+                                                      "completed",
+                                                    animate: true,
+                                                    useAnimatedVersion: true,
+                                                  },
                                                 },
-                                              },
-                                            });
-                                            
-                                            setSelectedStaticImage(item.url);
-                                            setUseAnimatedVersion(true);
-                                            
-                                            toast({
-                                              title: "Animation selected",
-                                              description: `Using: "${anim.animationPrompt}"`,
-                                            });
-                                            
-                                            await syncToDatabase();
-                                          }
-                                        }}
-                                      >
-                                        <div className="flex gap-2 items-center">
-                                          <Film className="w-4 h-4 text-purple-600" />
-                                          <div className="flex-1 min-w-0">
-                                            <p className="text-xs font-medium truncate">
-                                              {anim.animationPrompt}
-                                            </p>
-                                            <p className="text-[10px] text-muted-foreground">
-                                              {new Date(anim.timestamp).toLocaleDateString()}
-                                            </p>
+                                              });
+
+                                              setSelectedStaticImage(item.url);
+                                              setUseAnimatedVersion(true);
+
+                                              toast({
+                                                title: "Animation selected",
+                                                description: `Using: "${anim.animationPrompt}"`,
+                                              });
+
+                                              await syncToDatabase();
+                                            }
+                                          }}
+                                        >
+                                          <div className="flex gap-2 items-center">
+                                            <Film className="w-4 h-4 text-purple-600" />
+                                            <div className="flex-1 min-w-0">
+                                              <div className="flex gap-1 items-center">
+                                                <Tooltip>
+                                                  <TooltipTrigger asChild>
+                                                    <p className="text-xs font-medium truncate cursor-pointer max-w-[120px]">
+                                                      {anim.animationPrompt}
+                                                    </p>
+                                                  </TooltipTrigger>
+                                                  <TooltipContent
+                                                    side="top"
+                                                    className="max-w-xs"
+                                                  >
+                                                    <p className="text-xs">
+                                                      {anim.animationPrompt}
+                                                    </p>
+                                                  </TooltipContent>
+                                                </Tooltip>
+
+                                                <Tooltip>
+                                                  <TooltipTrigger asChild>
+                                                    <button
+                                                      onClick={(e) => {
+                                                        e.stopPropagation();
+                                                        navigator.clipboard.writeText(
+                                                          anim.animationPrompt
+                                                        );
+                                                        toast({
+                                                          title:
+                                                            "Copied to clipboard",
+                                                          description:
+                                                            "Animation prompt copied successfully",
+                                                        });
+                                                      }}
+                                                      className="p-0.5 rounded hover:bg-muted transition-colors opacity-0 group-hover:opacity-100"
+                                                    >
+                                                      <Copy className="w-2.5 h-2.5 text-muted-foreground hover:text-foreground" />
+                                                    </button>
+                                                  </TooltipTrigger>
+                                                  <TooltipContent>
+                                                    <p>Copy animation prompt</p>
+                                                  </TooltipContent>
+                                                </Tooltip>
+                                              </div>
+                                              <p className="text-[10px] text-muted-foreground">
+                                                {new Date(
+                                                  anim.timestamp
+                                                ).toLocaleDateString()}
+                                              </p>
+                                            </div>
+                                            <Button
+                                              variant="ghost"
+                                              size="sm"
+                                              onClick={(e) => {
+                                                e.stopPropagation();
+                                                window.open(
+                                                  anim.videoUrl,
+                                                  "_blank"
+                                                );
+                                              }}
+                                              className="p-0 w-6 h-6"
+                                            >
+                                              <Play className="w-3 h-3" />
+                                            </Button>
                                           </div>
-                                          <Button
-                                            variant="ghost"
-                                            size="sm"
-                                            onClick={(e) => {
-                                              e.stopPropagation();
-                                              window.open(anim.videoUrl, "_blank");
-                                            }}
-                                            className="p-0 w-6 h-6"
-                                          >
-                                            <Play className="w-3 h-3" />
-                                          </Button>
+                                          {isAnimationSelected && (
+                                            <div className="absolute top-1 right-1">
+                                              <CheckCircle className="w-3 h-3 text-purple-600" />
+                                            </div>
+                                          )}
                                         </div>
-                                        {isAnimationSelected && (
-                                          <div className="absolute top-1 right-1">
-                                            <CheckCircle className="w-3 h-3 text-purple-600" />
-                                          </div>
-                                        )}
-                                      </div>
-                                    );
-                                  })}
+                                      );
+                                    }
+                                  )}
                                 </div>
                               </div>
                             )}
@@ -2308,7 +2720,7 @@ Create a concise, effective video prompt for animation creation based on the inp
                         {animationsForSelectedImage.map((anim, index) => (
                           <div
                             key={index}
-                            className="flex gap-3 items-center p-2 rounded-lg border cursor-pointer hover:bg-muted/50"
+                            className="flex gap-3 items-center p-2 rounded-lg border cursor-pointer group hover:bg-muted/50"
                             onClick={async () => {
                               if (selectedSceneToUse?.id) {
                                 dispatch({
@@ -2335,10 +2747,48 @@ Create a concise, effective video prompt for animation creation based on the inp
                             }}
                           >
                             <Film className="w-4 h-4 text-purple-600" />
-                            <div className="flex-1">
-                              <p className="text-sm font-medium">
-                                {anim.animationPrompt}
-                              </p>
+                            <div className="flex-1 min-w-0">
+                              <div className="flex gap-2 items-center min-w-0">
+                                <Tooltip>
+                                  <TooltipTrigger asChild>
+                                    <p className="text-sm font-medium truncate cursor-pointer max-w-[120px]">
+                                      {anim.animationPrompt}
+                                    </p>
+                                  </TooltipTrigger>
+                                  <TooltipContent
+                                    side="top"
+                                    className="max-w-xs"
+                                  >
+                                    <p className="text-xs">
+                                      {anim.animationPrompt}
+                                    </p>
+                                  </TooltipContent>
+                                </Tooltip>
+
+                                <Tooltip>
+                                  <TooltipTrigger asChild>
+                                    <button
+                                      onClick={(e) => {
+                                        e.stopPropagation();
+                                        navigator.clipboard.writeText(
+                                          anim.animationPrompt
+                                        );
+                                        toast({
+                                          title: "Copied to clipboard",
+                                          description:
+                                            "Animation prompt copied successfully",
+                                        });
+                                      }}
+                                      className="p-1 rounded opacity-0 transition-colors hover:bg-muted group-hover:opacity-100"
+                                    >
+                                      <Copy className="w-3 h-3 text-muted-foreground hover:text-foreground" />
+                                    </button>
+                                  </TooltipTrigger>
+                                  <TooltipContent>
+                                    <p>Copy animation prompt</p>
+                                  </TooltipContent>
+                                </Tooltip>
+                              </div>
                               <p className="text-xs text-muted-foreground">
                                 {new Date(anim.timestamp).toLocaleDateString()}
                               </p>
@@ -2411,6 +2861,22 @@ Create a concise, effective video prompt for animation creation based on the inp
             forCurrentScene={true}
           />
         )}
+
+        {/* Scene Regeneration Modal */}
+        <SceneRegenerateModal
+          isOpen={isSceneRegenerateModalOpen}
+          onClose={() => setIsSceneRegenerateModalOpen(false)}
+          onRegenerate={handleSceneRegeneration}
+          scene={{
+            id: selectedSceneToUse.id,
+            imageUrl: selectedSceneToUse.imageUrl,
+            prompt: selectedSceneToUse.prompt,
+            duration: selectedSceneToUse.duration,
+            style: selectedSceneToUse.style,
+          }}
+          sceneIndex={sceneIndex}
+          isGenerating={isRegenerating}
+        />
       </div>
     </TooltipProvider>
   );

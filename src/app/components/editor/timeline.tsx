@@ -9,7 +9,7 @@ import { useEditor } from "./context/editor-context";
 import { useSceneManagement } from "./hooks/use-scene-management";
 import { useVideoFormat } from "@/app/contexts/format-context";
 import AIPromptModal from "./ai-prompt-modal";
-import { PlusCircle, X, RotateCcw, Wand2 } from "lucide-react";
+import { PlusCircle, Wand2 } from "lucide-react";
 import { v4 as uuidv4 } from "uuid";
 
 // We keep the props type similar to the original for backward compatibility
@@ -39,8 +39,7 @@ export default function Timeline(
   const { formatDetails } = useVideoFormat();
 
   // Use the scene management hook for scene operations
-  const { addEmptyScene, deleteScene, getTotalDuration, selectScene } =
-    useSceneManagement();
+  const { addEmptyScene, getTotalDuration, selectScene } = useSceneManagement();
 
   // AI Modal state for regeneration
   const [isAIModalOpen, setIsAIModalOpen] = useState(false);
@@ -69,15 +68,6 @@ export default function Timeline(
 
   const handleSceneClick = (sceneId: string) => {
     selectScene(sceneId);
-  };
-
-  // Handle scene regeneration
-  const handleRegenerateScene = (sceneId: string, e: React.MouseEvent) => {
-    e.stopPropagation();
-    e.preventDefault();
-    setRegeneratingSceneId(sceneId);
-    setAIPromptType("scene");
-    setIsAIModalOpen(true);
   };
 
   // Handle AI generation results
@@ -305,42 +295,6 @@ export default function Timeline(
               draggable={true}
               onDragStart={(e) => handleSceneDragStart(e, scene)}
             >
-              {/* Action buttons - visible on hover, always visible on touch devices */}
-              <div className="flex absolute top-0.5 sm:top-1 right-0.5 sm:right-1 z-50 gap-0.5 sm:gap-1 opacity-100 sm:opacity-0 transition-opacity sm:group-hover:opacity-100">
-                {/* Regenerate button */}
-                <div
-                  className="flex justify-center items-center w-5 h-5 text-xs font-bold text-white rounded-full shadow-md cursor-pointer sm:w-6 sm:h-6 bg-blue-500/80 hover:bg-blue-600 touch-manipulation"
-                  onClick={(e) => handleRegenerateScene(scene.id, e)}
-                  title="Regenerate Scene with AI"
-                >
-                  <RotateCcw className="w-2.5 h-2.5 sm:w-3 sm:h-3" />
-                </div>
-
-                {/* Delete button */}
-                {scenes.length > 1 && (
-                  <div
-                    className="flex justify-center items-center w-5 h-5 text-xs font-bold text-white rounded-full shadow-md cursor-pointer sm:w-6 sm:h-6 bg-red-500/80 hover:bg-red-600 touch-manipulation"
-                    onClick={(e) => {
-                      // Stop all event propagation and prevent default
-                      e.stopPropagation();
-                      e.preventDefault();
-                      if (e.nativeEvent)
-                        e.nativeEvent.stopImmediatePropagation();
-
-                      // Add a slight delay to prevent interference with other event handlers
-                      setTimeout(() => {
-                        console.log("Delete clicked for scene:", scene.id);
-                        deleteScene(scene.id);
-                      }, 50);
-
-                      return false;
-                    }}
-                    title="Delete Scene"
-                  >
-                    <X className="w-2.5 h-2.5 sm:w-3 sm:h-3" />
-                  </div>
-                )}
-              </div>
               {/* Highlight the drop zone when dragging over */}
               <div
                 className="absolute inset-0 z-10 opacity-0 transition-opacity bg-primary/20"

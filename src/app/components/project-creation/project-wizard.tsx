@@ -154,7 +154,7 @@ export default function ProjectWizard({
     keyPoints: "",
     format: "9:16",
     style: "cinematic",
-    totalDuration: 15,
+    totalDuration: 9, // 3 scenes × 3 seconds average
     numScenes: 3,
     // Animation settings - default to true for better user experience
     animateAllScenes: true,
@@ -188,12 +188,11 @@ export default function ProjectWizard({
       ];
     }
 
-    // Category video or other templates use original flow
+    // Category video or other templates use simplified flow
     return [
       ...baseSteps,
       { id: "details", title: "Project Details", icon: Video },
       { id: "format", title: "Format & Style", icon: Target },
-      { id: "content", title: "Content Brief", icon: Wand2 },
       { id: "preview", title: "Review & Generate", icon: Eye },
     ];
   };
@@ -212,14 +211,13 @@ export default function ProjectWizard({
     }
   };
 
-  // Product image upload handler for multiple images
+  // Product image upload handler for single image
   const handleProductImageUpload = async (file: File, index?: number) => {
-    if (projectData.productImages.length >= 2 && index === undefined) {
+    if (projectData.productImages.length >= 1 && index === undefined) {
       toast({
         variant: "destructive",
         title: "Maximum images reached",
-        description:
-          "You can upload up to 2 product images for optimal AI generation.",
+        description: "You can upload 1 product image for AI generation.",
       });
       return;
     }
@@ -256,7 +254,7 @@ export default function ProjectWizard({
         },
         body: JSON.stringify({
           imageUrl: result.url,
-          prompt: `Analyze this product image (${currentIndex + 1}/2). Describe the product, its key features, colors, style, materials, and what makes it appealing. Include details about lighting, composition, and any unique characteristics that would be important for creating a compelling advertisement.`,
+          prompt: `Analyze this product image. Describe the product, its key features, colors, style, materials, and what makes it appealing. Include details about lighting, composition, and any unique characteristics that would be important for creating a compelling advertisement.`,
         }),
       });
 
@@ -319,7 +317,7 @@ export default function ProjectWizard({
       });
 
       toast({
-        title: `Product image ${currentIndex + 1} uploaded! 📸`,
+        title: `Product image uploaded! 📸`,
         description:
           "AI has analyzed your product image and will create scenes featuring it.",
       });
@@ -351,7 +349,7 @@ export default function ProjectWizard({
 
     toast({
       title: "Image removed",
-      description: `Product image ${index + 1} has been removed.`,
+      description: `Product image has been removed.`,
     });
   };
 
@@ -380,7 +378,7 @@ export default function ProjectWizard({
           adType: projectData.adType,
           productName: projectData.productName,
           targetAudience: projectData.targetAudience || undefined,
-          keyPoints: projectData.keyPoints,
+          keyPoints: projectData.description, // Using description as the comprehensive brief
           format: projectData.format,
           style: projectData.style,
           numScenes: projectData.numScenes,
@@ -441,12 +439,11 @@ export default function ProjectWizard({
       case "details":
         return (
           projectData.name.trim() !== "" &&
-          projectData.productName.trim() !== ""
+          projectData.productName.trim() !== "" &&
+          projectData.description.trim() !== ""
         );
       case "format":
         return projectData.format !== "" && projectData.style !== "";
-      case "content":
-        return projectData.keyPoints.trim() !== "";
       default:
         return true;
     }
@@ -603,14 +600,15 @@ export default function ProjectWizard({
                 animate={{ opacity: 1 }}
                 transition={{ delay: 0.2 }}
               >
-                Upload high-quality images for AI to create stunning visuals
+                Upload a high-quality image for AI to create stunning visuals
               </motion.p>
             </div>
 
-            <div className="mx-auto space-y-6 max-w-3xl">
-              {/* Upload Grid */}
-              <div className="grid grid-cols-2 gap-6">
-                {Array.from({ length: 2 }).map((_, index) => {
+            <div className="mx-auto space-y-6 max-w-2xl">
+              {/* Single Upload */}
+              <div className="flex justify-center">
+                {(() => {
+                  const index = 0;
                   const image = projectData.productImages[index];
                   const isUploading =
                     projectData.isUploadingProduct &&
@@ -621,8 +619,8 @@ export default function ProjectWizard({
                       key={index}
                       initial={{ opacity: 0, scale: 0.9 }}
                       animate={{ opacity: 1, scale: 1 }}
-                      transition={{ delay: index * 0.1 + 0.3 }}
-                      className="aspect-square"
+                      transition={{ delay: 0.3 }}
+                      className="w-80 aspect-square"
                     >
                       {image ? (
                         // Existing image
@@ -673,7 +671,7 @@ export default function ProjectWizard({
 
                           {/* Badge */}
                           <Badge className="absolute top-4 left-4 backdrop-blur-sm bg-black/80">
-                            Image {index + 1}
+                            Product Image
                           </Badge>
                         </div>
                       ) : (
@@ -726,12 +724,10 @@ export default function ProjectWizard({
                               </div>
                               <div className="space-y-1">
                                 <p className="font-medium">
-                                  {index === 0
-                                    ? "Upload product image"
-                                    : "Add another angle"}
+                                  Upload product image
                                 </p>
                                 <p className="text-xs text-muted-foreground">
-                                  {index === 0 ? "Required" : "Optional"}
+                                  Required
                                 </p>
                               </div>
                             </div>
@@ -740,7 +736,7 @@ export default function ProjectWizard({
                       )}
                     </motion.div>
                   );
-                })}
+                })()}
               </div>
 
               {/* Tips Card */}
@@ -762,7 +758,7 @@ export default function ProjectWizard({
                           <p>💡 Good lighting is essential</p>
                         </div>
                         <div className="space-y-2">
-                          <p>🎯 Show different angles</p>
+                          <p>🎯 Show product clearly</p>
                           <p>🎨 Clean backgrounds work best</p>
                         </div>
                       </div>
@@ -784,22 +780,19 @@ export default function ProjectWizard({
                         AI Product Analysis
                       </h4>
                       <div className="space-y-3">
-                        {projectData.productImages.map((image, index) => (
-                          <motion.div
-                            key={index}
-                            initial={{ opacity: 0, x: -20 }}
-                            animate={{ opacity: 1, x: 0 }}
-                            transition={{ delay: index * 0.1 }}
-                            className="p-3 rounded-lg backdrop-blur-sm bg-background/50"
-                          >
-                            <p className="mb-1 text-sm font-medium">
-                              Image {index + 1} insights:
-                            </p>
-                            <p className="text-sm text-muted-foreground">
-                              {image.visionAnalysis}
-                            </p>
-                          </motion.div>
-                        ))}
+                        <motion.div
+                          initial={{ opacity: 0, x: -20 }}
+                          animate={{ opacity: 1, x: 0 }}
+                          transition={{ delay: 0.1 }}
+                          className="p-3 rounded-lg backdrop-blur-sm bg-background/50"
+                        >
+                          <p className="mb-1 text-sm font-medium">
+                            Product insights:
+                          </p>
+                          <p className="text-sm text-muted-foreground">
+                            {projectData.productImages[0].visionAnalysis}
+                          </p>
+                        </motion.div>
                       </div>
                     </CardContent>
                   </Card>
@@ -883,14 +876,16 @@ export default function ProjectWizard({
                   htmlFor="project-description"
                   className="text-lg font-medium"
                 >
-                  Description
-                  <Badge variant="secondary" className="ml-2">
-                    Optional
-                  </Badge>
+                  Campaign Brief
+                  <span className="ml-1 text-primary">*</span>
                 </Label>
                 <Textarea
                   id="project-description"
-                  placeholder="Describe your vision, target audience, and campaign goals..."
+                  placeholder={
+                    projectData.template === "product-video"
+                      ? "Describe your product's key features, benefits, and what makes it special..."
+                      : "Describe your campaign vision. Include target audience (e.g., young professionals 25-35), key messages, brand values, unique selling points, and any specific requirements..."
+                  }
                   value={projectData.description}
                   onChange={(e) =>
                     setProjectData({
@@ -898,15 +893,20 @@ export default function ProjectWizard({
                       description: e.target.value,
                     })
                   }
-                  rows={4}
+                  rows={6}
                   className="text-base rounded-xl resize-none"
                 />
+                <p className="text-sm text-muted-foreground">
+                  {projectData.template === "product-video"
+                    ? "Focus on what makes your product unique and appealing to customers."
+                    : "The more details you provide, the better AI can tailor your video to your needs."}
+                </p>
               </div>
 
               {/* Character count */}
               <div className="flex justify-end">
                 <p className="text-xs text-muted-foreground">
-                  {projectData.description.length}/500 characters
+                  {projectData.description.length}/1000 characters
                 </p>
               </div>
             </motion.div>
@@ -956,39 +956,81 @@ export default function ProjectWizard({
                       initial={{ opacity: 0, y: 20 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: index * 0.05 + 0.3 }}
-                      whileHover={{ scale: 1.05 }}
-                      whileTap={{ scale: 0.95 }}
+                      whileHover={{ scale: format.value === "9:16" ? 1.05 : 1 }}
+                      whileTap={{ scale: format.value === "9:16" ? 0.95 : 1 }}
                     >
                       <Card
                         className={cn(
-                          "cursor-pointer transition-all relative overflow-hidden group",
-                          projectData.format === format.value
-                            ? "ring-2 ring-primary shadow-lg bg-primary/5"
-                            : "hover:shadow-md hover:ring-1 hover:ring-primary/50"
+                          "transition-all relative group",
+                          format.value === "9:16"
+                            ? projectData.format === format.value
+                              ? "ring-2 ring-primary shadow-lg bg-primary/5 cursor-pointer"
+                              : "hover:shadow-md hover:ring-1 hover:ring-primary/50 cursor-pointer"
+                            : "opacity-60 cursor-not-allowed"
                         )}
-                        onClick={() =>
-                          setProjectData({
-                            ...projectData,
-                            format: format.value,
-                          })
-                        }
+                        onClick={() => {
+                          if (format.value === "9:16") {
+                            setProjectData({
+                              ...projectData,
+                              format: format.value,
+                            });
+                          }
+                        }}
                       >
-                        {format.popular && (
+                        {format.value === "9:16" && format.popular && (
                           <Badge className="absolute -top-2 -right-2 z-10 bg-gradient-to-r from-purple-500 to-blue-500">
                             Popular
                           </Badge>
                         )}
+                        {format.value !== "9:16" && (
+                          <Badge className="absolute -top-2 -right-2 z-10 bg-gray-500">
+                            Coming Soon
+                          </Badge>
+                        )}
                         <CardContent className="p-6 text-center">
-                          <div className="flex justify-center items-center mx-auto mb-3 w-12 h-12 bg-gradient-to-br rounded-xl transition-transform from-primary/20 to-primary/10 group-hover:scale-110">
-                            <Icon className="w-6 h-6 text-primary" />
+                          <div
+                            className={cn(
+                              "flex justify-center items-center mx-auto mb-3 w-12 h-12 rounded-xl transition-transform",
+                              format.value === "9:16"
+                                ? "bg-gradient-to-br from-primary/20 to-primary/10 group-hover:scale-110"
+                                : "bg-gray-200 dark:bg-gray-700"
+                            )}
+                          >
+                            <Icon
+                              className={cn(
+                                "w-6 h-6",
+                                format.value === "9:16"
+                                  ? "text-primary"
+                                  : "text-gray-400"
+                              )}
+                            />
                           </div>
-                          <h4 className="text-lg font-semibold">
+                          <h4
+                            className={cn(
+                              "text-lg font-semibold",
+                              format.value !== "9:16" && "text-gray-500"
+                            )}
+                          >
                             {format.name}
                           </h4>
-                          <p className="mt-1 text-sm text-muted-foreground">
+                          <p
+                            className={cn(
+                              "mt-1 text-sm",
+                              format.value === "9:16"
+                                ? "text-muted-foreground"
+                                : "text-gray-400"
+                            )}
+                          >
                             {format.description}
                           </p>
-                          <p className="mt-2 font-mono text-xs text-muted-foreground">
+                          <p
+                            className={cn(
+                              "mt-2 font-mono text-xs",
+                              format.value === "9:16"
+                                ? "text-muted-foreground"
+                                : "text-gray-400"
+                            )}
+                          >
                             {format.dimensions}
                           </p>
                         </CardContent>
@@ -1067,20 +1109,29 @@ export default function ProjectWizard({
                       seconds
                     </span>
                   </div>
+                  <p className="text-xs text-center text-muted-foreground">
+                    Max {projectData.numScenes * 5}s ({projectData.numScenes}{" "}
+                    scenes × 5s)
+                  </p>
                   <Slider
                     value={[projectData.totalDuration]}
                     onValueChange={([value]) =>
                       setProjectData({ ...projectData, totalDuration: value })
                     }
-                    max={25}
-                    min={5}
-                    step={5}
+                    max={projectData.numScenes * 5} // 5 seconds max per scene
+                    min={projectData.numScenes} // 1 second min per scene
+                    step={1}
                     className="w-full"
                   />
                   <div className="flex justify-between text-sm text-muted-foreground">
-                    <span>Quick</span>
-                    <span>Standard</span>
-                    <span>Extended</span>
+                    <span>{projectData.numScenes}s</span>
+                    <span>
+                      {Math.round(
+                        (projectData.numScenes * 5 + projectData.numScenes) / 2
+                      )}
+                      s
+                    </span>
+                    <span>{projectData.numScenes * 5}s</span>
                   </div>
                 </div>
               </Card>
@@ -1101,9 +1152,19 @@ export default function ProjectWizard({
                   </div>
                   <Slider
                     value={[projectData.numScenes]}
-                    onValueChange={([value]) =>
-                      setProjectData({ ...projectData, numScenes: value })
-                    }
+                    onValueChange={([value]) => {
+                      // Adjust total duration if it exceeds the new maximum
+                      const maxDuration = value * 5;
+                      const adjustedDuration = Math.min(
+                        projectData.totalDuration,
+                        maxDuration
+                      );
+                      setProjectData({
+                        ...projectData,
+                        numScenes: value,
+                        totalDuration: adjustedDuration,
+                      });
+                    }}
                     max={5}
                     min={1}
                     step={1}
@@ -1287,105 +1348,6 @@ export default function ProjectWizard({
           </motion.div>
         );
 
-      case "content":
-        return (
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="mx-auto space-y-8 max-w-3xl"
-          >
-            <div className="text-center">
-              <motion.h2
-                className="mb-4 text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-blue-600 md:text-5xl"
-                initial={{ opacity: 0, y: -20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.1 }}
-              >
-                Share your vision
-              </motion.h2>
-              <motion.p
-                className="text-xl text-muted-foreground"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 0.2 }}
-              >
-                Help AI understand your brand&apos;s story
-              </motion.p>
-            </div>
-
-            <motion.div
-              className="space-y-6"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.3 }}
-            >
-              <div className="space-y-3">
-                <Label
-                  htmlFor="target-audience"
-                  className="text-lg font-medium"
-                >
-                  Target Audience
-                  <Badge variant="secondary" className="ml-2">
-                    Optional
-                  </Badge>
-                </Label>
-                <Input
-                  id="target-audience"
-                  placeholder="e.g., Young professionals, 25-35, urban lifestyle enthusiasts"
-                  value={projectData.targetAudience}
-                  onChange={(e) =>
-                    setProjectData({
-                      ...projectData,
-                      targetAudience: e.target.value,
-                    })
-                  }
-                  className="h-14 text-lg rounded-xl"
-                />
-              </div>
-
-              <div className="space-y-3">
-                <Label htmlFor="key-points" className="text-lg font-medium">
-                  Key Messages & Features
-                  <span className="ml-1 text-primary">*</span>
-                </Label>
-                <Textarea
-                  id="key-points"
-                  placeholder="What makes your product special? Include features, benefits, emotions you want to convey..."
-                  value={projectData.keyPoints}
-                  onChange={(e) =>
-                    setProjectData({
-                      ...projectData,
-                      keyPoints: e.target.value,
-                    })
-                  }
-                  rows={6}
-                  className="text-base rounded-xl resize-none"
-                />
-
-                {/* AI Tips */}
-                <Card className="bg-gradient-to-br from-purple-500/5 to-blue-500/5 border-primary/20">
-                  <CardContent className="p-4">
-                    <p className="flex gap-2 items-center mb-2 text-sm font-medium">
-                      <Wand2 className="w-4 h-4 text-primary" />
-                      AI Writing Tips
-                    </p>
-                    <ul className="space-y-1 text-sm text-muted-foreground">
-                      <li>
-                        • Be specific about colors, materials, and textures
-                      </li>
-                      <li>
-                        • Describe the mood and emotions you want to evoke
-                      </li>
-                      <li>• Mention any specific settings or environments</li>
-                      <li>• Include your unique selling propositions</li>
-                    </ul>
-                  </CardContent>
-                </Card>
-              </div>
-            </motion.div>
-          </motion.div>
-        );
-
       case "preview":
         return (
           <motion.div
@@ -1437,21 +1399,16 @@ export default function ProjectWizard({
                   {projectData.template === "product-video" &&
                     projectData.productImages.length > 0 && (
                       <div>
-                        <h4 className="mb-3 font-semibold">Product Images</h4>
-                        <div className="flex gap-3">
-                          {projectData.productImages.map((image, index) => (
-                            <div
-                              key={index}
-                              className="overflow-hidden relative w-24 h-24 rounded-lg bg-muted"
-                            >
-                              <Image
-                                src={image.displayUrl}
-                                alt={`Product ${index + 1}`}
-                                fill
-                                className="object-cover"
-                              />
-                            </div>
-                          ))}
+                        <h4 className="mb-3 font-semibold">Product Image</h4>
+                        <div className="flex justify-center">
+                          <div className="overflow-hidden relative w-32 h-32 rounded-lg bg-muted">
+                            <Image
+                              src={projectData.productImages[0].displayUrl}
+                              alt="Product"
+                              fill
+                              className="object-cover"
+                            />
+                          </div>
                         </div>
                       </div>
                     )}
@@ -1507,16 +1464,15 @@ export default function ProjectWizard({
                     </div>
                   )}
 
-                  {/* Content Brief for category videos */}
-                  {projectData.template === "category-video" &&
-                    projectData.keyPoints && (
-                      <div>
-                        <h4 className="mb-2 font-semibold">Content Brief</h4>
-                        <p className="p-4 text-sm rounded-lg text-muted-foreground bg-muted">
-                          {projectData.keyPoints}
-                        </p>
-                      </div>
-                    )}
+                  {/* Campaign Brief */}
+                  {projectData.description && (
+                    <div>
+                      <h4 className="mb-2 font-semibold">Campaign Brief</h4>
+                      <p className="p-4 text-sm rounded-lg text-muted-foreground bg-muted">
+                        {projectData.description}
+                      </p>
+                    </div>
+                  )}
                 </CardContent>
               </Card>
 
@@ -1648,14 +1604,21 @@ export default function ProjectWizard({
                       className={cn(
                         "w-10 h-10 rounded-full flex items-center justify-center transition-all duration-300 relative",
                         isCompleted || isCurrent
-                          ? "bg-gradient-to-r from-purple-600 to-blue-600 text-white shadow-lg"
-                          : "bg-muted text-muted-foreground"
+                          ? "bg-gradient-to-r from-purple-600 to-blue-600 text-white shadow-lg cursor-pointer"
+                          : "bg-muted text-muted-foreground",
+                        isCompleted && "cursor-pointer hover:scale-110"
                       )}
-                      whileHover={{ scale: 1.1 }}
+                      whileHover={{ scale: isCompleted || isCurrent ? 1.1 : 1 }}
                       animate={isCurrent ? { scale: [1, 1.1, 1] } : {}}
                       transition={
                         isCurrent ? { repeat: Infinity, duration: 2 } : {}
                       }
+                      onClick={() => {
+                        // Allow jumping to completed steps or current step
+                        if (isCompleted || isCurrent) {
+                          setCurrentStep(index);
+                        }
+                      }}
                     >
                       {isCompleted ? (
                         <Check className="w-5 h-5" />

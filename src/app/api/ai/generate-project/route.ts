@@ -10,77 +10,89 @@ import {
 } from "@/app/utils/prompts";
 
 // Function to transform static image prompts into animation-specific prompts
-function transformStaticToAnimationPrompt(staticPrompt: string | null): string | null {
+function transformStaticToAnimationPrompt(
+  staticPrompt: string | null
+): string | null {
   if (!staticPrompt) return null;
-  
+
   const prompt = staticPrompt.toLowerCase();
-  
+
   // Product beauty shots
-  if (prompt.includes("close-up beauty shot") || prompt.includes("beauty shot")) {
-    return staticPrompt.replace(
-      /close-up beauty shot/gi, 
-      "Gentle camera push-in and slow rotation around"
-    ).replace(
-      /on a minimal background/gi,
-      "with subtle depth of field and soft lighting transitions"
-    );
+  if (
+    prompt.includes("close-up beauty shot") ||
+    prompt.includes("beauty shot")
+  ) {
+    return staticPrompt
+      .replace(
+        /close-up beauty shot/gi,
+        "Gentle camera push-in and slow rotation around"
+      )
+      .replace(
+        /on a minimal background/gi,
+        "with subtle depth of field and soft lighting transitions"
+      );
   }
-  
+
   // Person using product
   if (prompt.includes("person using") || prompt.includes("lifestyle setting")) {
-    return staticPrompt.replace(
-      /person using/gi,
-      "Smooth cinematic shot of person gracefully using"
-    ).replace(
-      /in a.*environment/gi,
-      "with natural movement and dynamic lighting"
-    );
+    return staticPrompt
+      .replace(
+        /person using/gi,
+        "Smooth cinematic shot of person gracefully using"
+      )
+      .replace(
+        /in a.*environment/gi,
+        "with natural movement and dynamic lighting"
+      );
   }
-  
+
   // Split screen scenarios
   if (prompt.includes("split screen")) {
-    return staticPrompt.replace(
-      /split screen showing/gi,
-      "Dynamic transitions between multiple scenarios showing"
-    ).replace(
-      /being used in multiple settings/gi,
-      "with smooth camera movements and seamless transitions"
-    );
+    return staticPrompt
+      .replace(
+        /split screen showing/gi,
+        "Dynamic transitions between multiple scenarios showing"
+      )
+      .replace(
+        /being used in multiple settings/gi,
+        "with smooth camera movements and seamless transitions"
+      );
   }
-  
+
   // Close-up detail shots
   if (prompt.includes("close-up detail") || prompt.includes("close-up of")) {
-    return staticPrompt.replace(
-      /close-up.*of/gi,
-      "Smooth macro camera movement revealing"
-    ).replace(
-      /unique selling point/gi,
-      "innovative features with subtle focus pulls"
-    );
+    return staticPrompt
+      .replace(/close-up.*of/gi, "Smooth macro camera movement revealing")
+      .replace(
+        /unique selling point/gi,
+        "innovative features with subtle focus pulls"
+      );
   }
-  
+
   // Call-to-action shots
   if (prompt.includes("call-to-action") || prompt.includes("pricing")) {
-    return staticPrompt.replace(
-      /shown with/gi,
-      "Animated presentation with"
-    ).replace(
-      /pricing and call to action/gi,
-      "smooth text animations and engaging visual effects"
-    );
+    return staticPrompt
+      .replace(/shown with/gi, "Animated presentation with")
+      .replace(
+        /pricing and call to action/gi,
+        "smooth text animations and engaging visual effects"
+      );
   }
-  
+
   // Generic enhancement for any other prompts
   const animationEnhancements = [
     "with gentle camera movement",
-    "with subtle lighting effects", 
+    "with subtle lighting effects",
     "with smooth transitions",
     "with cinematic depth",
-    "with dynamic composition"
+    "with dynamic composition",
   ];
-  
-  const randomEnhancement = animationEnhancements[Math.floor(Math.random() * animationEnhancements.length)];
-  
+
+  const randomEnhancement =
+    animationEnhancements[
+      Math.floor(Math.random() * animationEnhancements.length)
+    ];
+
   return `${staticPrompt} ${randomEnhancement}`;
 }
 
@@ -205,7 +217,8 @@ export async function POST(req: Request) {
       totalDuration,
       analysisPrompt, // Pass the comprehensive analysis prompt
       productImages, // Pass all product images with vision analysis
-      isProductVideo // Flag for product video type
+      isProductVideo, // Flag for product video type
+      style // Pass the style parameter
     );
 
     // Import Prisma client and auth utilities
@@ -414,7 +427,9 @@ export async function POST(req: Request) {
           }
 
           // Transform static prompt into animation-specific prompt
-          const animationPrompt = transformStaticToAnimationPrompt(scene.prompt) || "animate this scene";
+          const animationPrompt =
+            transformStaticToAnimationPrompt(scene.prompt) ||
+            "animate this scene";
           console.log(
             `🎬 Using scene prompt for animation ${index + 1}: ${animationPrompt.substring(0, 100)}...`
           );
@@ -601,7 +616,8 @@ async function generateAdConcept(
   totalDuration: number = 15, // Default to 15 seconds if not provided
   analysisPrompt: string = "", // New parameter for comprehensive AI analysis
   productImages: Array<{ url: string; visionAnalysis: string }> = [], // Product images with vision analysis
-  isProductVideo: boolean = false // Flag for product video type
+  isProductVideo: boolean = false, // Flag for product video type
+  style: string = "realistic" // Style parameter for visual styling
 ): Promise<any> {
   try {
     // Generate ad concept using OpenAI (this would be the actual implementation)
@@ -659,11 +675,12 @@ async function generateAdConcept(
       `;
       prompt = productAnalysisPrompt;
     } else if (analysisPrompt) {
-      // Use existing comprehensive analysis prompt
+      // Use existing comprehensive analysis prompt with style
       prompt = GENERATE_STORYBOARD_PROMPT(
         analysisPrompt,
         numScenes,
-        totalDuration
+        totalDuration,
+        style
       );
     } else {
       // Fallback to original prompt logic
@@ -1068,11 +1085,20 @@ async function generateScenesFromConcept(
 
     // Process each scene in the concept
     for (const scene of adConcept.scenes) {
-      // Enhance prompt with style
+      // Enhance prompt with detailed style instructions
       let prompt = scene.description;
-      if (style !== "realistic") {
-        prompt = `${prompt} (in ${style} style)`;
-      }
+
+      // Import style instructions from prompts
+      const { getStyleInstructions } = await import("@/app/utils/prompts");
+      const styleInstructions = getStyleInstructions(style);
+
+      // Add comprehensive style details to the prompt
+      prompt = `${prompt}
+
+VISUAL STYLE - ${style.toUpperCase()}:
+${styleInstructions}
+
+Create this scene with the exact ${style} style requirements listed above.`;
 
       // Check if this scene should use Flux Kontext
       const shouldUseFluxKontext =
