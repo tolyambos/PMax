@@ -108,9 +108,10 @@ export default function ProjectLauncher({
   const handleWizardComplete = (projectData: any) => {
     // Navigate to editor with new project
     console.log("ProjectLauncher received project data:", projectData);
-    if (onProjectSelect && projectData && projectData.projectId) {
-      console.log("ProjectLauncher redirecting to:", projectData.projectId);
-      onProjectSelect(projectData.projectId);
+    const projectId = projectData?.id || projectData?.projectId;
+    if (onProjectSelect && projectData && projectId) {
+      console.log("ProjectLauncher redirecting to:", projectId);
+      onProjectSelect(projectId);
     } else {
       console.error(
         "ProjectLauncher: Invalid project data or missing projectId:",

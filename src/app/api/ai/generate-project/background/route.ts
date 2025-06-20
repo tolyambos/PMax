@@ -223,11 +223,21 @@ async function processProjectGeneration(
 
     updateProgress(100);
 
-    // Mark job as completed
+    // Mark job as completed with same format as main route
+    const result = {
+      projectId: project.id,
+      name: project.name,
+      description: project.description,
+      format: project.format,
+      scenes: project.scenes,
+      success: true,
+      timestamp: new Date().toISOString(),
+    };
+
     jobStatus.set(jobId, {
       status: "completed",
       progress: 100,
-      result: project,
+      result: result,
       startTime: Date.now(),
       projectId: project.id,
     });
