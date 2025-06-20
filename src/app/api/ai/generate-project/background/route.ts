@@ -1,15 +1,8 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { auth } from "@clerk/nextjs/server";
-import { openAIService } from "@/app/utils/openai";
 import { runwareService } from "@/app/utils/runware";
-import { s3Utils } from "@/lib/s3-utils";
 import { z } from "zod";
-import {
-  ANALYZE_AD_REQUEST_PROMPT,
-  GENERATE_STORYBOARD_PROMPT,
-  FALLBACK_STORYBOARD_PROMPT,
-} from "@/app/utils/prompts";
 
 // Store job status in memory (in production, use Redis or database)
 const jobStatus = new Map<
@@ -160,7 +153,6 @@ async function processProjectGeneration(
         ),
         prompt: `${validatedData.description || validatedData.name} - Scene ${index + 1}`,
         description: `Scene ${index + 1} for ${validatedData.name}`,
-        voiceoverText: `Scene ${index + 1} content`,
       })),
     };
 
@@ -177,9 +169,12 @@ async function processProjectGeneration(
         scenes: {
           create: storyboardData.scenes.map((scene: any, index: number) => ({
             order: index,
-            duration: scene.duration || 3,
-            prompt: scene.prompt || scene.description,
-            voiceoverText: scene.voiceoverText || scene.description,
+            duration: Math.max(1, Math.min(scene.duration || 3, 25)), // Ensure duration is between 1-25 seconds
+            imageUrl: null, // Initialize as null
+            prompt: scene.prompt || scene.description || null, // Use null instead of empty string
+            animationStatus: null, // Initialize as null
+            animationPrompt: null, // Initialize as null
+            videoUrl: null, // Initialize as null
           })),
         },
       },
