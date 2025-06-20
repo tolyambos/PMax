@@ -197,12 +197,20 @@ async function processProjectGeneration(
         updateProgress(60 + (i / project.scenes.length) * 30);
 
         try {
+          // Use centralized dimensions to ensure consistency with main route
+          const {
+            getDimensionsFromFormat,
+          } = require("@/app/utils/video-dimensions");
+          const { width, height } = getDimensionsFromFormat(
+            validatedData.format
+          );
+
           const imageResponse = await runwareService.generateImage({
             format: validatedData.format as "9:16" | "16:9" | "1:1" | "4:5",
             prompt: scene.prompt || "Default scene",
             negativePrompt: "",
-            width: validatedData.format === "16:9" ? 1920 : 1080,
-            height: validatedData.format === "16:9" ? 1080 : 1920,
+            width,
+            height,
             numSamples: 1,
           });
 
