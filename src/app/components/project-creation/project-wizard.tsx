@@ -11,6 +11,7 @@ import { Card, CardContent } from "@/app/components/ui/card";
 import { Slider } from "@/app/components/ui/slider";
 import { Switch } from "@/app/components/ui/switch";
 import { useToast } from "@/app/components/ui/use-toast";
+import { useProjectGeneration } from "@/app/hooks/use-project-generation";
 import {
   ArrowRight,
   ArrowLeft,
@@ -169,8 +170,16 @@ export default function ProjectWizard({
     isUploadingProduct: false,
     uploadingImageIndex: -1,
   });
-  const [isGenerating, setIsGenerating] = useState(false);
   const { toast } = useToast();
+  const {
+    isGenerating,
+    progress,
+    error,
+    timedOut,
+    generateProject,
+    checkStatus,
+    reset,
+  } = useProjectGeneration();
 
   // Dynamic steps based on template selection
   const getSteps = () => {
@@ -354,8 +363,6 @@ export default function ProjectWizard({
   };
 
   const handleGenerate = async () => {
-    setIsGenerating(true);
-
     // Debug log to check animation settings
     console.log("Project generation data:", {
       template: projectData.template,
@@ -366,44 +373,32 @@ export default function ProjectWizard({
     });
 
     try {
-      // Call the actual AI project generation API
-      const response = await fetch("/api/ai/generate-project", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          name: projectData.name,
-          description: projectData.description || undefined,
-          adType: projectData.adType,
-          productName: projectData.productName,
-          targetAudience: projectData.targetAudience || undefined,
-          keyPoints: projectData.description, // Using description as the comprehensive brief
-          format: projectData.format,
-          style: projectData.style,
-          numScenes: projectData.numScenes,
-          totalDuration: projectData.totalDuration,
-          // Animation settings
-          animateAllScenes: projectData.animateAllScenes,
-          animationProvider: projectData.animationProvider,
-          // Product-specific data
-          productImages:
-            projectData.productImages.length > 0
-              ? projectData.productImages.map((img) => ({
-                  url: img.url,
-                  visionAnalysis: img.visionAnalysis,
-                }))
-              : undefined,
-          isProductVideo: projectData.template === "product-video",
-        }),
-      });
+      const requestData = {
+        name: projectData.name,
+        description: projectData.description || undefined,
+        adType: projectData.adType,
+        productName: projectData.productName,
+        targetAudience: projectData.targetAudience || undefined,
+        keyPoints: projectData.description, // Using description as the comprehensive brief
+        format: projectData.format,
+        style: projectData.style,
+        numScenes: projectData.numScenes,
+        totalDuration: projectData.totalDuration,
+        // Animation settings
+        animateAllScenes: projectData.animateAllScenes,
+        animationProvider: projectData.animationProvider,
+        // Product-specific data
+        productImages:
+          projectData.productImages.length > 0
+            ? projectData.productImages.map((img) => ({
+                url: img.url,
+                visionAnalysis: img.visionAnalysis,
+              }))
+            : undefined,
+        isProductVideo: projectData.template === "product-video",
+      };
 
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || "Failed to generate project");
-      }
-
-      const result = await response.json();
+      const result = await generateProject(requestData);
       console.log("Wizard received API result:", result);
       onComplete(result);
       toast({
@@ -412,16 +407,36 @@ export default function ProjectWizard({
       });
     } catch (error) {
       console.error("Project generation error:", error);
+      if (!timedOut) {
+        toast({
+          variant: "destructive",
+          title: "Generation Failed",
+          description:
+            error instanceof Error
+              ? error.message
+              : "Please try again or contact support.",
+        });
+      }
+    }
+  };
+
+  const handleCheckStatus = async () => {
+    try {
+      const project = await checkStatus();
+      if (project) {
+        onComplete(project);
+        toast({
+          title: "Project Found! 🎉",
+          description: `Your project "${project.name}" was successfully created.`,
+        });
+      }
+    } catch (error) {
+      console.error("Status check error:", error);
       toast({
         variant: "destructive",
-        title: "Generation Failed",
-        description:
-          error instanceof Error
-            ? error.message
-            : "Please try again or contact support.",
+        title: "Check Failed",
+        description: "Unable to check project status. Please try again.",
       });
-    } finally {
-      setIsGenerating(false);
     }
   };
 
@@ -1502,31 +1517,55 @@ export default function ProjectWizard({
                   )}
                 </Button>
 
-                {isGenerating && (
+                {/* Timeout handling UI */}
+                {timedOut && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="space-y-3"
+                  >
+                    <div className="p-4 bg-amber-50 rounded-lg border border-amber-200 dark:bg-amber-900/20 dark:border-amber-800">
+                      <p className="text-sm text-amber-800 dark:text-amber-200">
+                        Project generation is taking longer than expected. The
+                        project may still be creating in the background.
+                      </p>
+                    </div>
+                    <Button
+                      onClick={handleCheckStatus}
+                      variant="outline"
+                      size="lg"
+                      className="w-full"
+                    >
+                      <Eye className="mr-2 w-4 h-4" />
+                      Check Project Status
+                    </Button>
+                  </motion.div>
+                )}
+
+                {/* Progress display */}
+                {progress && !timedOut && (
                   <motion.div
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     className="text-center"
                   >
-                    <p className="text-sm text-muted-foreground">
-                      {projectData.template === "product-video"
-                        ? "Analyzing your product and creating custom scenes... ✨"
-                        : `Creating ${projectData.numScenes} unique scenes tailored to your brand... ✨`}
-                    </p>
-                    <div className="flex gap-2 justify-center mt-4">
-                      {Array.from({ length: 3 }).map((_, i) => (
-                        <motion.div
-                          key={i}
-                          className="w-2 h-2 rounded-full bg-primary"
-                          animate={{ opacity: [0.3, 1, 0.3] }}
-                          transition={{
-                            repeat: Infinity,
-                            duration: 1.5,
-                            delay: i * 0.2,
-                          }}
-                        />
-                      ))}
-                    </div>
+                    <p className="text-sm text-muted-foreground">{progress}</p>
+                    {isGenerating && (
+                      <div className="flex gap-2 justify-center mt-4">
+                        {Array.from({ length: 3 }).map((_, i) => (
+                          <motion.div
+                            key={i}
+                            className="w-2 h-2 rounded-full bg-primary"
+                            animate={{ opacity: [0.3, 1, 0.3] }}
+                            transition={{
+                              repeat: Infinity,
+                              duration: 1.5,
+                              delay: i * 0.2,
+                            }}
+                          />
+                        ))}
+                      </div>
+                    )}
                   </motion.div>
                 )}
               </motion.div>
