@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { mockProjects, mockScenes } from "@/app/mock-data";
-import { prisma } from "@/app/utils/db";
+import { prisma } from "@/lib/prisma";
 
 /**
  * GET handler for fetching a specific project by ID

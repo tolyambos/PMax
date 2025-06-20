@@ -572,7 +572,7 @@ export class FFmpegRenderer {
 
     try {
       // Import prisma here to avoid circular dependencies
-      const { prisma } = await import("@/app/utils/db");
+      const { prisma } = await import("@/lib/prisma");
 
       // Find the element in the database
       const element = await prisma.element.findUnique({

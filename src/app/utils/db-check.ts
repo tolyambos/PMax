@@ -1,4 +1,4 @@
-import { prisma } from "./db";
+import { prisma } from "@/lib/prisma";
 
 /**
  * Checks database connectivity and returns connection status

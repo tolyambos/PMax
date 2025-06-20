@@ -1,25 +1,21 @@
 import { NextRequest, NextResponse } from "next/server";
-import { auth } from "@clerk/nextjs";
+import { auth } from "@clerk/nextjs/server";
 import { s3Utils } from "@/lib/s3-utils";
-import { prisma } from "@/app/utils/db";
+import { prisma } from "@/lib/prisma";
+import { ensureUserInDatabase } from "@/lib/auth";
 
 export async function POST(request: NextRequest) {
   try {
-    // Check authentication - use dev user ID in development
-    let userId: string;
+    // Get authenticated user
+    const { userId: clerkUserId } = auth();
 
-    if (process.env.NODE_ENV === "development") {
-      // Use a development user ID
-      userId = "dev-user-id";
-      console.log("Using development user ID for S3 upload:", userId);
-    } else {
-      // In production, use Clerk auth
-      const authResult = auth();
-      if (!authResult.userId) {
-        return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-      }
-      userId = authResult.userId;
+    if (!clerkUserId) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
+
+    // Ensure user exists in database
+    const user = await ensureUserInDatabase(clerkUserId);
+    const userId = user.id;
 
     const formData = await request.formData();
     const file = formData.get("file") as File;

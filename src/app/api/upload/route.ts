@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { v4 as uuidv4 } from "uuid";
-import { prisma } from "@/app/utils/db";
+import { prisma } from "@/lib/prisma";
 import { auth } from "@clerk/nextjs";
 import { s3Utils } from "@/lib/s3-utils";
 

@@ -28,7 +28,8 @@ export async function GET(request: NextRequest) {
         canCreateProjects: user.permissions[0]?.canCreateProjects || false,
         canUploadAssets: user.permissions[0]?.canUploadAssets || false,
         maxProjects: user.permissions[0]?.maxProjects || 0,
-        maxAssetStorage: user.permissions[0]?.maxAssetStorage || 0,
+        maxAssetStorage: user.permissions[0]?.maxAssetStorage ? 
+          user.permissions[0].maxAssetStorage.toString() : "0",
       },
     });
   } catch (error) {

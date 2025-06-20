@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { prisma } from "@/app/utils/db";
+import { prisma } from "@/lib/prisma";
 
 /**
  * Direct API endpoint to load a project without going through tRPC

@@ -1,7 +1,7 @@
 import { headers } from "next/headers";
 import { WebhookEvent } from "@clerk/nextjs/server";
 import { Webhook } from "svix";
-import { prisma } from "@/lib/prisma";
+import { prisma, withRetry } from "@/lib/prisma";
 import { Role } from "@prisma/client";
 
 export async function POST(req: Request) {
@@ -66,36 +66,48 @@ export async function POST(req: Request) {
 
     try {
       // Check if this is the first user - if so, make them admin
-      const userCount = await prisma.user.count();
+      const userCount = await withRetry(() => prisma.user.count());
       const isFirstUser = userCount === 0;
 
-      // Create or update user
-      const user = await prisma.user.upsert({
-        where: { clerkId: id },
-        update: {
-          email,
-          name,
-          image: image_url,
-        },
-        create: {
-          clerkId: id,
-          email,
-          name,
-          image: image_url,
-          role: isFirstUser ? Role.ADMIN : Role.USER,
-        },
-      });
-
-      // Create permissions for new user
-      if (eventType === "user.created") {
-        await prisma.permission.create({
-          data: {
-            userId: user.id,
-            canCreateProjects: isFirstUser, // Only admin (first user) can create projects by default
-            canUploadAssets: true,
-            maxProjects: isFirstUser ? 1000 : 0, // Admin gets 1000, regular users get 0 by default
-            maxAssetStorage: isFirstUser ? 107374182400 : 1073741824, // 100GB for admin, 1GB for users
+      // Create or update user with retry logic
+      const user = await withRetry(() =>
+        prisma.user.upsert({
+          where: { clerkId: id },
+          update: {
+            email,
+            name,
+            image: image_url,
           },
+          create: {
+            clerkId: id,
+            email,
+            name,
+            image: image_url,
+            role: isFirstUser ? Role.ADMIN : Role.USER,
+          },
+        })
+      );
+
+      // Create permissions for new user if they don't exist
+      if (eventType === "user.created") {
+        await withRetry(async () => {
+          // Check if permissions already exist
+          const existingPermission = await prisma.permission.findFirst({
+            where: { userId: user.id },
+          });
+
+          if (!existingPermission) {
+            // Create new permissions
+            await prisma.permission.create({
+              data: {
+                userId: user.id,
+                canCreateProjects: isFirstUser, // Only admin (first user) can create projects by default
+                canUploadAssets: true,
+                maxProjects: isFirstUser ? 1000 : 0, // Admin gets 1000, regular users get 0 by default
+                maxAssetStorage: isFirstUser ? 107374182400 : 1073741824, // 100GB for admin, 1GB for users
+              },
+            });
+          }
         });
       }
 
@@ -110,9 +122,11 @@ export async function POST(req: Request) {
     const { id } = evt.data;
 
     try {
-      await prisma.user.delete({
-        where: { clerkId: id },
-      });
+      await withRetry(() =>
+        prisma.user.delete({
+          where: { clerkId: id },
+        })
+      );
       console.log(`User deleted: ${id}`);
     } catch (error) {
       console.error("Error deleting user:", error);

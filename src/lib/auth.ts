@@ -1,5 +1,5 @@
 import { auth, currentUser } from "@clerk/nextjs/server";
-import { prisma } from "@/app/utils/db";
+import { prisma } from "@/lib/prisma";
 import { User, Permission, Role } from "@prisma/client";
 
 export type UserWithPermissions = User & {
@@ -111,39 +111,39 @@ export async function ensureUserInDatabase(clerkUserId: string) {
     throw new Error("User not found in Clerk");
   }
 
-  // Check if user exists in database
-  let user = await prisma.user.findUnique({
+  // Check if this is the first user
+  const userCount = await prisma.user.count();
+  const isFirstUser = userCount === 0;
+
+  // Use upsert to handle race conditions
+  const user = await prisma.user.upsert({
     where: { clerkId: clerkUserId },
-    include: { permissions: true },
-  });
-
-  if (!user) {
-    // Check if this is the first user
-    const userCount = await prisma.user.count();
-    const isFirstUser = userCount === 0;
-
-    // Create user in database
-    user = await prisma.user.create({
-      data: {
-        clerkId: clerkUserId,
-        email: clerkUserData.emailAddresses[0]?.emailAddress,
-        name:
-          `${clerkUserData.firstName || ""} ${clerkUserData.lastName || ""}`.trim() ||
-          null,
-        image: clerkUserData.imageUrl,
-        role: isFirstUser ? Role.ADMIN : Role.USER,
-        permissions: {
-          create: {
-            canCreateProjects: isFirstUser, // Only admin (first user) can create projects by default
-            canUploadAssets: true,
-            maxProjects: isFirstUser ? 1000 : 0, // Admin gets 1000, regular users get 0 by default
-            maxAssetStorage: isFirstUser ? 107374182400 : 1073741824, // 100GB for admin, 1GB for users
-          },
+    create: {
+      clerkId: clerkUserId,
+      email: clerkUserData.emailAddresses[0]?.emailAddress,
+      name:
+        `${clerkUserData.firstName || ""} ${clerkUserData.lastName || ""}`.trim() ||
+        null,
+      image: clerkUserData.imageUrl,
+      role: isFirstUser ? Role.ADMIN : Role.USER,
+      permissions: {
+        create: {
+          canCreateProjects: isFirstUser, // Only admin (first user) can create projects by default
+          canUploadAssets: true,
+          maxProjects: isFirstUser ? 1000 : 0, // Admin gets 1000, regular users get 0 by default
+          maxAssetStorage: isFirstUser ? 107374182400 : 1073741824, // 100GB for admin, 1GB for users
         },
       },
-      include: { permissions: true },
-    });
-  }
+    },
+    update: {
+      email: clerkUserData.emailAddresses[0]?.emailAddress,
+      name:
+        `${clerkUserData.firstName || ""} ${clerkUserData.lastName || ""}`.trim() ||
+        null,
+      image: clerkUserData.imageUrl,
+    },
+    include: { permissions: true },
+  });
 
   return user;
 }

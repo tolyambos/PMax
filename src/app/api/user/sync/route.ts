@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { auth } from "@clerk/nextjs/server";
 import { ensureUserInDatabase } from "@/lib/auth";
-import { prisma } from "@/lib/prisma";
+import { prisma, withRetry } from "@/lib/prisma";
 
 export async function POST() {
   try {
@@ -14,17 +14,19 @@ export async function POST() {
     // Sync current user with database
     const user = await ensureUserInDatabase(userId);
 
-    // Get user stats
+    // Get user stats with retry
     const [projectCount, assetCount] = await Promise.all([
-      prisma.project.count({ where: { userId: user.id } }),
-      prisma.asset.count({ where: { userId: user.id } }),
+      withRetry(() => prisma.project.count({ where: { userId: user.id } })),
+      withRetry(() => prisma.asset.count({ where: { userId: user.id } })),
     ]);
 
-    // Calculate storage used
-    const assets = await prisma.asset.findMany({
-      where: { userId: user.id },
-      select: { fileSize: true },
-    });
+    // Calculate storage used with retry
+    const assets = await withRetry(() => 
+      prisma.asset.findMany({
+        where: { userId: user.id },
+        select: { fileSize: true },
+      })
+    );
 
     const storageUsed = assets.reduce(
       (total, asset) => total + (asset.fileSize || 0),

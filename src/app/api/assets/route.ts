@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { prisma } from "@/app/utils/db";
+import { prisma } from "@/lib/prisma";
 import { auth } from "@clerk/nextjs";
 
 /**

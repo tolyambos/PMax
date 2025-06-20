@@ -1,7 +1,7 @@
 import NextAuth from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { PrismaAdapter } from "@auth/prisma-adapter";
-import { prisma } from "@/app/utils/db";
+import { prisma } from "@/lib/prisma";
 
 /**
  * NextAuth.js v5 configuration

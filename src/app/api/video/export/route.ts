@@ -4,7 +4,7 @@ import fs from "fs";
 import path from "path";
 import { videoService } from "@/app/utils/video/video-service";
 import { s3Utils } from "@/lib/s3-utils";
-import { prisma } from "@/utils/db";
+import { prisma } from "@/lib/prisma";
 
 // Schema for video export requests
 const ExportRequestSchema = z.object({

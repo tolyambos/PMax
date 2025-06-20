@@ -896,7 +896,38 @@ export default function ScenePanel({
       });
 
       if (!isDuplicate) {
-        setBackgroundHistory((prev) => [...prev, historyEntry]);
+        // Generate fresh presigned URL for immediate display
+        try {
+          const presignedResponse = await fetch('/api/s3/presigned-url', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              url: s3Url,
+            }),
+          });
+
+          if (presignedResponse.ok) {
+            const presignedResult = await presignedResponse.json();
+            const freshUrl = presignedResult.presignedUrl || s3Url;
+            
+            // Update history entry with fresh URL for immediate display
+            const historyEntryWithFreshUrl = {
+              ...historyEntry,
+              url: freshUrl,
+            };
+            
+            setBackgroundHistory((prev) => [...prev, historyEntryWithFreshUrl]);
+          } else {
+            // Fallback to original URL if presigned generation fails
+            setBackgroundHistory((prev) => [...prev, historyEntry]);
+          }
+        } catch (error) {
+          console.error('Error generating presigned URL for immediate display:', error);
+          // Fallback to original URL
+          setBackgroundHistory((prev) => [...prev, historyEntry]);
+        }
       }
       await saveBackgroundHistoryEntry(historyEntry);
 

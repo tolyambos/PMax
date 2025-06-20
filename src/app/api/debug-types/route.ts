@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { DBScene, EditorScene, APIScene } from "@/app/utils/type-check";
-import { prisma } from "@/app/utils/db";
+import { prisma } from "@/lib/prisma";
 
 // Function to get a sample DB scene
 async function getSampleDBScene(): Promise<DBScene | null> {

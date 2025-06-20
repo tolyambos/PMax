@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
-import { prisma } from "@/app/utils/db";
+import { prisma } from "@/lib/prisma";
 
 // Schema for direct animation updates
 const DirectUpdateRequestSchema = z.object({

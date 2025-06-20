@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
-import { auth } from "@clerk/nextjs";
-import { prisma } from "@/app/utils/db";
+import { auth } from "@clerk/nextjs/server";
+import { prisma } from "@/lib/prisma";
 import { s3Utils } from "@/lib/s3-utils";
 
 export async function GET(
@@ -13,10 +13,7 @@ export async function GET(
     // Check authentication using Clerk
     const authResult = auth();
     if (!authResult.userId) {
-      return NextResponse.json(
-        { error: "Unauthorized" },
-        { status: 401 }
-      );
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
     // Get user from database using Clerk ID
@@ -26,10 +23,7 @@ export async function GET(
     });
 
     if (!user) {
-      return NextResponse.json(
-        { error: "User not found" },
-        { status: 404 }
-      );
+      return NextResponse.json({ error: "User not found" }, { status: 404 });
     }
 
     const scene = await prisma.scene.findFirst({
@@ -61,12 +55,13 @@ export async function GET(
     let history = [];
     if (scene.backgroundHistory) {
       try {
-        history = typeof scene.backgroundHistory === 'string' 
-          ? JSON.parse(scene.backgroundHistory) 
-          : scene.backgroundHistory;
+        history =
+          typeof scene.backgroundHistory === "string"
+            ? JSON.parse(scene.backgroundHistory)
+            : scene.backgroundHistory;
         console.log(`[background-history] Parsed history:`, {
           originalType: typeof scene.backgroundHistory,
-          parsedLength: Array.isArray(history) ? history.length : 'not array',
+          parsedLength: Array.isArray(history) ? history.length : "not array",
           parsedHistory: history,
         });
       } catch (error) {
@@ -74,19 +69,25 @@ export async function GET(
         history = [];
       }
     } else {
-      console.log(`[background-history] No background history found in database`);
+      console.log(
+        `[background-history] No background history found in database`
+      );
     }
 
     // If no history but there's a background image, create initial history entry
     if (history.length === 0 && scene.imageUrl) {
-      console.log(`[background-history] Creating initial history entry for imageUrl: ${scene.imageUrl}`);
-      history = [{
-        id: `initial-${Date.now()}`,
-        url: scene.imageUrl,
-        timestamp: new Date().toISOString(),
-        prompt: "Original background",
-        isOriginal: true
-      }];
+      console.log(
+        `[background-history] Creating initial history entry for imageUrl: ${scene.imageUrl}`
+      );
+      history = [
+        {
+          id: `initial-${Date.now()}`,
+          url: scene.imageUrl,
+          timestamp: new Date().toISOString(),
+          prompt: "Original background",
+          isOriginal: true,
+        },
+      ];
     }
 
     // Generate fresh presigned URLs for all S3 images in history
@@ -125,7 +126,9 @@ export async function GET(
       })
     );
 
-    console.log(`[background-history] Returning ${historyWithFreshUrls.length} history items`);
+    console.log(
+      `[background-history] Returning ${historyWithFreshUrls.length} history items`
+    );
 
     return NextResponse.json({
       success: true,
@@ -133,7 +136,6 @@ export async function GET(
         history: historyWithFreshUrls,
       },
     });
-
   } catch (error) {
     console.error("[scenes/background-history] GET Error:", error);
     return NextResponse.json(
@@ -149,14 +151,11 @@ export async function POST(
 ) {
   try {
     console.log(`[background-history] POST request for scene: ${params.id}`);
-    
+
     // Check authentication using Clerk
     const authResult = auth();
     if (!authResult.userId) {
-      return NextResponse.json(
-        { error: "Unauthorized" },
-        { status: 401 }
-      );
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
     // Get user from database using Clerk ID
@@ -166,15 +165,17 @@ export async function POST(
     });
 
     if (!user) {
-      return NextResponse.json(
-        { error: "User not found" },
-        { status: 404 }
-      );
+      return NextResponse.json({ error: "User not found" }, { status: 404 });
     }
 
     const body = await request.json();
     const { url, prompt, timestamp, isOriginal } = body;
-    console.log(`[background-history] POST data:`, { url, prompt, timestamp, isOriginal });
+    console.log(`[background-history] POST data:`, {
+      url,
+      prompt,
+      timestamp,
+      isOriginal,
+    });
 
     if (!url || !prompt) {
       return NextResponse.json(
@@ -205,9 +206,10 @@ export async function POST(
     let currentHistory = [];
     if (scene.backgroundHistory) {
       try {
-        currentHistory = typeof scene.backgroundHistory === 'string' 
-          ? JSON.parse(scene.backgroundHistory) 
-          : scene.backgroundHistory;
+        currentHistory =
+          typeof scene.backgroundHistory === "string"
+            ? JSON.parse(scene.backgroundHistory)
+            : scene.backgroundHistory;
       } catch (error) {
         console.error("Error parsing existing background history:", error);
         currentHistory = [];
@@ -217,29 +219,29 @@ export async function POST(
     // Clean URL - remove presigned query parameters and ensure JSON safety
     const cleanUrlForDatabase = (inputUrl: string): string => {
       let cleanUrl = inputUrl;
-      
+
       // Remove presigned query parameters if present
-      if (cleanUrl.includes('?X-Amz-')) {
-        cleanUrl = cleanUrl.split('?')[0];
+      if (cleanUrl.includes("?X-Amz-")) {
+        cleanUrl = cleanUrl.split("?")[0];
       }
-      
+
       // Remove any other query parameters that might cause JSON issues
-      if (cleanUrl.includes('?')) {
-        cleanUrl = cleanUrl.split('?')[0];
+      if (cleanUrl.includes("?")) {
+        cleanUrl = cleanUrl.split("?")[0];
       }
-      
+
       // Ensure the URL doesn't contain characters that would break JSON
       // Replace problematic characters if any exist
-      cleanUrl = cleanUrl.replace(/[\x00-\x1f\x7f-\x9f]/g, '');
-      
+      cleanUrl = cleanUrl.replace(/[\x00-\x1f\x7f-\x9f]/g, "");
+
       return cleanUrl;
     };
-    
+
     const cleanUrl = cleanUrlForDatabase(url);
     console.log(`[background-history] Cleaned URL: ${url} -> ${cleanUrl}`);
 
     // Clean prompt to ensure JSON safety
-    const cleanPrompt = prompt.replace(/[\x00-\x1f\x7f-\x9f]/g, '').trim();
+    const cleanPrompt = prompt.replace(/[\x00-\x1f\x7f-\x9f]/g, "").trim();
 
     // Create new history entry
     const newEntry = {
@@ -253,7 +255,9 @@ export async function POST(
     // If this is the first edit (history is empty) and we have a current imageUrl,
     // add the original image to history first
     if (currentHistory.length === 0 && scene.imageUrl && !isOriginal) {
-      console.log(`[background-history] Adding original image to history before first edit`);
+      console.log(
+        `[background-history] Adding original image to history before first edit`
+      );
       const originalEntry = {
         id: `original-${Date.now()}`,
         url: cleanUrlForDatabase(scene.imageUrl),
@@ -273,7 +277,7 @@ export async function POST(
       newEntryId: newEntry.id,
       historyLength: updatedHistory.length,
       sampleEntry: updatedHistory[0],
-      jsonStringLength: JSON.stringify(updatedHistory).length
+      jsonStringLength: JSON.stringify(updatedHistory).length,
     });
 
     // Validate JSON structure before saving
@@ -281,10 +285,14 @@ export async function POST(
       // Test that the data can be serialized and parsed
       const jsonString = JSON.stringify(updatedHistory);
       JSON.parse(jsonString);
-      
-      console.log(`[background-history] JSON validation passed, updating scene...`);
-      console.log(`[background-history] Letting Prisma handle JSON serialization...`);
-      
+
+      console.log(
+        `[background-history] JSON validation passed, updating scene...`
+      );
+      console.log(
+        `[background-history] Letting Prisma handle JSON serialization...`
+      );
+
       // Let Prisma handle JSON serialization automatically
       const updateResult = await prisma.scene.update({
         where: {
@@ -294,26 +302,29 @@ export async function POST(
           backgroundHistory: updatedHistory, // Pass the object directly, not stringified
         },
       });
-      
-      console.log(`[background-history] Database update successful for scene ${params.id}`);
-      
+
+      console.log(
+        `[background-history] Database update successful for scene ${params.id}`
+      );
     } catch (dbError) {
       console.error(`[background-history] Database update failed:`, dbError);
       console.error(`[background-history] Error details:`, {
         name: (dbError as any)?.name,
         message: (dbError as any)?.message,
         code: (dbError as any)?.code,
-        meta: (dbError as any)?.meta
+        meta: (dbError as any)?.meta,
       });
       console.error(`[background-history] Problematic data:`, {
         sceneId: params.id,
         updatedHistory,
-        jsonString: JSON.stringify(updatedHistory)
+        jsonString: JSON.stringify(updatedHistory),
       });
       throw dbError;
     }
 
-    console.log(`[background-history] Successfully saved history entry for scene ${params.id}`);
+    console.log(
+      `[background-history] Successfully saved history entry for scene ${params.id}`
+    );
 
     return NextResponse.json({
       success: true,
@@ -323,7 +334,6 @@ export async function POST(
         totalHistoryItems: updatedHistory.length,
       },
     });
-
   } catch (error) {
     console.error("[scenes/background-history] POST Error:", error);
     console.error("[scenes/background-history] Full error object:", {
@@ -331,13 +341,13 @@ export async function POST(
       message: (error as any)?.message,
       code: (error as any)?.code,
       meta: (error as any)?.meta,
-      stack: (error as any)?.stack
+      stack: (error as any)?.stack,
     });
-    
+
     return NextResponse.json(
-      { 
+      {
         error: "Internal server error",
-        details: (error as any)?.message || "Unknown error"
+        details: (error as any)?.message || "Unknown error",
       },
       { status: 500 }
     );

@@ -3,7 +3,7 @@ import { PrismaAdapter } from "@auth/prisma-adapter";
 import GoogleProvider from "next-auth/providers/google";
 import EmailProvider from "next-auth/providers/email";
 import CredentialsProvider from "next-auth/providers/credentials";
-import { prisma } from "@/app/utils/db";
+import { prisma } from "@/lib/prisma";
 
 // Define authentication configuration for PMax
 export const { auth, handlers, signIn, signOut } = NextAuth({

@@ -222,7 +222,7 @@ export async function POST(req: Request) {
     );
 
     // Import Prisma client and auth utilities
-    const { prisma } = await import("@/app/utils/db");
+    const { prisma } = await import("@/lib/prisma");
     const { auth } = await import("@clerk/nextjs/server");
     const { ensureUserInDatabase, canCreateProject } = await import(
       "@/lib/auth"

@@ -1,4 +1,4 @@
-import { prisma } from "./db";
+import { prisma } from "@/lib/prisma";
 
 /**
  * Get the current user ID for development

@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { videoAnimationService } from "@/app/utils/video-animation";
-import { prisma } from "@/app/utils/db";
+import { prisma } from "@/lib/prisma";
 import fs from "fs";
 import path from "path";
 

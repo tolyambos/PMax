@@ -513,28 +513,38 @@ export default function SceneCanvas() {
 
               if (shouldShowVideo) {
                 return (
-                  <div className="overflow-hidden absolute inset-0">
+                  <div 
+                    className="overflow-hidden absolute inset-0"
+                    style={{ 
+                      backgroundColor: currentScene?.backgroundColor || "transparent" 
+                    }}
+                  >
                     <S3AssetMemoized
                       url={currentScene.videoUrl}
                       alt={`Scene ${currentSceneIndex + 1} Video`}
                       width={canvasWidth}
                       height={canvasHeight}
                       asBackgroundVideo
-                      videoClassName="w-full h-full object-cover"
-                      style={{ objectFit: "fill" }}
+                      videoClassName="w-full h-full object-contain"
+                      style={{ objectFit: "contain" }}
                     />
                   </div>
                 );
               } else if (currentScene.imageUrl) {
                 return (
-                  <div className="overflow-hidden absolute inset-0">
+                  <div 
+                    className="overflow-hidden absolute inset-0"
+                    style={{ 
+                      backgroundColor: currentScene?.backgroundColor || "transparent" 
+                    }}
+                  >
                     <S3AssetMemoized
                       url={currentScene.imageUrl}
                       alt={`Scene ${currentSceneIndex + 1}`}
                       width={canvasWidth}
                       height={canvasHeight}
                       className="w-full h-full"
-                      style={{ objectFit: "fill" }}
+                      style={{ objectFit: "contain" }}
                       priority={true}
                     />
                   </div>

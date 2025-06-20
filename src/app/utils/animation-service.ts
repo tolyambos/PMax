@@ -49,8 +49,12 @@ export class UnifiedAnimationService {
   ): Promise<AnimationResult> {
     console.log("[UnifiedAnimation] 🚀 Using Bytedance Seedance");
 
-    // Use relative URL for same-origin requests to avoid CORS issues
-    const response = await fetch("/api/animation/bytedance", {
+    // Construct proper URL for client-side requests
+    const url = typeof window !== 'undefined' 
+      ? `${window.location.origin}/api/animation/bytedance`
+      : "/api/animation/bytedance";
+      
+    const response = await fetch(url, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -89,8 +93,12 @@ export class UnifiedAnimationService {
   ): Promise<AnimationResult> {
     console.log("[UnifiedAnimation] 🎭 Using Runway Gen-4");
 
-    // Use relative URL for same-origin requests to avoid CORS issues
-    const response = await fetch("/api/animation/generate", {
+    // Construct proper URL for client-side requests
+    const url = typeof window !== 'undefined' 
+      ? `${window.location.origin}/api/animation/generate`
+      : "/api/animation/generate";
+      
+    const response = await fetch(url, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -143,7 +151,10 @@ export class UnifiedAnimationService {
 
     // Check if services are actually available by testing endpoints
     try {
-      const bytedanceTest = await fetch("/api/animation/bytedance", {
+      const bytedanceUrl = typeof window !== 'undefined' 
+        ? `${window.location.origin}/api/animation/bytedance`
+        : "/api/animation/bytedance";
+      const bytedanceTest = await fetch(bytedanceUrl, {
         method: "GET",
       });
       providers.bytedance.available = bytedanceTest.ok;
@@ -153,7 +164,10 @@ export class UnifiedAnimationService {
     }
 
     try {
-      const runwayTest = await fetch("/api/animation/generate", {
+      const runwayUrl = typeof window !== 'undefined' 
+        ? `${window.location.origin}/api/animation/generate`
+        : "/api/animation/generate";
+      const runwayTest = await fetch(runwayUrl, {
         method: "GET",
       });
       providers.runway.available = runwayTest.ok;

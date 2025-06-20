@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { generateVideoFromPrompt } from "@/app/utils/ai";
-import { prisma } from "@/app/utils/db";
+import { prisma } from "@/lib/prisma";
 import { z } from "zod";
 
 // Define request schema with additional fields
