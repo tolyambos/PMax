@@ -279,7 +279,7 @@ export function getScaledFontSize(
  * Gets a font stack with fallbacks for the specified font family
  */
 export function getFontStack(fontFamily: string): string {
-  // Strip quotes if present
+  // Strip quotes if present and return font stack
   const cleanFamily = fontFamily.replace(/^["']|["']$/g, "");
   return `"${cleanFamily}", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif`;
 }

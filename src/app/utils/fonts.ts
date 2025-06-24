@@ -290,8 +290,15 @@ const getGoogleFontUrl = async (
       if (!googleFontsData) {
         if (!googleFontsPromise) {
           console.log(`[FONTS] Loading Google Fonts API data...`);
+          const apiKey = process.env.NEXT_PUBLIC_GOOGLE_FONTS_API_KEY;
+          if (!apiKey) {
+            console.error('[FONTS] Google Fonts API key not found in environment variables');
+            googleFontsPromise = null;
+            return null;
+          }
+          
           googleFontsPromise = fetch(
-            `https://www.googleapis.com/webfonts/v1/webfonts?key=AIzaSyCvXfKuB6hn8UJmYHK-zJR-_8BesPNw76Y`
+            `https://www.googleapis.com/webfonts/v1/webfonts?key=${apiKey}`
           )
             .then((response) => {
               if (!response.ok) {
