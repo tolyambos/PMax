@@ -4,11 +4,12 @@ export default authMiddleware({
   publicRoutes: [
     "/",
     "/api/webhooks/clerk",
+    "/api/fonts(.*)",
     "/auth/sign-in",
     "/auth/sign-up",
     "/sign-in",
     "/sign-up",
-    "/fonts/(.*)",
+    "/fonts(.*)",
   ],
 });
 

@@ -5,8 +5,8 @@
   "scripts": {
     "dev": "FONTCONFIG_PATH=./fonts prisma db push && concurrently --names \"NEXT,PRISMA\" --prefix-colors \"blue,green\" \"CANVAS_FONT_PATH=./fonts next dev\" \"pnpm run db:studio\"",
     "dev:next": "FONTCONFIG_PATH=./fonts CANVAS_FONT_PATH=./fonts prisma db push && next dev",
-    "build": "prisma generate && FONTCONFIG_PATH=./fonts CANVAS_FONT_PATH=./fonts next build",
-    "build:railway": "pnpm install --frozen-lockfile && prisma generate && FONTCONFIG_PATH=./fonts CANVAS_FONT_PATH=./fonts next build",
+    "build": "prisma generate && node scripts/download-fonts-for-build.js && FONTCONFIG_PATH=./fonts CANVAS_FONT_PATH=./fonts next build",
+    "build:railway": "pnpm install --frozen-lockfile && prisma generate && node scripts/download-fonts-for-build.js && FONTCONFIG_PATH=./fonts CANVAS_FONT_PATH=./fonts next build",
     "start": "FONTCONFIG_PATH=./fonts CANVAS_FONT_PATH=./fonts next start",
     "build:production": "prisma generate && prisma db push && FONTCONFIG_PATH=./fonts CANVAS_FONT_PATH=./fonts next build",
     "lint": "next lint",

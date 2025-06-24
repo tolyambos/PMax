@@ -114,14 +114,11 @@ export const getFontUrl = (
   }
 
   const fontPath = font.files[weight];
-  
-  // In production, use your GitHub repository LFS URLs for fonts
-  if (process.env.NODE_ENV === "production") {
-    // Convert local path to your GitHub repository LFS URL
-    const fileName = fontPath?.split('/').pop(); // Get just the filename
-    if (fileName) {
-      return `https://github.com/tolyambos/PMax/raw/main/fonts/${fileName}`;
-    }
+
+  // Always use the API route for proper font serving
+  if (fontPath) {
+    // Use the API route which will handle GitHub fetching in production
+    return `/api${fontPath}`;
   }
 
   return fontPath || null;
