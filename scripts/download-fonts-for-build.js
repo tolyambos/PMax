@@ -128,11 +128,27 @@ async function downloadFonts() {
         // Skip if file already exists
         if (fs.existsSync(outputPath)) {
           const stats = fs.statSync(outputPath);
+          // Check if it's a Git LFS pointer (usually ~130 bytes)
           if (stats.size > 1000) {
-            // File exists and is not empty
-            console.log(`⏭️  Skipping ${fileName} (already exists)`);
-            skipCount++;
-            continue;
+            // Read first few bytes to check if it's a real font or LFS pointer
+            const firstBytes = fs.readFileSync(outputPath, { 
+              encoding: 'utf8', 
+              start: 0, 
+              end: 50 
+            });
+            
+            if (firstBytes.includes('version https://git-lfs')) {
+              console.log(`⚠️  ${fileName} is a Git LFS pointer, re-downloading...`);
+              // Continue to download
+            } else {
+              // File exists and is a real font
+              console.log(`⏭️  Skipping ${fileName} (already exists)`);
+              skipCount++;
+              continue;
+            }
+          } else {
+            console.log(`⚠️  ${fileName} is too small (${stats.size} bytes), re-downloading...`);
+            // Continue to download
           }
         }
 
@@ -201,17 +217,13 @@ if (process.env.SKIP_FONT_DOWNLOAD === "true") {
   process.exit(0);
 }
 
-// Run only if NODE_ENV is production or if explicitly requested
-if (process.env.NODE_ENV === "production" || process.argv.includes("--force")) {
-  downloadFonts().catch((error) => {
-    console.error("💥 Font download failed:", error.message);
-    console.log(
-      "⚠️  Continuing build - fonts will be fetched from GitHub at runtime"
-    );
-    // Don't exit with error to allow build to continue
-    process.exit(0);
-  });
-} else {
-  console.log("🔧 Skipping font download (not in production mode)");
-  console.log("   Run with --force to download anyway");
-}
+// Always download fonts during build to ensure they're available for video rendering
+console.log("📦 Downloading fonts for build (required for video rendering)...");
+downloadFonts().catch((error) => {
+  console.error("💥 Font download failed:", error.message);
+  console.log(
+    "⚠️  WARNING: Video rendering may use fallback fonts if fonts are not available"
+  );
+  // Don't exit with error to allow build to continue
+  process.exit(0);
+});

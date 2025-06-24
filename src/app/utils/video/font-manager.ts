@@ -3,6 +3,7 @@ import fs from "fs";
 import path from "path";
 import axios from "axios";
 import { FontDefinition, FontFile } from "./types";
+import { ensureFontForRendering } from "./ensure-fonts";
 
 /**
  * Manages font discovery, loading, and caching for video rendering
@@ -10,7 +11,6 @@ import { FontDefinition, FontFile } from "./types";
 export class FontManager {
   private fontCache: Map<string, FontFile> = new Map();
   private readonly fontsDir: string;
-  private availableFonts: FontDefinition[] = [];
   private systemFontPaths: string[] = [];
   private downloadedFonts: Set<string> = new Set();
 
@@ -47,7 +47,7 @@ export class FontManager {
    * Set available fonts definitions for lookup
    */
   public setAvailableFonts(fonts: FontDefinition[]): void {
-    this.availableFonts = fonts;
+    // This method is kept for backward compatibility but is no longer used
     console.log(`Set ${fonts.length} available font definitions`);
   }
 
@@ -211,8 +211,21 @@ export class FontManager {
             };
           } else {
             console.warn(
-              `Font metadata points to non-existent file: ${filePath}`
+              `Font metadata points to non-existent file: ${filePath}, attempting to download...`
             );
+            // Try to download the font if it doesn't exist
+            try {
+              const downloadedPath = await ensureFontForRendering(family, weight);
+              if (downloadedPath) {
+                return {
+                  path: downloadedPath,
+                  family,
+                  weight,
+                };
+              }
+            } catch (error) {
+              console.error(`Failed to download font ${family}:`, error);
+            }
           }
         }
 
@@ -234,6 +247,23 @@ export class FontManager {
                 family,
                 weight: fallbackWeight,
               };
+            } else {
+              // Try to download the font with fallback weight
+              try {
+                const downloadedPath = await ensureFontForRendering(family, fallbackWeight);
+                if (downloadedPath) {
+                  console.log(
+                    `Downloaded font with fallback weight ${fallbackWeight}: ${downloadedPath}`
+                  );
+                  return {
+                    path: downloadedPath,
+                    family,
+                    weight: fallbackWeight,
+                  };
+                }
+              } catch (error) {
+                console.error(`Failed to download font ${family} with weight ${fallbackWeight}:`, error);
+              }
             }
           }
         }
@@ -376,7 +406,6 @@ export class FontManager {
       );
 
       let fontFileUrl: string;
-      let isTTF = true;
 
       if (!fontUrlMatch || !fontUrlMatch[1]) {
         // Try to find a woff2 URL as fallback
@@ -395,10 +424,8 @@ export class FontManager {
 
           // Use whatever URL we found
           fontFileUrl = anyFontMatch[1];
-          isTTF = false;
         } else {
           fontFileUrl = woff2Match[1];
-          isTTF = false;
         }
       } else {
         fontFileUrl = fontUrlMatch[1];
