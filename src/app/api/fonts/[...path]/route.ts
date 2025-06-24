@@ -36,7 +36,7 @@ export async function GET(
         console.log(`[FONT-API] Local font not found, fetching from GitHub: ${fileName}`);
 
         try {
-          const githubUrl = `https://github.com/tolyambos/PMax/raw/main/fonts/${fileName}`;
+          const githubUrl = `https://media.githubusercontent.com/media/tolyambos/PMax/main/fonts/${fileName}`;
           const response = await fetch(githubUrl);
 
           if (!response.ok) {
