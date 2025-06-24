@@ -120,13 +120,35 @@ function editorReducer(state: EditorState, action: EditorAction): EditorState {
   let newState: EditorState;
 
   switch (action.type) {
-    case "SET_SCENES":
+    case "SET_SCENES": {
+      // Deduplicate elements within each scene
+      const deduplicatedScenes = action.payload.map((scene) => {
+        const uniqueElements = new Map<string, Element>();
+
+        // Keep only the first occurrence of each element ID
+        scene.elements.forEach((element) => {
+          if (!uniqueElements.has(element.id)) {
+            uniqueElements.set(element.id, element);
+          } else {
+            console.warn(
+              `Duplicate element ${element.id} found in scene ${scene.id}, keeping first occurrence`
+            );
+          }
+        });
+
+        return {
+          ...scene,
+          elements: Array.from(uniqueElements.values()),
+        };
+      });
+
       return {
         ...state,
-        scenes: action.payload,
+        scenes: deduplicatedScenes,
         selectedSceneId:
-          action.payload.length > 0 ? action.payload[0].id : null,
+          deduplicatedScenes.length > 0 ? deduplicatedScenes[0].id : null,
       };
+    }
 
     case "ADD_SCENE":
       return {
@@ -218,11 +240,27 @@ function editorReducer(state: EditorState, action: EditorAction): EditorState {
       };
 
     case "ADD_ELEMENT": {
-      const updatedScenes = state.scenes.map((scene) =>
-        scene.id === action.payload.sceneId
-          ? { ...scene, elements: [...scene.elements, action.payload.element] }
-          : scene
-      );
+      const updatedScenes = state.scenes.map((scene) => {
+        if (scene.id === action.payload.sceneId) {
+          // Check if element with this ID already exists
+          const elementExists = scene.elements.some(
+            (el) => el.id === action.payload.element.id
+          );
+
+          if (elementExists) {
+            console.warn(
+              `Element with ID ${action.payload.element.id} already exists in scene ${scene.id}`
+            );
+            return scene;
+          }
+
+          return {
+            ...scene,
+            elements: [...scene.elements, action.payload.element],
+          };
+        }
+        return scene;
+      });
 
       return {
         ...state,
@@ -733,9 +771,20 @@ export function EditorProvider({
               elementsArray: scene.elements,
             });
 
-            // Process elements for this scene
-            const processedElements = (scene.elements || []).map(
-              (element: any) => {
+            // Process elements for this scene with deduplication
+            const seenElementIds = new Set<string>();
+            const processedElements = (scene.elements || [])
+              .filter((element: any) => {
+                if (seenElementIds.has(element.id)) {
+                  console.warn(
+                    `Duplicate element ${element.id} found in scene ${scene.id} during loading, skipping`
+                  );
+                  return false;
+                }
+                seenElementIds.add(element.id);
+                return true;
+              })
+              .map((element: any) => {
                 // Debug each element conversion
                 console.log(
                   `Converting element ${element.id} for scene ${scene.id}:`,
@@ -783,8 +832,7 @@ export function EditorProvider({
                   assetId: element.assetId || undefined,
                   url: element.url || "", // Use element.url
                 };
-              }
-            );
+              });
 
             return {
               id: scene.id,

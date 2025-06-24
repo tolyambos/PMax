@@ -173,48 +173,52 @@ export default function EditorPage({ params }: { params: { id: string } }) {
     }
   }, [projectQuery.data, projectQuery.isLoading]);
 
-  // Preload all fonts when the editor page loads with a more robust approach
+  // Preload all fonts when the editor page loads
   useEffect(() => {
     if (typeof window === "undefined") return;
 
-    // Create a more complete font loading approach
-    const loadAllFonts = () => {
-      // Load each font with all its weights explicitly
-      GOOGLE_FONTS.forEach((font) => {
-        const fontFamily = font.family.replace(/\s+/g, "+");
-        const weights = font.weights.join(";");
+    // Use the fonts utility to preload local fonts
+    const loadAllFonts = async () => {
+      try {
+        const { preloadAllFonts, FALLBACK_FONTS } = await import(
+          "@/app/utils/fonts"
+        );
 
-        // Create a style element instead of link for more reliable loading
+        // Preload the local fonts
+        await preloadAllFonts(20); // Limit to 20 fonts for performance
+
+        // Add CSS for local font files
+        const fontFaceRules = FALLBACK_FONTS.map((font) => {
+          return Object.entries(font.files)
+            .map(
+              ([weight, file]) => `
+            @font-face {
+              font-family: "${font.family}";
+              src: url("${file}") format("truetype");
+              font-weight: ${weight};
+              font-style: normal;
+              font-display: swap;
+            }
+          `
+            )
+            .join("");
+        }).join("");
+
         const style = document.createElement("style");
-        style.setAttribute("data-font-family", font.family);
-        style.setAttribute("data-permanent", "true");
-        style.textContent = `
-          /* Preload font: ${font.family} */
-          @import url('https://fonts.googleapis.com/css2?family=${fontFamily}:wght@${weights}&display=swap');
-        `;
+        style.setAttribute("data-local-fonts", "true");
+        style.textContent = fontFaceRules;
         document.head.appendChild(style);
 
-        console.log(`Preloaded font: ${font.family} with weights: ${weights}`);
-      });
+        // Set a global flag to indicate fonts are loaded
+        window.__fontsPreloaded = true;
 
-      // Add a CSS rule to ensure font display policy is set to block
-      const fontDisplayStyle = document.createElement("style");
-      fontDisplayStyle.textContent = `
-        /* Force all fonts to block during load to prevent FOUT */
-        @font-face {
-          font-display: block !important;
-        }
-      `;
-      document.head.appendChild(fontDisplayStyle);
+        console.log("Preloaded local fonts for the editor");
+      } catch (error) {
+        console.error("Error loading fonts:", error);
+      }
     };
 
-    // Execute font loading
     loadAllFonts();
-
-    // Set a global flag to indicate fonts are loaded
-    window.__fontsPreloaded = true;
-
-    console.log("Preloaded all fonts for the editor with enhanced approach");
   }, []);
 
   return (

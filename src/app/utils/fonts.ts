@@ -12,45 +12,54 @@ export interface LocalFont {
 }
 
 // Default fallback fonts if we can't load font metadata
+// Prioritizes fonts with good Unicode support
 export const FALLBACK_FONTS: LocalFont[] = [
   {
-    family: "Arial",
+    family: "NotoSans",
     weights: ["400", "700"],
     files: {
-      "400": "/fonts/files/Arial-Regular.ttf",
-      "700": "/fonts/files/Arial-Bold.ttf",
+      "400": "/fonts/files/NotoSans-Regular.ttf",
+      "700": "/fonts/files/NotoSans-Bold.ttf",
     },
   },
   {
-    family: "Helvetica",
+    family: "OpenSans",
     weights: ["400", "700"],
     files: {
-      "400": "/fonts/files/Helvetica-Regular.ttf",
-      "700": "/fonts/files/Helvetica-Bold.ttf",
+      "400": "/fonts/files/OpenSans-Regular.ttf",
+      "700": "/fonts/files/OpenSans-Bold.ttf",
     },
   },
   {
-    family: "Verdana",
+    family: "Barlow",
     weights: ["400", "700"],
     files: {
-      "400": "/fonts/files/Verdana-Regular.ttf",
-      "700": "/fonts/files/Verdana-Bold.ttf",
+      "400": "/fonts/files/Barlow-Regular.ttf",
+      "700": "/fonts/files/Barlow-Bold.ttf",
     },
   },
   {
-    family: "Georgia",
+    family: "Nunito",
     weights: ["400", "700"],
     files: {
-      "400": "/fonts/files/Georgia-Regular.ttf",
-      "700": "/fonts/files/Georgia-Bold.ttf",
+      "400": "/fonts/files/Nunito-Regular.ttf",
+      "700": "/fonts/files/Nunito-Bold.ttf",
     },
   },
   {
-    family: "Times New Roman",
+    family: "Merriweather",
     weights: ["400", "700"],
     files: {
-      "400": "/fonts/files/TimesNewRoman-Regular.ttf",
-      "700": "/fonts/files/TimesNewRoman-Bold.ttf",
+      "400": "/fonts/files/Merriweather-Regular.ttf",
+      "700": "/fonts/files/Merriweather-Bold.ttf",
+    },
+  },
+  {
+    family: "Lora",
+    weights: ["400", "700"],
+    files: {
+      "400": "/fonts/files/Lora-Regular.ttf",
+      "700": "/fonts/files/Lora-Bold.ttf",
     },
   },
 ];
@@ -164,7 +173,16 @@ export const getFontUrl = async (
     weight = closestWeight.toString();
   }
 
-  return font.files[weight] || null;
+  const fontPath = font.files[weight];
+  if (!fontPath) return null;
+
+  // In production, use the API route to ensure proper headers
+  if (process.env.NODE_ENV === "production" && typeof window !== "undefined") {
+    // Use the relative path from the API route
+    return `/api${fontPath}`;
+  }
+
+  return fontPath;
 };
 
 /**

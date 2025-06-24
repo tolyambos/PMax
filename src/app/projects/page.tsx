@@ -25,6 +25,15 @@ import {
   Copy,
   Ban,
   AlertCircle,
+  Search,
+  Filter,
+  Heart,
+  HeartOff,
+  CheckSquare,
+  Square,
+  Download,
+  X,
+  Star,
 } from "lucide-react";
 import { motion } from "framer-motion";
 import { api as trpc } from "@/app/utils/trpc";
@@ -35,18 +44,211 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/app/components/ui/dropdown-menu";
+import { Input } from "@/app/components/ui/input";
+import { useToast } from "@/app/components/ui/use-toast";
+import { cn } from "@/lib/utils";
 import MainNavigation from "@/app/components/navigation/main-nav";
+import BulkExportProgressModal from "@/app/components/ui/bulk-export-progress-modal";
 
 export default function ProjectsPage() {
   const router = useRouter();
   const { user, isLoaded } = useUser();
+  const { toast } = useToast();
   const [canCreateProjects, setCanCreateProjects] = useState(false);
   const [isCheckingPermissions, setIsCheckingPermissions] = useState(true);
   const [isBanned, setIsBanned] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [filterLiked, setFilterLiked] = useState<'all' | 'liked' | 'disliked'>('all');
+  const [selectedProjects, setSelectedProjects] = useState<Set<string>>(new Set());
+  const [bulkMode, setBulkMode] = useState(false);
+  const [projectsWithLikes, setProjectsWithLikes] = useState<any[]>([]);
+  const [isExporting, setIsExporting] = useState(false);
+  const [showExportModal, setShowExportModal] = useState(false);
 
   // Fetch projects using tRPC
   const { data: projects, isLoading: projectsLoading, refetch } = trpc.project.getAll.useQuery();
+
+  // tRPC mutations
+  const deleteProjectMutation = trpc.project.delete.useMutation({
+    onSuccess: () => {
+      refetch();
+      toast({
+        title: "Project Deleted",
+        description: "The project has been permanently removed.",
+      });
+    },
+    onError: (error) => {
+      toast({
+        variant: "destructive",
+        title: "Failed to delete project",
+        description: error.message,
+      });
+    },
+  });
+
+
+  // Initialize projects with like status
+  useEffect(() => {
+    if (projects) {
+      setProjectsWithLikes(projects.map(p => ({ ...p, isStarred: false })));
+    }
+  }, [projects]);
+
+  // Bulk operation handlers
+  const handleDeleteProject = async (projectId: string) => {
+    try {
+      await deleteProjectMutation.mutateAsync({ id: projectId });
+    } catch (error) {
+      console.error('Error deleting project:', error);
+    }
+  };
+
+  const handleBulkDelete = async () => {
+    if (selectedProjects.size === 0) return;
+    
+    try {
+      await Promise.all(
+        Array.from(selectedProjects).map(id => 
+          deleteProjectMutation.mutateAsync({ id })
+        )
+      );
+      setSelectedProjects(new Set());
+      setBulkMode(false);
+    } catch (error) {
+      console.error('Error bulk deleting projects:', error);
+    }
+  };
+
+  const handleBulkExportClick = () => {
+    if (selectedProjects.size === 0) return;
+    setShowExportModal(true);
+  };
+
+  const handleBulkExport = async () => {
+    setIsExporting(true);
+    
+    try {
+      // Call the bulk export API
+      const response = await fetch('/api/video/bulk-export', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          projectIds: Array.from(selectedProjects),
+          quality: 'high', // You can make this configurable later
+        }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Export failed');
+      }
+
+      // Get the filename from the response headers
+      const contentDisposition = response.headers.get('Content-Disposition');
+      const filename = contentDisposition
+        ? contentDisposition.split('filename=')[1]?.replace(/"/g, '')
+        : `bulk-export-${Date.now()}.zip`;
+
+      // Download the ZIP file
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      window.URL.revokeObjectURL(url);
+      document.body.removeChild(a);
+
+      // Show success and clear selection
+      const exportedCount = selectedProjects.size;
+      setSelectedProjects(new Set());
+      setBulkMode(false);
+      setShowExportModal(false);
+      
+      toast({
+        title: "Bulk Export Complete",
+        description: `Successfully exported ${exportedCount} projects as ${filename}`,
+      });
+
+    } catch (error) {
+      console.error('Error bulk exporting projects:', error);
+      toast({
+        variant: "destructive",
+        title: "Bulk Export Failed",
+        description: error instanceof Error ? error.message : "An unexpected error occurred",
+      });
+      throw error; // Re-throw to let the modal handle it
+    } finally {
+      setIsExporting(false);
+    }
+  };
+
+  const handleBulkLike = () => {
+    if (selectedProjects.size === 0) return;
+    
+    setProjectsWithLikes(prev => 
+      prev.map(p => 
+        selectedProjects.has(p.id) ? { ...p, isStarred: true } : p
+      )
+    );
+    setSelectedProjects(new Set());
+  };
+
+  const handleBulkDislike = () => {
+    if (selectedProjects.size === 0) return;
+    
+    setProjectsWithLikes(prev => 
+      prev.map(p => 
+        selectedProjects.has(p.id) ? { ...p, isStarred: false } : p
+      )
+    );
+    setSelectedProjects(new Set());
+  };
+
+  const handleToggleLike = (projectId: string) => {
+    setProjectsWithLikes(prev => 
+      prev.map(p => 
+        p.id === projectId ? { ...p, isStarred: !p.isStarred } : p
+      )
+    );
+  };
+
+  const toggleProjectSelection = (projectId: string) => {
+    setSelectedProjects(prev => {
+      const newSet = new Set(prev);
+      if (newSet.has(projectId)) {
+        newSet.delete(projectId);
+      } else {
+        newSet.add(projectId);
+      }
+      return newSet;
+    });
+  };
+
+  const toggleSelectAll = () => {
+    if (selectedProjects.size === filteredProjects.length) {
+      setSelectedProjects(new Set());
+    } else {
+      setSelectedProjects(new Set(filteredProjects.map(p => p.id)));
+    }
+  };
+
+  // Filtering logic
+  const filteredProjects = projectsWithLikes
+    .filter((project) => {
+      const matchesSearch =
+        project.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        (project.description || "").toLowerCase().includes(searchQuery.toLowerCase());
+      const matchesLiked = 
+        filterLiked === "all" || 
+        (filterLiked === "liked" && project.isStarred) ||
+        (filterLiked === "disliked" && !project.isStarred);
+      return matchesSearch && matchesLiked;
+    });
 
   // Check user permissions and banned status
   useEffect(() => {
@@ -189,19 +391,183 @@ export default function ProjectsPage() {
         </div>
       </div>
 
+      {/* Filters and Search */}
+      <div className="border-b bg-background/95 backdrop-blur">
+        <div className="container px-4 py-4 mx-auto">
+          <div className="flex flex-col gap-4 sm:flex-row">
+            <div className="relative flex-1">
+              <Search className="absolute left-3 top-1/2 w-4 h-4 transform -translate-y-1/2 text-muted-foreground" />
+              <Input
+                placeholder="Search projects..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="pl-10"
+              />
+            </div>
+
+            <div className="flex gap-2">
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="outline">
+                    <Heart className="mr-2 w-4 h-4" />
+                    Liked
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent>
+                  <DropdownMenuItem onClick={() => setFilterLiked("all")}>
+                    All Projects
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => setFilterLiked("liked")}>
+                    Liked Only
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => setFilterLiked("disliked")}>
+                    Disliked Only
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+
+              <Button
+                variant={bulkMode ? "default" : "outline"}
+                onClick={() => {
+                  setBulkMode(!bulkMode);
+                  setSelectedProjects(new Set());
+                }}
+              >
+                {bulkMode ? (
+                  <X className="mr-2 w-4 h-4" />
+                ) : (
+                  <CheckSquare className="mr-2 w-4 h-4" />
+                )}
+                {bulkMode ? "Cancel" : "Select"}
+              </Button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Bulk Operations Toolbar */}
+      {bulkMode && (
+        <div className="border-b bg-muted/20">
+          <div className="container px-4 py-4 mx-auto">
+            <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+              <div className="flex gap-2 items-center">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={toggleSelectAll}
+                >
+                  {selectedProjects.size === filteredProjects.length ? (
+                    <CheckSquare className="mr-2 w-4 h-4" />
+                  ) : (
+                    <Square className="mr-2 w-4 h-4" />
+                  )}
+                  {selectedProjects.size === filteredProjects.length ? "Deselect All" : "Select All"}
+                </Button>
+                <span className="text-sm text-muted-foreground">
+                  {selectedProjects.size} of {filteredProjects.length} selected
+                </span>
+              </div>
+              
+              {selectedProjects.size > 0 && (
+                <div className="flex gap-2">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={handleBulkLike}
+                  >
+                    <Heart className="mr-2 w-4 h-4" />
+                    Like Selected
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={handleBulkDislike}
+                  >
+                    <HeartOff className="mr-2 w-4 h-4" />
+                    Dislike Selected
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={handleBulkExportClick}
+                    disabled={isExporting}
+                  >
+                    <Download className="mr-2 w-4 h-4" />
+                    Export Selected
+                  </Button>
+                  <Button
+                    variant="destructive"
+                    size="sm"
+                    onClick={handleBulkDelete}
+                    disabled={deleteProjectMutation.isLoading}
+                  >
+                    <Trash2 className="mr-2 w-4 h-4" />
+                    Delete Selected
+                  </Button>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Content */}
       <div className="container px-4 py-8 mx-auto">
-        {projects && projects.length > 0 ? (
+        {projectsWithLikes && projectsWithLikes.length > 0 ? (
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-            {projects.map((project, index) => (
+            {filteredProjects.map((project, index) => (
               <motion.div
                 key={project.id}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: index * 0.1 }}
               >
-                <Card className="group hover:shadow-lg transition-all cursor-pointer overflow-hidden">
+                <Card 
+                  className={cn(
+                    "group hover:shadow-lg transition-all cursor-pointer overflow-hidden",
+                    bulkMode && selectedProjects.has(project.id) && "ring-2 ring-primary"
+                  )}
+                  onClick={() => {
+                    if (bulkMode) {
+                      toggleProjectSelection(project.id);
+                    } else {
+                      router.push(`/editor/${project.id}`);
+                    }
+                  }}
+                >
                   <div className="relative aspect-video bg-gradient-to-br from-primary/10 to-accent/10">
+                    {/* Checkbox for bulk mode */}
+                    {bulkMode && (
+                      <div 
+                        className="absolute top-2 left-2 z-10 bg-background/80 rounded p-1"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          toggleProjectSelection(project.id);
+                        }}
+                      >
+                        {selectedProjects.has(project.id) ? (
+                          <CheckSquare className="w-5 h-5 text-primary" />
+                        ) : (
+                          <Square className="w-5 h-5 text-muted-foreground" />
+                        )}
+                      </div>
+                    )}
+
+                    {/* Star/Like button */}
+                    <button
+                      className="absolute top-2 right-2 z-10 bg-background/80 rounded p-1 hover:bg-background/90 transition-colors"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleToggleLike(project.id);
+                      }}
+                    >
+                      {project.isStarred ? (
+                        <Star className="w-4 h-4 text-yellow-500 fill-current" />
+                      ) : (
+                        <Star className="w-4 h-4 text-muted-foreground" />
+                      )}
+                    </button>
+
                     {project.thumbnail ? (
                       <img
                         src={project.thumbnail}
@@ -214,30 +580,37 @@ export default function ProjectsPage() {
                       </div>
                     )}
 
-                    {/* Overlay with play button on hover */}
-                    <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                      <Button
-                        size="sm"
-                        variant="secondary"
-                        onClick={() => router.push(`/editor/${project.id}`)}
-                      >
-                        <Play className="mr-2 w-4 h-4" />
-                        Edit Project
-                      </Button>
-                    </div>
+                    {!bulkMode && (
+                      <>
+                        {/* Overlay with play button on hover */}
+                        <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                          <Button
+                            size="sm"
+                            variant="secondary"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              router.push(`/editor/${project.id}`);
+                            }}
+                          >
+                            <Play className="mr-2 w-4 h-4" />
+                            Edit Project
+                          </Button>
+                        </div>
 
-                    {/* Format badge */}
-                    <Badge
-                      className="absolute top-2 left-2"
-                      variant="secondary"
-                    >
-                      {project.format}
-                    </Badge>
+                        {/* Format badge */}
+                        <Badge
+                          className="absolute bottom-2 left-2"
+                          variant="secondary"
+                        >
+                          {project.format}
+                        </Badge>
 
-                    {/* Duration badge */}
-                    <Badge className="absolute top-2 right-2" variant="outline">
-                      {formatDuration(project.duration)}
-                    </Badge>
+                        {/* Duration badge */}
+                        <Badge className="absolute bottom-2 right-2" variant="outline">
+                          {formatDuration(project.duration)}
+                        </Badge>
+                      </>
+                    )}
                   </div>
 
                   <CardHeader className="pb-3">
@@ -253,34 +626,46 @@ export default function ProjectsPage() {
                         )}
                       </div>
 
-                      <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            className="h-8 w-8 p-0"
-                          >
-                            <MoreVertical className="h-4 w-4" />
-                          </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end">
-                          <DropdownMenuItem
-                            onClick={() => router.push(`/editor/${project.id}`)}
-                          >
-                            <Edit className="mr-2 h-4 w-4" />
-                            Edit
-                          </DropdownMenuItem>
-                          <DropdownMenuItem>
-                            <Copy className="mr-2 h-4 w-4" />
-                            Duplicate
-                          </DropdownMenuItem>
-                          <DropdownMenuSeparator />
-                          <DropdownMenuItem className="text-destructive">
-                            <Trash2 className="mr-2 h-4 w-4" />
-                            Delete
-                          </DropdownMenuItem>
-                        </DropdownMenuContent>
-                      </DropdownMenu>
+                      {!bulkMode && (
+                        <DropdownMenu>
+                          <DropdownMenuTrigger asChild>
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              className="h-8 w-8 p-0"
+                              onClick={(e) => e.stopPropagation()}
+                            >
+                              <MoreVertical className="h-4 w-4" />
+                            </Button>
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent align="end">
+                            <DropdownMenuItem
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                router.push(`/editor/${project.id}`);
+                              }}
+                            >
+                              <Edit className="mr-2 h-4 w-4" />
+                              Edit
+                            </DropdownMenuItem>
+                            <DropdownMenuItem>
+                              <Copy className="mr-2 h-4 w-4" />
+                              Duplicate
+                            </DropdownMenuItem>
+                            <DropdownMenuSeparator />
+                            <DropdownMenuItem 
+                              className="text-destructive"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleDeleteProject(project.id);
+                              }}
+                            >
+                              <Trash2 className="mr-2 h-4 w-4" />
+                              Delete
+                            </DropdownMenuItem>
+                          </DropdownMenuContent>
+                        </DropdownMenu>
+                      )}
                     </div>
                   </CardHeader>
 
@@ -326,6 +711,15 @@ export default function ProjectsPage() {
           </Card>
         )}
       </div>
+
+      {/* Bulk Export Progress Modal */}
+      <BulkExportProgressModal
+        isOpen={showExportModal}
+        onClose={() => setShowExportModal(false)}
+        selectedProjects={selectedProjects}
+        projectsData={filteredProjects.map(p => ({ id: p.id, name: p.name }))}
+        onStartExport={handleBulkExport}
+      />
     </div>
   );
 }

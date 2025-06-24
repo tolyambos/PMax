@@ -5,19 +5,18 @@ import { useEffect } from "react";
 // Client component to load fonts
 export function FontLoader() {
   useEffect(() => {
-    // Skip font loading in production to avoid errors
-    if (process.env.NODE_ENV === "production") {
-      console.log("Font loading disabled in production");
-      return;
-    }
+    // Load fonts in both development and production
+    const loadFonts = async () => {
+      try {
+        const { preloadAllFonts } = await import("@/app/utils/fonts");
+        await preloadAllFonts();
+        console.log("Fonts loaded successfully");
+      } catch (error) {
+        console.warn("Error loading fonts:", error);
+      }
+    };
 
-    // Only load fonts in development
-    try {
-      const { preloadAllFonts } = require("@/app/utils/fonts");
-      preloadAllFonts();
-    } catch (error) {
-      console.warn("Error loading fonts:", error);
-    }
+    loadFonts();
   }, []);
 
   // This component doesn't render anything

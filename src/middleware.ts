@@ -8,6 +8,7 @@ export default authMiddleware({
     "/auth/sign-up",
     "/sign-in",
     "/sign-up",
+    "/fonts/(.*)",
   ],
 });
 

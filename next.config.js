@@ -19,6 +19,27 @@ const nextConfig = {
       "s3.eu-central-1.wasabisys.com", // S3/Wasabi storage
     ],
   },
+  async headers() {
+    return [
+      {
+        source: "/fonts/:path*",
+        headers: [
+          {
+            key: "Content-Type",
+            value: "font/ttf",
+          },
+          {
+            key: "Cache-Control",
+            value: "public, max-age=31536000, immutable",
+          },
+          {
+            key: "Access-Control-Allow-Origin",
+            value: "*",
+          },
+        ],
+      },
+    ];
+  },
 };
 
 module.exports = nextConfig;

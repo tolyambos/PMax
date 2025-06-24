@@ -2,6 +2,7 @@ import { z } from "zod";
 import { createTRPCRouter, protectedProcedure } from "@/app/api/trpc/trpc";
 import { generateVideoFromPrompt } from "@/app/utils/ai";
 import { canCreateProject } from "@/lib/auth";
+import { s3Utils } from "@/lib/s3-utils";
 
 export const projectRouter = createTRPCRouter({
   create: protectedProcedure
@@ -16,7 +17,7 @@ export const projectRouter = createTRPCRouter({
     .mutation(async ({ ctx, input }) => {
       try {
         const { userId } = ctx;
-        
+
         // Get user with permissions for permission checking
         const user = await ctx.prisma.user.findUnique({
           where: { id: userId },
@@ -114,31 +115,87 @@ export const projectRouter = createTRPCRouter({
       console.log(`Found ${projects.length} projects for user ${ctx.userId}`);
 
       // Map to a safe data structure for serialization
-      const safeProjects = projects.map((project) => ({
-        id: project.id,
-        name: project.name,
-        description: project.description || "",
-        format: project.format,
-        duration: project.duration,
-        thumbnail: project.thumbnail || "",
-        videoUrl: project.videoUrl || "",
-        published: project.published,
-        adType: "",
-        style: "",
-        totalDuration: project.duration || 0,
-        scenes: project.scenes.map((scene) => ({
-          id: scene.id,
-          order: scene.order,
-          duration: scene.duration,
-          imageUrl: scene.imageUrl || "",
-          videoUrl: scene.videoUrl || "",
-          prompt: scene.prompt || "",
-          animate: scene.animate || false,
-          useAnimatedVersion: scene.useAnimatedVersion || false,
-        })),
-        createdAt: project.createdAt.toISOString(),
-        updatedAt: project.updatedAt.toISOString(),
-      }));
+      // Helper function to refresh S3 URL if needed
+      const refreshS3Url = async (url: string | null): Promise<string> => {
+        if (!url) return "";
+
+        // Check if it's an S3 URL that needs refreshing
+        if (url.includes("s3.eu-central-1.wasabisys.com")) {
+          try {
+            // Check if URL has expired (X-Amz-Date parameter)
+            const urlObj = new URL(url);
+            const amzDate = urlObj.searchParams.get("X-Amz-Date");
+
+            if (amzDate) {
+              // Simple check: if the URL is more than 6 days old, refresh it
+              const urlDate = new Date(
+                amzDate.slice(0, 4) +
+                  "-" +
+                  amzDate.slice(4, 6) +
+                  "-" +
+                  amzDate.slice(6, 8)
+              );
+              const daysSinceCreation =
+                (Date.now() - urlDate.getTime()) / (1000 * 60 * 60 * 24);
+
+              if (daysSinceCreation > 6) {
+                // Extract bucket and key and get fresh URL
+                const { bucket, bucketKey } =
+                  s3Utils.extractBucketAndKeyFromUrl(url);
+                return await s3Utils.getPresignedUrl(bucket, bucketKey);
+              }
+            }
+          } catch (error) {
+            console.error("Error refreshing S3 URL:", error);
+          }
+        }
+
+        return url;
+      };
+
+      const safeProjects = await Promise.all(
+        projects.map(async (project) => {
+          // Get thumbnail - use project thumbnail or first scene's image
+          const projectWithScenes = project as typeof project & {
+            scenes: Array<{ imageUrl: string | null }>;
+          };
+          let thumbnailUrl =
+            projectWithScenes.thumbnail ||
+            projectWithScenes.scenes[0]?.imageUrl ||
+            "";
+
+          // Refresh the thumbnail URL if it's an S3 URL
+          if (thumbnailUrl) {
+            thumbnailUrl = await refreshS3Url(thumbnailUrl);
+          }
+
+          return {
+            id: projectWithScenes.id,
+            name: projectWithScenes.name,
+            description: projectWithScenes.description || "",
+            format: projectWithScenes.format,
+            duration: projectWithScenes.duration,
+            thumbnail: thumbnailUrl,
+            videoUrl: projectWithScenes.videoUrl || "",
+            published: projectWithScenes.published,
+            adType: "",
+            style: "",
+            totalDuration: projectWithScenes.duration || 0,
+            scenes: projectWithScenes.scenes.map((scene) => ({
+              id: scene.id,
+              order: scene.order,
+              duration: scene.duration,
+              imageUrl: scene.imageUrl || "",
+              videoUrl: scene.videoUrl || "",
+              prompt: scene.prompt || "",
+              animate: scene.animate || false,
+              useAnimatedVersion: scene.useAnimatedVersion || false,
+            })),
+            createdAt: projectWithScenes.createdAt.toISOString(),
+            updatedAt: projectWithScenes.updatedAt.toISOString(),
+          };
+        })
+      );
 
       console.log(
         `Returning projects with scenes:`,
@@ -200,7 +257,9 @@ export const projectRouter = createTRPCRouter({
           console.log("Invalid project ID provided:", projectId);
 
           // Don't auto-create projects - return error instead
-          throw new Error("Invalid project ID provided. Please create a project first.");
+          throw new Error(
+            "Invalid project ID provided. Please create a project first."
+          );
         }
 
         // For any non-standard IDs, we'll handle them specially
@@ -374,7 +433,7 @@ export const projectRouter = createTRPCRouter({
           userId: project.userId,
           format: project.format,
           duration: project.duration,
-          thumbnail: project.thumbnail || "",
+          thumbnail: project.thumbnail || project.scenes[0]?.imageUrl || "",
           videoUrl: project.videoUrl || "",
           published: project.published,
           prompt: project.prompt || "",
@@ -445,6 +504,14 @@ export const projectRouter = createTRPCRouter({
             id,
           },
           data,
+          include: {
+            scenes: {
+              take: 1,
+              orderBy: {
+                order: "asc",
+              },
+            },
+          },
         });
 
         // Return safe serializable data
@@ -454,7 +521,7 @@ export const projectRouter = createTRPCRouter({
           description: project.description || "",
           format: project.format,
           duration: project.duration,
-          thumbnail: project.thumbnail || "",
+          thumbnail: project.thumbnail || project.scenes[0]?.imageUrl || "",
           videoUrl: project.videoUrl || "",
           published: project.published,
           createdAt: project.createdAt.toISOString(),

@@ -44,6 +44,7 @@ test-ffmpeg/
 test_duration/
 .vscode/
 .claude/
+temp/
 
 # Development files (not needed for production)
 db/

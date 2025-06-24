@@ -31,6 +31,11 @@ import {
   List,
   Calendar,
   Video,
+  CheckSquare,
+  Square,
+  Heart,
+  HeartOff,
+  X,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import ProjectWizard from "./project-wizard";
@@ -201,6 +206,9 @@ export default function ProjectDashboard({
   const [showWizard, setShowWizard] = useState(false);
   const [sortBy, setSortBy] = useState("recent");
   const [isLoading, setIsLoading] = useState(true);
+  const [selectedProjects, setSelectedProjects] = useState<Set<string>>(new Set());
+  const [bulkMode, setBulkMode] = useState(false);
+  const [filterLiked, setFilterLiked] = useState<'all' | 'liked' | 'disliked'>('all');
   const { toast } = useToast();
 
   // Use tRPC to fetch projects
@@ -214,6 +222,40 @@ export default function ProjectDashboard({
         variant: "destructive",
         title: "Failed to load projects",
         description: "Please refresh the page to try again.",
+      });
+    },
+  });
+
+  // tRPC mutations
+  const deleteProjectMutation = trpc.project.delete.useMutation({
+    onSuccess: () => {
+      projectsQuery.refetch();
+      toast({
+        title: "Project Deleted",
+        description: "The project has been permanently removed.",
+      });
+    },
+    onError: (error) => {
+      toast({
+        variant: "destructive",
+        title: "Failed to delete project",
+        description: error.message,
+      });
+    },
+  });
+
+  const exportProjectMutation = trpc.project.export.useMutation({
+    onSuccess: (data) => {
+      toast({
+        title: "Export Started",
+        description: "Your project export is being processed.",
+      });
+    },
+    onError: (error) => {
+      toast({
+        variant: "destructive",
+        title: "Export Failed",
+        description: error.message,
       });
     },
   });
@@ -397,7 +439,11 @@ export default function ProjectDashboard({
         project.description.toLowerCase().includes(searchQuery.toLowerCase());
       const matchesFilter =
         filterStatus === "all" || project.status === filterStatus;
-      return matchesSearch && matchesFilter;
+      const matchesLiked = 
+        filterLiked === "all" || 
+        (filterLiked === "liked" && project.isStarred) ||
+        (filterLiked === "disliked" && !project.isStarred);
+      return matchesSearch && matchesFilter && matchesLiked;
     })
     .sort((a, b) => {
       switch (sortBy) {
@@ -465,15 +511,99 @@ export default function ProjectDashboard({
     );
   };
 
-  const handleDeleteProject = (projectId: string) => {
-    setProjects((prev) => prev.filter((p) => p.id !== projectId));
-    toast({
-      title: "Project Deleted",
-      description: "The project has been permanently removed.",
+  const handleDeleteProject = async (projectId: string) => {
+    try {
+      await deleteProjectMutation.mutateAsync({ id: projectId });
+    } catch (error) {
+      console.error('Error deleting project:', error);
+    }
+  };
+
+  // Bulk operations
+  const handleBulkDelete = async () => {
+    if (selectedProjects.size === 0) return;
+    
+    try {
+      await Promise.all(
+        Array.from(selectedProjects).map(id => 
+          deleteProjectMutation.mutateAsync({ id })
+        )
+      );
+      setSelectedProjects(new Set());
+      setBulkMode(false);
+    } catch (error) {
+      console.error('Error bulk deleting projects:', error);
+    }
+  };
+
+  const handleBulkExport = async () => {
+    if (selectedProjects.size === 0) return;
+    
+    try {
+      await Promise.all(
+        Array.from(selectedProjects).map(id => 
+          exportProjectMutation.mutateAsync({ id })
+        )
+      );
+      setSelectedProjects(new Set());
+    } catch (error) {
+      console.error('Error bulk exporting projects:', error);
+    }
+  };
+
+  const handleBulkLike = () => {
+    if (selectedProjects.size === 0) return;
+    
+    setProjects(prev => 
+      prev.map(p => 
+        selectedProjects.has(p.id) ? { ...p, isStarred: true } : p
+      )
+    );
+    setSelectedProjects(new Set());
+  };
+
+  const handleBulkDislike = () => {
+    if (selectedProjects.size === 0) return;
+    
+    setProjects(prev => 
+      prev.map(p => 
+        selectedProjects.has(p.id) ? { ...p, isStarred: false } : p
+      )
+    );
+    setSelectedProjects(new Set());
+  };
+
+  const toggleProjectSelection = (projectId: string) => {
+    setSelectedProjects(prev => {
+      const newSet = new Set(prev);
+      if (newSet.has(projectId)) {
+        newSet.delete(projectId);
+      } else {
+        newSet.add(projectId);
+      }
+      return newSet;
     });
   };
 
-  const ProjectCard = ({ project }: { project: any }) => {
+  const toggleSelectAll = () => {
+    if (selectedProjects.size === filteredProjects.length) {
+      setSelectedProjects(new Set());
+    } else {
+      setSelectedProjects(new Set(filteredProjects.map(p => p.id)));
+    }
+  };
+
+  const ProjectCard = ({ 
+    project, 
+    bulkMode = false, 
+    isSelected = false, 
+    onToggleSelection 
+  }: { 
+    project: any;
+    bulkMode?: boolean;
+    isSelected?: boolean;
+    onToggleSelection?: () => void;
+  }) => {
     const statusConfig =
       STATUS_CONFIGS[project.status as keyof typeof STATUS_CONFIGS];
 
@@ -489,7 +619,13 @@ export default function ProjectDashboard({
           <CardHeader className="p-0">
             <div
               className="overflow-hidden relative h-48 rounded-t-lg bg-muted"
-              onClick={() => onProjectSelect(project.id)}
+              onClick={() => {
+                if (bulkMode) {
+                  onToggleSelection?.();
+                } else {
+                  onProjectSelect(project.id);
+                }
+              }}
             >
               {/* Project thumbnail with S3 refresh */}
               {project.thumbnail ? (
@@ -517,6 +653,32 @@ export default function ProjectDashboard({
                   {statusConfig.icon} {statusConfig.label}
                 </Badge>
               </div>
+
+              {/* Bulk selection checkbox */}
+              {bulkMode && (
+                <div 
+                  className="absolute top-3 right-3 z-10"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onToggleSelection?.();
+                  }}
+                >
+                  <Button
+                    variant={isSelected ? "default" : "outline"}
+                    size="sm"
+                    className={cn(
+                      "w-8 h-8 p-0",
+                      isSelected ? "bg-primary text-primary-foreground" : "bg-background"
+                    )}
+                  >
+                    {isSelected ? (
+                      <CheckSquare className="w-4 h-4" />
+                    ) : (
+                      <Square className="w-4 h-4" />
+                    )}
+                  </Button>
+                </div>
+              )}
 
               {/* Star button */}
               <Button
@@ -617,7 +779,17 @@ export default function ProjectDashboard({
     );
   };
 
-  const ProjectListItem = ({ project }: { project: any }) => {
+  const ProjectListItem = ({ 
+    project, 
+    bulkMode = false, 
+    isSelected = false, 
+    onToggleSelection 
+  }: { 
+    project: any;
+    bulkMode?: boolean;
+    isSelected?: boolean;
+    onToggleSelection?: () => void;
+  }) => {
     const statusConfig =
       STATUS_CONFIGS[project.status as keyof typeof STATUS_CONFIGS];
 
@@ -631,9 +803,39 @@ export default function ProjectDashboard({
         <Card className="transition-all duration-200 cursor-pointer group hover:shadow-md">
           <CardContent className="p-4">
             <div className="flex gap-4 items-center">
+              {/* Bulk selection checkbox */}
+              {bulkMode && (
+                <div 
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onToggleSelection?.();
+                  }}
+                >
+                  <Button
+                    variant={isSelected ? "default" : "outline"}
+                    size="sm"
+                    className={cn(
+                      "w-8 h-8 p-0",
+                      isSelected ? "bg-primary text-primary-foreground" : "bg-background"
+                    )}
+                  >
+                    {isSelected ? (
+                      <CheckSquare className="w-4 h-4" />
+                    ) : (
+                      <Square className="w-4 h-4" />
+                    )}
+                  </Button>
+                </div>
+              )}
               <div
                 className="relative w-16 h-12 bg-muted rounded overflow-hidden flex-shrink-0"
-                onClick={() => onProjectSelect(project.id)}
+                onClick={() => {
+                  if (bulkMode) {
+                    onToggleSelection?.();
+                  } else {
+                    onProjectSelect(project.id);
+                  }
+                }}
               >
                 {project.thumbnail ? (
                   <S3Image
@@ -655,7 +857,13 @@ export default function ProjectDashboard({
 
               <div
                 className="flex-1 min-w-0"
-                onClick={() => onProjectSelect(project.id)}
+                onClick={() => {
+                  if (bulkMode) {
+                    onToggleSelection?.();
+                  } else {
+                    onProjectSelect(project.id);
+                  }
+                }}
               >
                 <div className="flex gap-2 items-center mb-1">
                   <h3 className="font-semibold truncate">{project.name}</h3>
@@ -801,6 +1009,26 @@ export default function ProjectDashboard({
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button variant="outline">
+                  <Heart className="mr-2 w-4 h-4" />
+                  Liked
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent>
+                <DropdownMenuItem onClick={() => setFilterLiked("all")}>
+                  All Projects
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => setFilterLiked("liked")}>
+                  Liked Only
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => setFilterLiked("disliked")}>
+                  Disliked Only
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="outline">
                   <Calendar className="mr-2 w-4 h-4" />
                   Sort
                 </Button>
@@ -829,8 +1057,85 @@ export default function ProjectDashboard({
                 <Grid3X3 className="w-4 h-4" />
               )}
             </Button>
+
+            <Button
+              variant={bulkMode ? "default" : "outline"}
+              onClick={() => {
+                setBulkMode(!bulkMode);
+                setSelectedProjects(new Set());
+              }}
+            >
+              {bulkMode ? (
+                <X className="mr-2 w-4 h-4" />
+              ) : (
+                <CheckSquare className="mr-2 w-4 h-4" />
+              )}
+              {bulkMode ? "Cancel" : "Select"}
+            </Button>
           </div>
         </div>
+
+        {/* Bulk Operations Toolbar */}
+        {bulkMode && (
+          <div className="flex flex-col gap-4 p-4 mb-6 border rounded-lg bg-muted/20 sm:flex-row sm:items-center sm:justify-between">
+            <div className="flex gap-2 items-center">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={toggleSelectAll}
+              >
+                {selectedProjects.size === filteredProjects.length ? (
+                  <CheckSquare className="mr-2 w-4 h-4" />
+                ) : (
+                  <Square className="mr-2 w-4 h-4" />
+                )}
+                {selectedProjects.size === filteredProjects.length ? "Deselect All" : "Select All"}
+              </Button>
+              <span className="text-sm text-muted-foreground">
+                {selectedProjects.size} of {filteredProjects.length} selected
+              </span>
+            </div>
+            
+            {selectedProjects.size > 0 && (
+              <div className="flex gap-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={handleBulkLike}
+                >
+                  <Heart className="mr-2 w-4 h-4" />
+                  Like Selected
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={handleBulkDislike}
+                >
+                  <HeartOff className="mr-2 w-4 h-4" />
+                  Dislike Selected
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={handleBulkExport}
+                  disabled={exportProjectMutation.isLoading}
+                >
+                  <Download className="mr-2 w-4 h-4" />
+                  Export Selected
+                </Button>
+                <Button
+                  variant="destructive"
+                  size="sm"
+                  onClick={handleBulkDelete}
+                  disabled={deleteProjectMutation.isLoading}
+                >
+                  <Trash2 className="mr-2 w-4 h-4" />
+                  Delete Selected
+                </Button>
+              </div>
+            )}
+          </div>
+        )}
 
         {/* Projects Grid/List */}
         <AnimatePresence mode="wait">
@@ -884,13 +1189,25 @@ export default function ProjectDashboard({
               {viewMode === "grid" ? (
                 <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
                   {filteredProjects.map((project) => (
-                    <ProjectCard key={project.id} project={project} />
+                    <ProjectCard 
+                      key={project.id} 
+                      project={project} 
+                      bulkMode={bulkMode}
+                      isSelected={selectedProjects.has(project.id)}
+                      onToggleSelection={() => toggleProjectSelection(project.id)}
+                    />
                   ))}
                 </div>
               ) : (
                 <div className="space-y-4">
                   {filteredProjects.map((project) => (
-                    <ProjectListItem key={project.id} project={project} />
+                    <ProjectListItem 
+                      key={project.id} 
+                      project={project}
+                      bulkMode={bulkMode}
+                      isSelected={selectedProjects.has(project.id)}
+                      onToggleSelection={() => toggleProjectSelection(project.id)}
+                    />
                   ))}
                 </div>
               )}

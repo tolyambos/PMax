@@ -13,27 +13,27 @@ interface LocalFont {
 // Default fallback fonts if we can't load font metadata
 export const FALLBACK_FONTS: LocalFont[] = [
   {
-    family: "Arial",
+    family: "OpenSans",
     weights: ["400", "700"],
     files: {
-      "400": "/fonts/files/Arial-Regular.ttf",
-      "700": "/fonts/files/Arial-Bold.ttf",
+      "400": "/fonts/files/OpenSans-Regular.ttf",
+      "700": "/fonts/files/OpenSans-Bold.ttf",
     },
   },
   {
-    family: "Helvetica",
+    family: "Barlow",
     weights: ["400", "700"],
     files: {
-      "400": "/fonts/files/Helvetica-Regular.ttf",
-      "700": "/fonts/files/Helvetica-Bold.ttf",
+      "400": "/fonts/files/Barlow-Regular.ttf",
+      "700": "/fonts/files/Barlow-Bold.ttf",
     },
   },
   {
-    family: "Times New Roman",
+    family: "Lora",
     weights: ["400", "700"],
     files: {
-      "400": "/fonts/files/TimesNewRoman-Regular.ttf",
-      "700": "/fonts/files/TimesNewRoman-Bold.ttf",
+      "400": "/fonts/files/Lora-Regular.ttf",
+      "700": "/fonts/files/Lora-Bold.ttf",
     },
   },
 ];

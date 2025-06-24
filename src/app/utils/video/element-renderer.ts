@@ -565,14 +565,22 @@ export class ElementRenderer {
     const rawFontSize = parsed.extractedStyle?.fontSize || "48px";
     const fontSize = getScaledFontSize(rawFontSize, width);
 
-    // Get font file
-    const fontFile = await fontManager.getFontFile(fontFamily, fontWeight);
+    // Get font file with text content for better fallback selection
+    const fontFile = await fontManager.getFontFile(
+      fontFamily,
+      fontWeight,
+      text
+    );
     if (!fontFile) {
       console.error(
         `Could not find font file for ${fontFamily} (${fontWeight}), using fallback`
       );
-      // Use a fallback font
-      const fallbackFontFile = await fontManager.getFontFile("Arial", "400");
+      // Use a fallback font with text content for script detection
+      const fallbackFontFile = await fontManager.getFontFile(
+        "OpenSans",
+        "400",
+        text
+      );
       if (!fallbackFontFile) {
         console.error(
           "Could not find even fallback font, text will not render correctly"
@@ -1048,14 +1056,22 @@ export class ElementRenderer {
       parsed // Pass parsed element to access border styles
     );
 
-    // Get font file
-    const fontFile = await fontManager.getFontFile(fontFamily, fontWeight);
+    // Get font file with text content for better fallback selection
+    const fontFile = await fontManager.getFontFile(
+      fontFamily,
+      fontWeight,
+      text
+    );
     if (!fontFile) {
       console.error(
         `Could not find font file for ${fontFamily} (${fontWeight}), using fallback`
       );
-      // Use a fallback font
-      const fallbackFontFile = await fontManager.getFontFile("Arial", "700");
+      // Use a fallback font with text content for script detection
+      const fallbackFontFile = await fontManager.getFontFile(
+        "OpenSans",
+        "700",
+        text
+      );
       if (!fallbackFontFile) {
         console.error(
           "Could not find even fallback font, text will not render correctly"
@@ -1189,7 +1205,7 @@ export class ElementRenderer {
 
       // Add placeholder text
       const text = element.type === "logo" ? "Logo" : "Image";
-      const fontFile = await fontManager.getFontFile("Arial", "400");
+      const fontFile = await fontManager.getFontFile("OpenSans", "400", text);
       if (fontFile) {
         // Prepare font for FFmpeg - this will create a "clean" font path
         // that's optimized for FFmpeg compatibility

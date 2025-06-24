@@ -42,7 +42,7 @@ export function ElementToolbar({
   const [activeTab, setActiveTab] = useState<string>("text");
 
   // Preload commonly used fonts
-  useLocalFonts(["Roboto", "Arial", "Helvetica", "Open Sans", "Montserrat"]);
+  useLocalFonts(["Roboto", "OpenSans", "Barlow", "Montserrat", "Nunito"]);
 
   // Set edit mode based on whether an element is selected
   useEffect(() => {

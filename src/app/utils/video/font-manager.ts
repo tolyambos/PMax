@@ -87,7 +87,8 @@ export class FontManager {
    */
   public async getFontFile(
     family: string,
-    weight: string = "400"
+    weight: string = "400",
+    text?: string
   ): Promise<FontFile | null> {
     // Normalize font family and weight
     const normalizedFamily = this.normalizeFontFamily(family);
@@ -112,6 +113,18 @@ export class FontManager {
     );
 
     if (localFontFile) {
+      // Check if the font supports the required characters
+      if (text && !(await this.fontSupportsText(localFontFile, text))) {
+        console.log(
+          `Font ${normalizedFamily} found but doesn't support required characters, trying fallback`
+        );
+        const fallbackFontFile = await this.getFallbackFontFile(text);
+        if (fallbackFontFile) {
+          this.fontCache.set(fontKey, fallbackFontFile);
+          return fallbackFontFile;
+        }
+      }
+
       // Cache and return the local font file
       this.fontCache.set(fontKey, localFontFile);
       return localFontFile;
@@ -140,7 +153,7 @@ export class FontManager {
     }
 
     // Fall back to a system font if we couldn't find or download the requested font
-    const fallbackFontFile = await this.getFallbackFontFile();
+    const fallbackFontFile = await this.getFallbackFontFile(text);
 
     if (fallbackFontFile) {
       console.log(
@@ -488,18 +501,218 @@ export class FontManager {
   }
 
   /**
-   * Get a fallback font file
+   * Detect if text contains specific script types
    */
-  private async getFallbackFontFile(): Promise<FontFile | null> {
-    // First try to find common fonts in our local fonts directory
-    const localFallbackFonts = [
-      "Roboto-Regular.ttf",
-      "Arial-Regular.ttf",
-      "OpenSans-Regular.ttf",
-      "Helvetica-Regular.ttf",
+  private detectTextScript(text: string): string[] {
+    const scripts = [];
+
+    // Check for Cyrillic
+    if (/[\u0400-\u04FF]/.test(text)) {
+      scripts.push("cyrillic");
+    }
+
+    // Check for Arabic
+    if (/[\u0600-\u06FF]/.test(text)) {
+      scripts.push("arabic");
+    }
+
+    // Check for Chinese/Japanese/Korean
+    if (/[\u4E00-\u9FFF\u3040-\u309F\u30A0-\u30FF\uAC00-\uD7AF]/.test(text)) {
+      scripts.push("cjk");
+    }
+
+    // Check for Devanagari (Hindi)
+    if (/[\u0900-\u097F]/.test(text)) {
+      scripts.push("devanagari");
+    }
+
+    // Default to Latin
+    if (scripts.length === 0) {
+      scripts.push("latin");
+    }
+
+    return scripts;
+  }
+
+  /**
+   * Check if a font supports the characters in the given text
+   */
+  private async fontSupportsText(
+    fontFile: FontFile,
+    text: string
+  ): Promise<boolean> {
+    const scripts = this.detectTextScript(text);
+    const fontFamily = fontFile.family.toLowerCase();
+
+    // Known fonts that DON'T support extended Unicode (Cyrillic, Arabic, etc.)
+    const latinOnlyFonts = [
+      "bangers",
+      "creepster",
+      "pacifico",
+      "lobster",
+      "kaushan",
+      "dancing",
+      "caveat",
+      "courgette",
+      "gloria",
+      "neucha",
+      "permanent",
+      "marker",
+      "lucky",
+      "bungee",
+      "monoton",
+      "concert",
+      "carter",
+      "alfa",
+      "passion",
+      "audiowide",
     ];
 
-    for (const fontFile of localFallbackFonts) {
+    // Check if this is a known Latin-only font
+    const isLatinOnlyFont = latinOnlyFonts.some((name) =>
+      fontFamily.includes(name)
+    );
+
+    if (isLatinOnlyFont) {
+      // Check if we need non-Latin scripts
+      for (const script of scripts) {
+        if (script !== "latin") {
+          console.log(
+            `Font ${fontFile.family} doesn't support ${script} script (Latin-only font)`
+          );
+          return false;
+        }
+      }
+    }
+
+    // Known fonts with good Unicode support
+    const unicodeFonts = [
+      "notosans",
+      "noto",
+      "roboto",
+      "opensans",
+      "dejavusans",
+      "liberationsans",
+      "ubuntu",
+      "sourcesans",
+      "firasans",
+      "inter",
+      "lato",
+      "montserrat",
+      "nunito",
+      "ptserif",
+      "ptsans",
+      "merriweather",
+      "playfair",
+      "libre",
+      "source",
+      "fira",
+      "karla",
+      "barlow",
+      "heebo",
+      "ibm",
+      "cascadia",
+    ];
+
+    // Check if this is a known Unicode-supporting font
+    const isUnicodeFont = unicodeFonts.some((name) =>
+      fontFamily.includes(name)
+    );
+
+    if (isUnicodeFont) {
+      return true; // Known good fonts
+    }
+
+    // For unknown fonts, be conservative with non-Latin scripts
+    for (const script of scripts) {
+      if (script !== "latin") {
+        console.log(
+          `Font ${fontFile.family} may not support ${script} script (unknown font)`
+        );
+        return false;
+      }
+    }
+
+    return true; // Latin scripts should work with most fonts
+  }
+
+  /**
+   * Get fallback fonts based on text content
+   */
+  private async getScriptSpecificFallbackFonts(
+    text?: string
+  ): Promise<string[]> {
+    const scripts = text ? this.detectTextScript(text) : ["latin"];
+    const fallbackFonts = [];
+
+    for (const script of scripts) {
+      switch (script) {
+        case "cyrillic":
+          fallbackFonts.push(
+            "NotoSans-Regular.ttf",
+            "NotoSans-Bold.ttf",
+            "Roboto-Regular.ttf",
+            "OpenSans-Regular.ttf"
+          );
+          break;
+        case "arabic":
+          fallbackFonts.push(
+            "NotoSansArabic-Regular.ttf",
+            "NotoSans-Regular.ttf"
+          );
+          break;
+        case "cjk":
+          fallbackFonts.push(
+            "NotoSansSC-Regular.ttf",
+            "NotoSansJP-Regular.ttf",
+            "NotoSansTC-Regular.ttf",
+            "NotoSans-Regular.ttf"
+          );
+          break;
+        case "devanagari":
+          fallbackFonts.push(
+            "NotoSansDevanagari-Regular.ttf",
+            "NotoSans-Regular.ttf"
+          );
+          break;
+        default: // latin
+          fallbackFonts.push(
+            "OpenSans-Regular.ttf",
+            "Roboto-Regular.ttf",
+            "Barlow-Regular.ttf",
+            "Nunito-Regular.ttf"
+          );
+      }
+    }
+
+    return Array.from(new Set(fallbackFonts)); // Remove duplicates
+  }
+
+  /**
+   * Get a fallback font file
+   */
+  private async getFallbackFontFile(text?: string): Promise<FontFile | null> {
+    // Get script-specific fallback fonts
+    const fallbackFonts = await this.getScriptSpecificFallbackFonts(text);
+
+    // Try local fonts directory with script-specific fallbacks
+    const localFontsDir = path.join(process.cwd(), "public", "fonts", "files");
+
+    for (const fontFile of fallbackFonts) {
+      const fontPath = path.join(localFontsDir, fontFile);
+      if (fs.existsSync(fontPath)) {
+        console.log(`Found local fallback font: ${fontPath}`);
+        const family = fontFile.split("-")[0]; // Extract family name
+        return {
+          path: fontPath,
+          family,
+          weight: "400",
+        };
+      }
+    }
+
+    // If no script-specific fonts found, try the original fallback directory
+    for (const fontFile of fallbackFonts) {
       const fontPath = path.join(this.fontsDir, fontFile);
       if (fs.existsSync(fontPath)) {
         console.log(`Found local fallback font: ${fontPath}`);
@@ -515,7 +728,10 @@ export class FontManager {
     // Try to find a system font to use as fallback
     const systemFonts = [
       { path: "/System/Library/Fonts/Helvetica.ttc", family: "Helvetica" },
-      { path: "/System/Library/Fonts/Supplemental/Arial.ttf", family: "Arial" },
+      {
+        path: "/usr/share/fonts/truetype/liberation/LiberationSans-Regular.ttf",
+        family: "Liberation Sans",
+      },
       {
         path: "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf",
         family: "DejaVu Sans",
@@ -537,12 +753,12 @@ export class FontManager {
       }
     }
 
-    // If we couldn't find any system fonts, try to download Arial
+    // If we couldn't find any system fonts, try to download OpenSans
     try {
       console.log(
-        "No local fonts found, attempting to download Arial as fallback"
+        "No local fonts found, attempting to download OpenSans as fallback"
       );
-      return await this.downloadFont("Arial", "400");
+      return await this.downloadFont("OpenSans", "400");
     } catch (error) {
       console.error("Error downloading fallback font:", error);
       return null;
@@ -648,8 +864,8 @@ export class FontManager {
       promises.push(this.getFontFile(family, weight));
     }
 
-    // Always preload Arial as a fallback
-    promises.push(this.getFontFile("Arial", "400"));
+    // Always preload OpenSans as a fallback
+    promises.push(this.getFontFile("OpenSans", "400"));
 
     // Wait for all font loading to complete
     await Promise.all(promises);
