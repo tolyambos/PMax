@@ -113,7 +113,18 @@ export const getFontUrl = (
     weight = font.weights[0] || "400";
   }
 
-  return font.files[weight] || null;
+  const fontPath = font.files[weight];
+  
+  // In production, use your GitHub repository LFS URLs for fonts
+  if (process.env.NODE_ENV === "production") {
+    // Convert local path to your GitHub repository LFS URL
+    const fileName = fontPath?.split('/').pop(); // Get just the filename
+    if (fileName) {
+      return `https://github.com/tolyambos/PMax/raw/main/fonts/${fileName}`;
+    }
+  }
+
+  return fontPath || null;
 };
 
 // For backwards compatibility with Google Fonts code

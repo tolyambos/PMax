@@ -147,7 +147,7 @@ export function initializeExport(exportId: string, projectIds: string[], project
 }
 
 export function cleanupExport(exportId: string) {
-  // Clean up after 10 minutes
+  // Clean up progress data after 10 minutes
   setTimeout(() => {
     progressManager.deleteProgress(exportId);
   }, 10 * 60 * 1000);

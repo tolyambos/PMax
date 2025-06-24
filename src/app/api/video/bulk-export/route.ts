@@ -7,6 +7,7 @@ import { s3Utils } from "@/lib/s3-utils";
 import { prisma } from "@/lib/prisma";
 import archiver from "archiver";
 import { initializeExport, updateExportProgress, updateProjectStatus, cleanupExport } from "@/app/utils/bulk-export-progress";
+import { cleanupOldDownloads } from "@/app/utils/cleanup-downloads";
 
 // Schema for bulk export requests
 const BulkExportRequestSchema = z.object({
@@ -342,6 +343,9 @@ async function processExportAsync(
       fs.mkdirSync(path.dirname(downloadPath), { recursive: true });
       fs.copyFileSync(zipPath, downloadPath);
       
+      // Clean up old download files before creating new ones
+      cleanupOldDownloads(12); // Clean files older than 12 hours
+      
       // Update progress - complete with download path
       updateExportProgress(exportId, { 
         status: 'complete', 
@@ -359,6 +363,18 @@ async function processExportAsync(
 
       // Schedule cleanup of export progress after 1 hour
       cleanupExport(exportId);
+
+      // Schedule cleanup of download file after 24 hours
+      setTimeout(() => {
+        try {
+          if (fs.existsSync(downloadPath)) {
+            fs.unlinkSync(downloadPath);
+            console.log(`Cleaned up download file after 24h: ${downloadPath}`);
+          }
+        } catch (cleanupError) {
+          console.error(`Failed to cleanup download file: ${cleanupError}`);
+        }
+      }, 24 * 60 * 60 * 1000); // 24 hours
 
       console.log(`Bulk export completed: ${exportResults.length} successful, ${errors.length} failed`);
 

@@ -96,9 +96,24 @@ export async function GET(request: NextRequest) {
         `attachment; filename="${filename}"`
       );
 
-      // Clean up file after sending (optional)
-      // Consider whether you want to remove the file after downloading
-      // fs.unlinkSync(normalizedPath);
+      // Clean up bulk export files after download
+      if (normalizedPath.includes("temp/downloads/") && filename.includes("bulk-export")) {
+        try {
+          // Schedule cleanup after a short delay to ensure download starts
+          setTimeout(() => {
+            try {
+              if (fs.existsSync(normalizedPath)) {
+                fs.unlinkSync(normalizedPath);
+                console.log(`Cleaned up bulk export file: ${normalizedPath}`);
+              }
+            } catch (cleanupError) {
+              console.error(`Failed to cleanup file ${normalizedPath}:`, cleanupError);
+            }
+          }, 5000); // 5 second delay
+        } catch (error) {
+          console.error(`Error scheduling cleanup for ${normalizedPath}:`, error);
+        }
+      }
 
       return response;
     }
