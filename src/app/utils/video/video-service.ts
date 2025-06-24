@@ -12,6 +12,7 @@ import {
   Scene,
 } from "./types";
 import { GOOGLE_FONTS } from "../fonts-server";
+import { initializeFonts } from "./init-fonts";
 
 /**
  * Main video rendering service - Fixed implementation
@@ -22,6 +23,13 @@ export class VideoService {
 
     // Set available fonts on the font manager
     fontManager.setAvailableFonts(GOOGLE_FONTS);
+
+    // Initialize fonts in production
+    if (process.env.NODE_ENV === "production") {
+      initializeFonts().catch((error) => {
+        console.error("[VideoService] Failed to initialize fonts:", error);
+      });
+    }
 
     console.log("VideoService initialized");
   }
@@ -279,10 +287,10 @@ export class VideoService {
       );
 
       console.log(`Video rendering complete: ${outputFile}`);
-      
+
       // Note: The render directory will be cleaned up by the export route after upload/download
       // We don't clean it up here since the export route needs the files
-      
+
       return outputFile;
     } catch (error) {
       console.error("Error rendering video:", error);

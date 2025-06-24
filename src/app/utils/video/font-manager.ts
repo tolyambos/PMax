@@ -176,7 +176,16 @@ export class FontManager {
     family: string,
     weight: string
   ): Promise<FontFile | null> {
-    console.log(`Looking for font: ${family} (weight: ${weight})`);
+    console.log(
+      `[FONT-MANAGER] Looking for font: ${family} (weight: ${weight})`
+    );
+
+    // First check if this is production and font might need downloading
+    if (process.env.NODE_ENV === "production") {
+      console.log(
+        `[FONT-MANAGER] Production mode - checking font availability`
+      );
+    }
 
     // First, try to find font using metadata
     try {
@@ -203,19 +212,45 @@ export class FontManager {
           const filePath = path.join(process.cwd(), "public", urlPath);
 
           if (fs.existsSync(filePath)) {
-            console.log(`Found font via metadata: ${filePath}`);
-            return {
-              path: filePath,
-              family,
-              weight,
-            };
+            // Check if it's a real font file (not Git LFS pointer)
+            const stats = fs.statSync(filePath);
+            if (stats.size < 1000) {
+              console.warn(
+                `[FONT-MANAGER] Font file too small (${stats.size} bytes), likely Git LFS pointer: ${filePath}`
+              );
+            } else {
+              // Read first few bytes to check if it's a Git LFS pointer
+              const fd = fs.openSync(filePath, "r");
+              const buffer = Buffer.alloc(50);
+              fs.readSync(fd, buffer, 0, 50, 0);
+              fs.closeSync(fd);
+
+              const firstBytes = buffer.toString("utf8");
+              if (firstBytes.includes("version https://git-lfs")) {
+                console.warn(
+                  `[FONT-MANAGER] Font is Git LFS pointer, not actual font: ${filePath}`
+                );
+              } else {
+                console.log(
+                  `[FONT-MANAGER] Found valid font via metadata: ${filePath}`
+                );
+                return {
+                  path: filePath,
+                  family,
+                  weight,
+                };
+              }
+            }
           } else {
             console.warn(
               `Font metadata points to non-existent file: ${filePath}, attempting to download...`
             );
             // Try to download the font if it doesn't exist
             try {
-              const downloadedPath = await ensureFontForRendering(family, weight);
+              const downloadedPath = await ensureFontForRendering(
+                family,
+                weight
+              );
               if (downloadedPath) {
                 return {
                   path: downloadedPath,
@@ -239,18 +274,41 @@ export class FontManager {
             const filePath = path.join(process.cwd(), "public", urlPath);
 
             if (fs.existsSync(filePath)) {
-              console.log(
-                `Found font with fallback weight ${fallbackWeight}: ${filePath}`
-              );
-              return {
-                path: filePath,
-                family,
-                weight: fallbackWeight,
-              };
+              // Check if it's a real font file (not Git LFS pointer)
+              const stats = fs.statSync(filePath);
+              if (stats.size < 1000) {
+                console.warn(
+                  `[FONT-MANAGER] Fallback font file too small (${stats.size} bytes), likely Git LFS pointer: ${filePath}`
+                );
+              } else {
+                const fd = fs.openSync(filePath, "r");
+                const buffer = Buffer.alloc(50);
+                fs.readSync(fd, buffer, 0, 50, 0);
+                fs.closeSync(fd);
+
+                const firstBytes = buffer.toString("utf8");
+                if (firstBytes.includes("version https://git-lfs")) {
+                  console.warn(
+                    `[FONT-MANAGER] Fallback font is Git LFS pointer: ${filePath}`
+                  );
+                } else {
+                  console.log(
+                    `[FONT-MANAGER] Found valid font with fallback weight ${fallbackWeight}: ${filePath}`
+                  );
+                  return {
+                    path: filePath,
+                    family,
+                    weight: fallbackWeight,
+                  };
+                }
+              }
             } else {
               // Try to download the font with fallback weight
               try {
-                const downloadedPath = await ensureFontForRendering(family, fallbackWeight);
+                const downloadedPath = await ensureFontForRendering(
+                  family,
+                  fallbackWeight
+                );
                 if (downloadedPath) {
                   console.log(
                     `Downloaded font with fallback weight ${fallbackWeight}: ${downloadedPath}`
@@ -262,7 +320,10 @@ export class FontManager {
                   };
                 }
               } catch (error) {
-                console.error(`Failed to download font ${family} with weight ${fallbackWeight}:`, error);
+                console.error(
+                  `Failed to download font ${family} with weight ${fallbackWeight}:`,
+                  error
+                );
               }
             }
           }
