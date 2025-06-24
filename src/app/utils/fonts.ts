@@ -178,8 +178,9 @@ export const getFontUrl = async (
 
   // Always use the API route for proper CORS handling
   if (typeof window !== "undefined") {
-    // Use the local API route which will proxy to GitHub in production
-    return `/api${fontPath}`;
+    // Extract just the filename from the path since API route expects just filename
+    const filename = fontPath.split('/').pop();
+    return `/api/fonts/files/${filename}`;
   }
 
   return fontPath;
