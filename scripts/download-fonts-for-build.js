@@ -134,7 +134,7 @@ async function downloadFonts() {
         }
 
         try {
-          const githubUrl = `https://github.com/tolyambos/PMax/raw/main/fonts/${fileName}`;
+          const githubUrl = `https://media.githubusercontent.com/media/tolyambos/PMax/main/fonts/${fileName}`;
           console.log(`⬇️  Downloading ${fileName}...`);
 
           await downloadFile(githubUrl, outputPath);
