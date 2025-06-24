@@ -37,7 +37,7 @@ function downloadFile(url, outputPath) {
           Accept: "*/*",
           "Accept-Encoding": "identity",
         },
-        timeout: 30000, // 30 second timeout
+        timeout: 60000, // 60 second timeout
       };
 
       console.log(`  → Requesting: ${currentUrl}`);
@@ -145,8 +145,8 @@ async function downloadFonts() {
           );
           downloadCount++;
 
-          // Small delay to avoid rate limiting
-          await new Promise((resolve) => setTimeout(resolve, 500));
+          // Small delay to avoid rate limiting (removed for faster builds)
+          // await new Promise((resolve) => setTimeout(resolve, 100));
         } catch (error) {
           console.error(`❌ Failed to download ${fileName}:`, error.message);
           failCount++;
