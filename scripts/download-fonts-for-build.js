@@ -37,7 +37,7 @@ function downloadFile(url, outputPath) {
           Accept: "*/*",
           "Accept-Encoding": "identity",
         },
-        timeout: 60000, // 60 second timeout
+        timeout: 15000, // 15 second timeout
       };
 
       console.log(`  → Requesting: ${currentUrl}`);
@@ -117,6 +117,9 @@ async function downloadFonts() {
     let skipCount = 0;
     let failCount = 0;
 
+    // Collect all fonts that need downloading
+    const fontsToDownload = [];
+
     for (const font of fontMetadata) {
       for (const [weight, localPath] of Object.entries(font.files)) {
         const fileName = localPath.split("/").pop();
@@ -133,6 +136,24 @@ async function downloadFonts() {
           }
         }
 
+        fontsToDownload.push({ fileName, outputPath });
+      }
+    }
+
+    console.log(
+      `\n📦 Need to download ${fontsToDownload.length} fonts in parallel...`
+    );
+
+    // Download fonts in parallel batches of 10
+    const batchSize = 10;
+    for (let i = 0; i < fontsToDownload.length; i += batchSize) {
+      const batch = fontsToDownload.slice(i, i + batchSize);
+
+      console.log(
+        `\n🔄 Processing batch ${Math.floor(i / batchSize) + 1}/${Math.ceil(fontsToDownload.length / batchSize)} (${batch.length} fonts)...`
+      );
+
+      const promises = batch.map(async ({ fileName, outputPath }) => {
         try {
           const githubUrl = `https://media.githubusercontent.com/media/tolyambos/PMax/main/fonts/${fileName}`;
           console.log(`⬇️  Downloading ${fileName}...`);
@@ -143,15 +164,16 @@ async function downloadFonts() {
           console.log(
             `✅ Downloaded ${fileName} (${(stats.size / 1024).toFixed(1)} KB)`
           );
-          downloadCount++;
-
-          // Small delay to avoid rate limiting (removed for faster builds)
-          // await new Promise((resolve) => setTimeout(resolve, 100));
+          return { success: true };
         } catch (error) {
           console.error(`❌ Failed to download ${fileName}:`, error.message);
-          failCount++;
+          return { success: false };
         }
-      }
+      });
+
+      const results = await Promise.all(promises);
+      downloadCount += results.filter((r) => r.success).length;
+      failCount += results.filter((r) => !r.success).length;
     }
 
     console.log("\n📊 Download Summary:");
