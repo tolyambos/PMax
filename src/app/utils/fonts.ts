@@ -179,11 +179,187 @@ export const getFontUrl = async (
   // Always use the API route for proper CORS handling
   if (typeof window !== "undefined") {
     // Extract just the filename from the path since API route expects just filename
-    const filename = fontPath.split('/').pop();
+    const filename = fontPath.split("/").pop();
+
+    // For production, use Google Fonts as primary with local API as fallback
+    if (process.env.NEXT_PUBLIC_USE_GOOGLE_FONTS === "true") {
+      // Try to get Google Fonts URL, but fall back to local if it fails
+      try {
+        const googleFontUrl = await getGoogleFontUrl(font.family, weight);
+        if (googleFontUrl) {
+          return googleFontUrl;
+        }
+      } catch (error) {
+        console.log(`[FONTS] Error getting Google Font, using local:`, error);
+      }
+    }
+
     return `/api/fonts/files/${filename}`;
   }
 
   return fontPath;
+};
+
+// Cache for Google Fonts API data - make it global and persistent
+const GOOGLE_FONTS_CACHE_KEY = "google-fonts-api-data";
+let googleFontsData: any = null;
+let googleFontsPromise: Promise<any> | null = null;
+
+// Cache for font URL results to prevent duplicate API calls
+const fontUrlCache = new Map<string, string | null>();
+
+/**
+ * Get Google Fonts URL for common fonts using direct TTF files
+ */
+const getGoogleFontUrl = async (
+  fontFamily: string,
+  weight: string
+): Promise<string | null> => {
+  // Create cache key
+  const cacheKey = `${fontFamily}-${weight}`;
+
+  // Return cached result if available
+  if (fontUrlCache.has(cacheKey)) {
+    return fontUrlCache.get(cacheKey) || null;
+  }
+
+  // Map of Google Fonts available for web use
+  const googleFonts: Record<string, string> = {
+    OpenSans: "Open Sans",
+    Roboto: "Roboto",
+    Lato: "Lato",
+    Montserrat: "Montserrat",
+    Poppins: "Poppins",
+    Nunito: "Nunito",
+    Raleway: "Raleway",
+    Inter: "Inter",
+    Playfair: "Playfair Display",
+    SourceSans: "Source Sans Pro",
+    Oswald: "Oswald",
+    Merriweather: "Merriweather",
+    Lora: "Lora",
+    PTSans: "PT Sans",
+    Ubuntu: "Ubuntu",
+    Fira: "Fira Sans",
+    Crimson: "Crimson Text",
+    Libre: "Libre Baskerville",
+    Arimo: "Arimo",
+    Tinos: "Tinos",
+    Cousine: "Cousine",
+    // Add commonly used Google Fonts from your collection
+    Arvo: "Arvo",
+    ArchivoBlack: "Archivo Black",
+    AlfaSlabOne: "Alfa Slab One",
+    Anton: "Anton",
+    Audiowide: "Audiowide",
+    Bangers: "Bangers",
+    Barlow: "Barlow",
+    BarlowCondensed: "Barlow Condensed",
+    Allura: "Allura",
+  };
+
+  const googleName = googleFonts[fontFamily];
+  if (!googleName) {
+    // Cache negative result
+    fontUrlCache.set(cacheKey, null);
+    return null;
+  }
+
+  try {
+    // Load Google Fonts data if not cached
+    if (!googleFontsData) {
+      // Check localStorage cache first
+      if (typeof window !== "undefined") {
+        const cached = localStorage.getItem(GOOGLE_FONTS_CACHE_KEY);
+        if (cached) {
+          try {
+            googleFontsData = JSON.parse(cached);
+            // Only log once on initial load
+            if (!fontUrlCache.size) {
+              console.log(
+                `[FONTS] Using cached Google Fonts data (${googleFontsData.items?.length || 0} fonts)`
+              );
+            }
+          } catch (e) {
+            console.log(`[FONTS] Invalid cache, will fetch fresh data`);
+          }
+        }
+      }
+
+      // If no cache or invalid cache, fetch from API (but only once)
+      if (!googleFontsData) {
+        if (!googleFontsPromise) {
+          console.log(`[FONTS] Loading Google Fonts API data...`);
+          googleFontsPromise = fetch(
+            `https://www.googleapis.com/webfonts/v1/webfonts?key=AIzaSyCvXfKuB6hn8UJmYHK-zJR-_8BesPNw76Y`
+          )
+            .then((response) => {
+              if (!response.ok) {
+                throw new Error(
+                  `Google Fonts API error: ${response.status} ${response.statusText}`
+                );
+              }
+              return response.json();
+            })
+            .then((data) => {
+              googleFontsData = data;
+              console.log(
+                `[FONTS] Loaded ${googleFontsData.items?.length || 0} fonts from Google Fonts API`
+              );
+
+              // Cache to localStorage
+              if (typeof window !== "undefined") {
+                localStorage.setItem(
+                  GOOGLE_FONTS_CACHE_KEY,
+                  JSON.stringify(data)
+                );
+              }
+
+              return data;
+            })
+            .catch((error) => {
+              console.error(`[FONTS] Error loading Google Fonts:`, error);
+              googleFontsPromise = null; // Reset promise on error
+              return null;
+            });
+        }
+
+        googleFontsData = await googleFontsPromise;
+        if (
+          !googleFontsData ||
+          !googleFontsData.items ||
+          googleFontsData.items.length === 0
+        ) {
+          console.error(`[FONTS] Google Fonts API returned no fonts`);
+          return null;
+        }
+      }
+    }
+
+    // Find the font in Google Fonts data
+    const fontData = googleFontsData.items?.find(
+      (item: any) => item.family.toLowerCase() === googleName.toLowerCase()
+    );
+
+    if (!fontData) return null;
+
+    // Map weight to Google Fonts variant format
+    const weightVariant = weight === "400" ? "regular" : weight;
+
+    // Get the direct TTF file URL
+    const fontFileUrl =
+      fontData.files?.[weightVariant] || fontData.files?.regular;
+
+    // Cache the result (positive or negative)
+    fontUrlCache.set(cacheKey, fontFileUrl || null);
+
+    return fontFileUrl || null;
+  } catch (error) {
+    console.error("Error fetching Google Fonts data:", error);
+    // Cache negative result on error
+    fontUrlCache.set(cacheKey, null);
+    return null;
+  }
 };
 
 /**

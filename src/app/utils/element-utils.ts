@@ -79,18 +79,6 @@ export function parseElementContent(element: any): {
   let extractedFontWeight: string | number | null = null;
 
   try {
-    // ENHANCED LOGGING: Log raw element.content before parsing
-    console.log(`FONT_DEBUG: Raw element content for ${element.id}:`, {
-      contentType: typeof element.content,
-      contentLength: element.content ? element.content.length : 0,
-      contentPreview:
-        typeof element.content === "string"
-          ? element.content.substring(0, 100) +
-            (element.content.length > 100 ? "..." : "")
-          : "Non-string content",
-      elementType: element.type,
-    });
-
     // Parse content if it's a string, or use it directly if it's already an object
     if (element.content) {
       if (
@@ -99,25 +87,13 @@ export function parseElementContent(element: any): {
       ) {
         try {
           extractedContent = JSON.parse(element.content);
-          console.log(
-            `FONT_DEBUG: Successfully parsed JSON content for ${element.id}`
-          );
         } catch (parseError) {
           console.error("Error parsing element content JSON:", parseError);
-          console.log(
-            `FONT_DEBUG: JSON parse error for ${element.id}, using content as text`
-          );
           extractedContent = { text: element.content };
         }
       } else if (typeof element.content === "object") {
-        console.log(
-          `FONT_DEBUG: Content is already an object for ${element.id}`
-        );
         extractedContent = element.content;
       } else {
-        console.log(
-          `FONT_DEBUG: Non-JSON content for ${element.id}, using as text`
-        );
         extractedContent = { text: element.content };
       }
 
@@ -129,9 +105,6 @@ export function parseElementContent(element: any): {
 
       // Check if style exists directly on the element
       if (!extractedStyle && element.style) {
-        console.log(
-          `FONT_DEBUG: Using element.style directly for ${element.id}`
-        );
         extractedStyle = element.style;
       }
 
@@ -141,70 +114,28 @@ export function parseElementContent(element: any): {
       // Extract CTA type if available
       extractedCtaType = extractedContent.ctaType || null;
 
-      // Extract font family and weight with detailed logging
+      // Extract font family and weight
       // Try multiple potential locations for font properties
       if (extractedStyle?.fontFamily) {
         extractedFontFamily = extractedStyle.fontFamily;
-        console.log(
-          `FONT_DEBUG: Found fontFamily in extractedStyle.fontFamily: "${extractedFontFamily}"`
-        );
       } else if (extractedContent.fontFamily) {
         extractedFontFamily = extractedContent.fontFamily;
-        console.log(
-          `FONT_DEBUG: Found fontFamily in extractedContent.fontFamily: "${extractedFontFamily}"`
-        );
       } else if (element.style?.fontFamily) {
         extractedFontFamily = element.style.fontFamily;
-        console.log(
-          `FONT_DEBUG: Found fontFamily in element.style.fontFamily: "${extractedFontFamily}"`
-        );
-      } else {
-        console.log(
-          `FONT_DEBUG: No fontFamily found for ${element.id}, using null`
-        );
       }
 
       if (extractedStyle?.fontWeight) {
         extractedFontWeight = extractedStyle.fontWeight;
-        console.log(
-          `FONT_DEBUG: Found fontWeight in extractedStyle.fontWeight: "${extractedFontWeight}"`
-        );
       } else if (extractedContent.fontWeight) {
         extractedFontWeight = extractedContent.fontWeight;
-        console.log(
-          `FONT_DEBUG: Found fontWeight in extractedContent.fontWeight: "${extractedFontWeight}"`
-        );
       } else if (element.style?.fontWeight) {
         extractedFontWeight = element.style.fontWeight;
-        console.log(
-          `FONT_DEBUG: Found fontWeight in element.style.fontWeight: "${extractedFontWeight}"`
-        );
-      } else {
-        console.log(
-          `FONT_DEBUG: No fontWeight found for ${element.id}, using null`
-        );
       }
-
-      // Log the extracted font properties for debugging
-      console.log(
-        `FONT_DEBUG: Final extracted font properties for element ${element.id}:`,
-        {
-          fontFamily: extractedFontFamily,
-          fontWeight: extractedFontWeight,
-          extractedStyleKeys: extractedStyle
-            ? Object.keys(extractedStyle)
-            : "null",
-          elementType: element.type,
-        }
-      );
     }
   } catch (error) {
     console.error("Error parsing element content:", error);
     // Fallback: treat content as plain text
     extractedText = typeof element.content === "string" ? element.content : "";
-    console.log(
-      `FONT_DEBUG: Error in parseElementContent for ${element.id}, using fallback text`
-    );
   }
 
   return {
