@@ -3,7 +3,7 @@ import { authMiddleware } from "@clerk/nextjs";
 export default authMiddleware({
   publicRoutes: [
     "/",
-    "/api/webhooks/clerk",
+    "/api/webhooks(.*)",
     "/api/fonts(.*)",
     "/api/ai/analyze-image",
     "/sign-in(.*)",
@@ -15,6 +15,7 @@ export default authMiddleware({
     "/api/fonts(.*)",
     "/fonts(.*)",
   ],
+  debug: false,
 });
 
 export const config = {
