@@ -6,10 +6,13 @@ export default authMiddleware({
     "/api/webhooks/clerk",
     "/api/fonts(.*)",
     "/api/ai/analyze-image",
-    "/auth/sign-in",
-    "/auth/sign-up",
-    "/sign-in",
-    "/sign-up",
+    "/sign-in(.*)",
+    "/sign-up(.*)",
+    "/fonts(.*)",
+  ],
+  ignoredRoutes: [
+    "/((?!api|trpc))(_next|.+\\..+)(.*)",
+    "/api/fonts(.*)",
     "/fonts(.*)",
   ],
 });

@@ -17,8 +17,10 @@ export default function Home() {
     setIsLoading(false);
 
     // If user is already signed in, redirect to dashboard
+    // Only redirect if we're actually loaded and have a user
     if (isLoaded && user) {
-      router.push("/dashboard");
+      // Use replace to avoid back button issues
+      router.replace("/dashboard");
     }
   }, [isLoaded, user, router]);
 
