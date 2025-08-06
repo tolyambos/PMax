@@ -85,7 +85,7 @@ export class OpenAIService {
         Each scene should be visually stunning and work well as a frame in a video.
         Vary the scenes to show different aspects and perspectives.
         
-        For each scene, suggest a duration between 2-5 seconds that would work well for that visual.
+        For each scene, suggest a duration between 2-10 seconds that would work well for that visual.
         
         {format_instructions}
       `);

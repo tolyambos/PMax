@@ -5,7 +5,7 @@ import { GENERATE_BACKGROUND_PROMPT } from "@/app/utils/prompts";
 
 // Define request schema for background generation
 const RequestSchema = z.object({
-  prompt: z.string().min(3).max(1000),
+  prompt: z.string().min(3).max(2000), // Increased limit for longer prompts
   format: z.enum(["9:16", "16:9", "1:1", "4:5"]).default("16:9"),
   style: z.string().optional(),
 });
@@ -50,22 +50,45 @@ export async function POST(req: Request) {
 
     const { prompt, format } = body;
 
-    // Get userId (dev-user-id for development, auth for production)
-    const userId =
-      process.env.NODE_ENV === "development" ? "dev-user-id" : "auth-user-id";
+    // Get userId from auth
+    let userId = "dev-user-id";
+    
+    try {
+      const { auth } = await import("@clerk/nextjs/server");
+      const { userId: clerkUserId } = auth();
+      
+      if (clerkUserId) {
+        // Get user from database
+        const { prisma } = await import("@/lib/prisma");
+        const user = await prisma.user.findUnique({
+          where: { clerkId: clerkUserId },
+        });
+        
+        if (user) {
+          userId = user.id;
+        }
+      }
+    } catch (authError) {
+      console.log("Auth not available, using dev-user-id");
+    }
 
     // Generate background image from the prompt
     console.log(
       `Generating background in ${format} format with prompt: ${prompt}`
     );
-    const background = await generateBackgroundImage(prompt, format, userId);
-
-    return NextResponse.json({
-      background,
-      success: true,
-      timestamp: new Date().toISOString(),
-      format: format,
-    });
+    
+    try {
+      const background = await generateBackgroundImage(prompt, format, userId);
+      return NextResponse.json({
+        background,
+        success: true,
+        timestamp: new Date().toISOString(),
+        format: format,
+      });
+    } catch (genError) {
+      console.error("Error in generateBackgroundImage:", genError);
+      throw genError; // Re-throw to be caught by outer catch
+    }
   } catch (error) {
     console.error("Error generating background:", error);
 

@@ -92,8 +92,6 @@ export async function generateVideoFromPrompt(
               prompt: scene.description,
               format: validFormat,
               numSamples: 1,
-              width: 1024,
-              height: 1024,
               negativePrompt:
                 "low quality, bad quality, blurry, distorted, deformed, text, watermark, signature, logo",
             });
@@ -255,12 +253,7 @@ export async function generateBackgroundImage(
     console.log(
       `Generating background image with Runware from prompt: ${prompt}`
     );
-
-    // Use centralized dimensions to ensure consistency across all image/video generation
-    const { getDimensionsFromFormat } = require("@/app/utils/video-dimensions");
-    const dimensions = getDimensionsFromFormat(validFormat);
-    const width = dimensions.width;
-    const height = dimensions.height;
+    console.log(`Format: ${validFormat}`);
 
     try {
       // Generate image using Runware service with centralized prompt
@@ -271,8 +264,6 @@ export async function generateBackgroundImage(
       const imageResult = await runwareService.generateImage({
         prompt: enhancedPrompt,
         format: validFormat,
-        width,
-        height,
         numSamples: 1,
         negativePrompt:
           "watermark, signature, logo, low quality, bad quality, blurry, distorted, deformed",
@@ -308,10 +299,24 @@ export async function generateBackgroundImage(
     } catch (apiError) {
       console.error("Error generating background with Runware:", apiError);
 
-      // Create a fallback background (using dimensions from above that are multiples of 64)
+      // Create a fallback background with default dimensions based on format
+      let fallbackWidth = 1920;
+      let fallbackHeight = 1080;
+      
+      if (validFormat === "9:16") {
+        fallbackWidth = 1080;
+        fallbackHeight = 1920;
+      } else if (validFormat === "1:1") {
+        fallbackWidth = 1080;
+        fallbackHeight = 1080;
+      } else if (validFormat === "4:5") {
+        fallbackWidth = 1080;
+        fallbackHeight = 1350;
+      }
+      
       const fallbackData = BackgroundDataSchema.parse({
         prompt,
-        imageUrl: `https://picsum.photos/seed/${Math.floor(Math.random() * 1000)}/${width}/${height}`,
+        imageUrl: `https://picsum.photos/seed/${Math.floor(Math.random() * 1000)}/${fallbackWidth}/${fallbackHeight}`,
       });
 
       return fallbackData;

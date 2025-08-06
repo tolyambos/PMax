@@ -91,6 +91,19 @@ export async function GET(request: NextRequest) {
       where: {
         userId: user.id,
       },
+      include: {
+        scenes: {
+          select: {
+            id: true,
+          },
+        },
+        bulkVideos: {
+          select: {
+            id: true,
+            status: true,
+          },
+        },
+      },
       orderBy: {
         updatedAt: "desc",
       },
@@ -112,6 +125,9 @@ export async function GET(request: NextRequest) {
       published: project.published,
       createdAt: project.createdAt.toISOString(),
       updatedAt: project.updatedAt.toISOString(),
+      scenes: project.scenes || [],
+      bulkVideos: project.bulkVideos || [],
+      isBulkProject: project.projectType === "bulk-video" || (project.bulkVideos && project.bulkVideos.length > 0),
     }));
 
     return NextResponse.json({

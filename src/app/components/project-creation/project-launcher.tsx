@@ -15,8 +15,10 @@ import {
   Target,
   Palette,
   Clock,
+  FileSpreadsheet,
 } from "lucide-react";
 import ProjectWizard from "./project-wizard";
+import { useRouter } from "next/navigation";
 
 const QUICK_START_OPTIONS = [
   {
@@ -57,6 +59,20 @@ const QUICK_START_OPTIONS = [
     time: "15+ minutes",
     popular: false,
   },
+  {
+    id: "bulk-video",
+    title: "Bulk Video Creation",
+    description: "Generate multiple videos from spreadsheet data",
+    icon: FileSpreadsheet,
+    gradient: "from-indigo-500 to-purple-600",
+    features: [
+      "CSV/Excel import",
+      "Batch processing",
+      "Consistent branding",
+    ],
+    time: "2 min per video",
+    popular: true,
+  },
 ];
 
 const FEATURES_SHOWCASE = [
@@ -89,6 +105,7 @@ interface ProjectLauncherProps {
 export default function ProjectLauncher({
   onProjectSelect,
 }: ProjectLauncherProps) {
+  const router = useRouter();
   const [currentView, setCurrentView] = useState<"launcher" | "wizard">(
     "launcher"
   );
@@ -96,7 +113,10 @@ export default function ProjectLauncher({
 
   const handleQuickStart = (optionId: string) => {
     setSelectedStarterType(optionId);
-    if (optionId === "ai-wizard") {
+    if (optionId === "bulk-video") {
+      // Navigate to bulk video creation wizard
+      router.push("/bulk-video/create");
+    } else if (optionId === "ai-wizard") {
       setCurrentView("wizard");
     } else {
       // For now, all options lead to wizard

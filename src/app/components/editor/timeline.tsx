@@ -80,7 +80,7 @@ export default function Timeline(
         const newScenes = result.map((scene, index) => ({
           id: `ai-scene-${Date.now()}-${index}`,
           order: scenes.length + index,
-          duration: Math.min(scene.duration || 3, 5), // Ensure max duration is 5 seconds
+          duration: Math.min(scene.duration || 3, 10), // Ensure max duration is 10 seconds
           imageUrl: scene.imageUrl,
           prompt: scene.prompt,
           elements: [],

@@ -8,10 +8,10 @@ import path from "path";
 const RunwareImageOptionsSchema = z.object({
   prompt: z.string().min(1).max(2950),
   negativePrompt: z.string().optional().default(""),
-  width: z.number().min(128).max(2048).multipleOf(64).default(1024),
-  height: z.number().min(128).max(2048).multipleOf(64).default(1024),
+  width: z.number().min(128).max(4096).multipleOf(64).optional(),
+  height: z.number().min(128).max(4096).multipleOf(64).optional(),
   numSamples: z.number().min(1).max(4).default(1),
-  format: z.enum(["9:16", "16:9", "1:1", "4:5"]).optional().default("9:16"),
+  format: z.enum(["9:16", "16:9", "1:1", "4:5"]).optional(),
 });
 
 const RunwareVideoOptionsSchema = z.object({
@@ -73,20 +73,11 @@ export class RunwareService {
       let width = requestedWidth;
       let height = requestedHeight;
 
-      if (format && requestedWidth === 1024 && requestedHeight === 1024) {
-        if (format === "9:16") {
-          width = 1024;
-          height = 1792;
-        } else if (format === "16:9") {
-          width = 1792;
-          height = 1024;
-        } else if (format === "1:1") {
-          width = 1024;
-          height = 1024;
-        } else if (format === "4:5") {
-          width = 1024;
-          height = 1280;
-        }
+      // Use the dimensions based on format, letting Runware handle model-specific requirements
+      if (format) {
+        // For Flux Ultra (bfl:2@2), we'll let Runware handle the dimensions internally
+        // by not specifying width/height when format is provided
+        // This allows the API to use the correct dimensions for each model
       }
 
       const taskUUID = this.generateUUID();
@@ -94,7 +85,10 @@ export class RunwareService {
       // If in mock mode or development with API issues, return mock data
       if (this.mockMode) {
         console.log("Using mock data for Runware API (no API key or dev mode)");
-        return this.createMockResponse(taskUUID, width, height);
+        // Use default dimensions for mock response if not provided
+        const mockWidth = width || 1024;
+        const mockHeight = height || 1792;
+        return this.createMockResponse(taskUUID, mockWidth, mockHeight);
       }
 
       if (!this.runwareServer) {
@@ -103,18 +97,45 @@ export class RunwareService {
 
       try {
         // Request image generation
-        const result = await this.runwareServer.requestImages({
+        const requestParams: any = {
           customTaskUUID: taskUUID,
-          model: "runware:101@1", // General purpose model
+          //model: "runware:101@1", // General purpose model
+          model: "bfl:2@2", // Flux Ultra model
           positivePrompt: prompt,
-          negativePrompt,
-          width,
-          height,
+          //negativePrompt,
           numberResults: numSamples,
           outputType: "URL",
           outputFormat: "JPG",
           includeCost: true,
-        });
+        };
+
+        // For Flux Ultra, use the supported dimensions based on aspect ratio
+        if (format) {
+          // Set dimensions based on format for Flux Ultra
+          if (format === "9:16") {
+            // 9:16 (Tall / Portrait)
+            requestParams.width = 1536;
+            requestParams.height = 2752;
+          } else if (format === "16:9") {
+            // 16:9 (Wide / Landscape)
+            requestParams.width = 2752;
+            requestParams.height = 1536;
+          } else if (format === "1:1") {
+            // 1:1 (Square)
+            requestParams.width = 2048;
+            requestParams.height = 2048;
+          } else if (format === "4:5") {
+            // 4:5 is not in the list, but closest would be 3:4 (Standard / Portrait)
+            requestParams.width = 1792;
+            requestParams.height = 2368;
+          }
+        } else {
+          // Use provided dimensions if no format specified
+          requestParams.width = width;
+          requestParams.height = height;
+        }
+
+        const result = await this.runwareServer.requestImages(requestParams);
 
         // Handle result
         if (!result || result.length === 0) {
@@ -135,7 +156,10 @@ export class RunwareService {
         // Fall back to mock data in development
         if (process.env.NODE_ENV === "development") {
           console.log("Falling back to mock data after API error");
-          return this.createMockResponse(taskUUID, width, height);
+          // Use default dimensions for mock response if not provided
+          const mockWidth = width || 1024;
+          const mockHeight = height || 1792;
+          return this.createMockResponse(taskUUID, mockWidth, mockHeight);
         }
 
         throw apiError;

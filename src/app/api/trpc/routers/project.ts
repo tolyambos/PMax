@@ -105,6 +105,12 @@ export const projectRouter = createTRPCRouter({
               order: "asc",
             },
           },
+          bulkVideos: {
+            select: {
+              id: true,
+              status: true,
+            },
+          },
         },
         orderBy: {
           updatedAt: "desc",
@@ -158,11 +164,49 @@ export const projectRouter = createTRPCRouter({
           // Get thumbnail - use project thumbnail or first scene's image
           const projectWithScenes = project as typeof project & {
             scenes: Array<{ imageUrl: string | null }>;
+            bulkVideos: Array<{ id: string; status: string }>;
           };
-          let thumbnailUrl =
-            projectWithScenes.thumbnail ||
-            projectWithScenes.scenes[0]?.imageUrl ||
-            "";
+          let thumbnailUrl = "";
+          
+          // Get thumbnail based on project type
+          if (projectWithScenes.projectType === "bulk-video" && projectWithScenes.bulkVideos?.length > 0) {
+            // For bulk projects, try to get thumbnail from first video's first scene
+            console.log(`[getAll] Fetching thumbnail for bulk project: ${projectWithScenes.name} (${projectWithScenes.id})`);
+            
+            const bulkVideoWithScenes = await ctx.prisma.bulkVideo.findFirst({
+              where: {
+                projectId: projectWithScenes.id,
+                scenes: {
+                  some: {
+                    imageUrl: { not: null }
+                  }
+                }
+              },
+              include: {
+                scenes: {
+                  where: {
+                    imageUrl: { not: null }
+                  },
+                  take: 1,
+                  orderBy: { order: 'asc' }
+                }
+              }
+            });
+            
+            console.log(`[getAll] Found bulk video with scenes:`, {
+              projectId: projectWithScenes.id,
+              videoId: bulkVideoWithScenes?.id,
+              sceneCount: bulkVideoWithScenes?.scenes?.length || 0,
+              firstSceneImage: bulkVideoWithScenes?.scenes[0]?.imageUrl?.substring(0, 50) || 'none'
+            });
+            
+            if (bulkVideoWithScenes?.scenes[0]?.imageUrl) {
+              thumbnailUrl = bulkVideoWithScenes.scenes[0].imageUrl;
+            }
+          } else {
+            // For regular projects, use existing logic
+            thumbnailUrl = projectWithScenes.thumbnail || projectWithScenes.scenes[0]?.imageUrl || "";
+          }
 
           // Refresh the thumbnail URL if it's an S3 URL
           if (thumbnailUrl) {
@@ -191,6 +235,8 @@ export const projectRouter = createTRPCRouter({
               animate: scene.animate || false,
               useAnimatedVersion: scene.useAnimatedVersion || false,
             })),
+            bulkVideos: projectWithScenes.bulkVideos || [],
+            isBulk: projectWithScenes.projectType === "bulk-video",
             createdAt: projectWithScenes.createdAt.toISOString(),
             updatedAt: projectWithScenes.updatedAt.toISOString(),
           };

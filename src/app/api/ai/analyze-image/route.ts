@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
+import OpenAI from "openai";
 
 // Define request schema with Zod
 const RequestSchema = z.object({
@@ -120,15 +121,15 @@ export async function POST(req: Request) {
       }
     }
 
-    // Use OpenAI GPT-4 Vision to analyze the image
-    const response = await fetch("https://api.openai.com/v1/chat/completions", {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        model: "gpt-4o",
+    // Initialize OpenAI client
+    const openai = new OpenAI({
+      apiKey: process.env.OPENAI_API_KEY,
+    });
+
+    try {
+      // Use OpenAI GPT-4 Vision to analyze the image
+      const response = await openai.chat.completions.create({
+        model: "gpt-4.1-mini",
         messages: [
           {
             role: "user",
@@ -149,12 +150,21 @@ export async function POST(req: Request) {
         ],
         max_tokens: 300,
         temperature: 0.3,
-      }),
-    });
+      });
 
-    if (!response.ok) {
-      const errorData = await response.json().catch(() => null);
-      console.error("OpenAI Vision API error:", response.status, errorData);
+      const description =
+        response.choices?.[0]?.message?.content || "Unable to analyze image";
+
+      console.log("Image analysis completed successfully");
+
+      return NextResponse.json({
+        success: true,
+        description: description,
+        timestamp: new Date().toISOString(),
+        method: "openai_vision",
+      });
+    } catch (openaiError) {
+      console.error("OpenAI Vision API error:", openaiError);
 
       // Provide fallback instead of throwing error
       console.log("OpenAI failed, using fallback analysis");
@@ -168,19 +178,6 @@ export async function POST(req: Request) {
         method: "fallback_after_openai_error",
       });
     }
-
-    const result = await response.json();
-    const description =
-      result.choices?.[0]?.message?.content || "Unable to analyze image";
-
-    console.log("Image analysis completed successfully");
-
-    return NextResponse.json({
-      success: true,
-      description: description,
-      timestamp: new Date().toISOString(),
-      method: "openai_vision",
-    });
   } catch (error) {
     console.error("Error analyzing image:", error);
 

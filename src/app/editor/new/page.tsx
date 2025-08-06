@@ -85,7 +85,7 @@ export default function NewProjectPage() {
   useEffect(() => {
     // Calculate valid min/max duration range
     const minDuration = numScenes * 1;
-    const maxDuration = numScenes * 5;
+    const maxDuration = numScenes * 10;
 
     // If current duration is outside range, adjust it
     if (totalDuration < minDuration) {

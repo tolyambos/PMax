@@ -13,6 +13,7 @@ import {
   CardTitle,
 } from "@/app/components/ui/card";
 import { Badge } from "@/app/components/ui/badge";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/app/components/ui/tabs";
 import {
   Plus,
   Video,
@@ -34,9 +35,12 @@ import {
   Download,
   X,
   Star,
+  FileSpreadsheet,
+  Layers,
 } from "lucide-react";
 import { motion } from "framer-motion";
 import { api as trpc } from "@/app/utils/trpc";
+import { S3Image } from "@/app/components/bulk-video/s3-image";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -65,6 +69,7 @@ export default function ProjectsPage() {
   const [projectsWithLikes, setProjectsWithLikes] = useState<any[]>([]);
   const [isExporting, setIsExporting] = useState(false);
   const [showExportModal, setShowExportModal] = useState(false);
+  const [activeTab, setActiveTab] = useState<"single" | "bulk">("single");
 
   // Fetch projects using tRPC
   const { data: projects, isLoading: projectsLoading, refetch } = trpc.project.getAll.useQuery();
@@ -88,10 +93,14 @@ export default function ProjectsPage() {
   });
 
 
-  // Initialize projects with like status
+  // Initialize projects with like status and separate by type
   useEffect(() => {
     if (projects) {
-      setProjectsWithLikes(projects.map(p => ({ ...p, isStarred: false })));
+      setProjectsWithLikes(projects.map(p => ({ 
+        ...p, 
+        isStarred: false,
+        isBulk: p.isBulk || (p.bulkVideos && p.bulkVideos.length > 0)
+      })));
     }
   }, [projects]);
 
@@ -247,7 +256,8 @@ export default function ProjectsPage() {
         filterLiked === "all" || 
         (filterLiked === "liked" && project.isStarred) ||
         (filterLiked === "disliked" && !project.isStarred);
-      return matchesSearch && matchesLiked;
+      const matchesType = activeTab === "single" ? !project.isBulk : project.isBulk;
+      return matchesSearch && matchesLiked && matchesType;
     });
 
   // Check user permissions and banned status
@@ -374,12 +384,20 @@ export default function ProjectsPage() {
               </p>
             </div>
             {canCreateProjects ? (
-              <Button asChild>
-                <Link href="/wizard">
-                  <Plus className="mr-2 w-4 h-4" />
-                  Create New Project
-                </Link>
-              </Button>
+              <div className="flex gap-2">
+                <Button asChild variant="outline">
+                  <Link href="/wizard">
+                    <Video className="mr-2 w-4 h-4" />
+                    New Single Project
+                  </Link>
+                </Button>
+                <Button asChild>
+                  <Link href="/bulk-video/create">
+                    <FileSpreadsheet className="mr-2 w-4 h-4" />
+                    New Bulk Project
+                  </Link>
+                </Button>
+              </div>
             ) : (
               <Button disabled variant="outline">
                 <Plus className="mr-2 w-4 h-4" />
@@ -513,6 +531,25 @@ export default function ProjectsPage() {
 
       {/* Content */}
       <div className="container px-4 py-8 mx-auto">
+        <Tabs value={activeTab} onValueChange={(value) => setActiveTab(value as "single" | "bulk")}>
+          <TabsList className="mb-6">
+            <TabsTrigger value="single" className="flex items-center gap-2">
+              <Video className="w-4 h-4" />
+              Single Projects
+              <Badge variant="outline" className="ml-1">
+                {projectsWithLikes.filter(p => !p.isBulk).length}
+              </Badge>
+            </TabsTrigger>
+            <TabsTrigger value="bulk" className="flex items-center gap-2">
+              <FileSpreadsheet className="w-4 h-4" />
+              Bulk Projects
+              <Badge variant="outline" className="ml-1">
+                {projectsWithLikes.filter(p => p.isBulk).length}
+              </Badge>
+            </TabsTrigger>
+          </TabsList>
+
+          <TabsContent value={activeTab}>
         {projectsWithLikes && projectsWithLikes.length > 0 ? (
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
             {filteredProjects.map((project, index) => (
@@ -531,7 +568,11 @@ export default function ProjectsPage() {
                     if (bulkMode) {
                       toggleProjectSelection(project.id);
                     } else {
-                      router.push(`/editor/${project.id}`);
+                      if (project.isBulk) {
+                        router.push(`/bulk-video/${project.id}`);
+                      } else {
+                        router.push(`/editor/${project.id}`);
+                      }
                     }
                   }}
                 >
@@ -569,14 +610,19 @@ export default function ProjectsPage() {
                     </button>
 
                     {project.thumbnail ? (
-                      <img
+                      <S3Image
                         src={project.thumbnail}
                         alt={project.name}
                         className="w-full h-full object-cover"
+                        fill
                       />
                     ) : (
                       <div className="flex items-center justify-center h-full">
-                        <Video className="w-12 h-12 text-muted-foreground/50" />
+                        {project.isBulk ? (
+                          <FileSpreadsheet className="w-12 h-12 text-muted-foreground/50" />
+                        ) : (
+                          <Video className="w-12 h-12 text-muted-foreground/50" />
+                        )}
                       </div>
                     )}
 
@@ -589,20 +635,33 @@ export default function ProjectsPage() {
                             variant="secondary"
                             onClick={(e) => {
                               e.stopPropagation();
-                              router.push(`/editor/${project.id}`);
+                              if (project.isBulk) {
+                                router.push(`/bulk-video/${project.id}`);
+                              } else {
+                                router.push(`/editor/${project.id}`);
+                              }
                             }}
                           >
-                            <Play className="mr-2 w-4 h-4" />
-                            Edit Project
+                            {project.isBulk ? (
+                              <>
+                                <Layers className="mr-2 w-4 h-4" />
+                                Manage Bulk Videos
+                              </>
+                            ) : (
+                              <>
+                                <Play className="mr-2 w-4 h-4" />
+                                Edit Project
+                              </>
+                            )}
                           </Button>
                         </div>
 
-                        {/* Format badge */}
+                        {/* Format/Type badge */}
                         <Badge
                           className="absolute bottom-2 left-2"
                           variant="secondary"
                         >
-                          {project.format}
+                          {project.isBulk ? `${project.bulkVideos?.length || 0} videos` : project.format}
                         </Badge>
 
                         {/* Duration badge */}
@@ -642,11 +701,15 @@ export default function ProjectsPage() {
                             <DropdownMenuItem
                               onClick={(e) => {
                                 e.stopPropagation();
-                                router.push(`/editor/${project.id}`);
+                                if (project.isBulk) {
+                                  router.push(`/bulk-video/${project.id}`);
+                                } else {
+                                  router.push(`/editor/${project.id}`);
+                                }
                               }}
                             >
                               <Edit className="mr-2 h-4 w-4" />
-                              Edit
+                              {project.isBulk ? "Manage" : "Edit"}
                             </DropdownMenuItem>
                             <DropdownMenuItem>
                               <Copy className="mr-2 h-4 w-4" />
@@ -677,7 +740,7 @@ export default function ProjectsPage() {
                       </div>
                       <div className="flex items-center gap-1">
                         <Clock className="w-3 h-3" />
-                        {project.scenes?.length || 0} scenes
+                        {project.isBulk ? `${project.bulkVideos?.length || 0} videos` : `${project.scenes?.length || 0} scenes`}
                       </div>
                     </div>
                   </CardContent>
@@ -688,17 +751,26 @@ export default function ProjectsPage() {
         ) : (
           <Card className="max-w-md mx-auto mt-12">
             <CardContent className="flex flex-col items-center justify-center py-12">
-              <Video className="w-16 h-16 text-muted-foreground/50 mb-4" />
-              <h3 className="text-lg font-semibold mb-2">No projects yet</h3>
+              {activeTab === "single" ? (
+                <Video className="w-16 h-16 text-muted-foreground/50 mb-4" />
+              ) : (
+                <FileSpreadsheet className="w-16 h-16 text-muted-foreground/50 mb-4" />
+              )}
+              <h3 className="text-lg font-semibold mb-2">
+                No {activeTab === "single" ? "single" : "bulk"} projects yet
+              </h3>
               {canCreateProjects ? (
                 <>
                   <p className="text-muted-foreground text-center mb-6">
-                    Create your first AI-powered video project to get started
+                    {activeTab === "single" 
+                      ? "Create your first AI-powered video project to get started"
+                      : "Create your first bulk video project to generate multiple videos at once"
+                    }
                   </p>
                   <Button asChild>
-                    <Link href="/wizard">
+                    <Link href={activeTab === "single" ? "/wizard" : "/bulk-video/create"}>
                       <Plus className="mr-2 w-4 h-4" />
-                      Create First Project
+                      Create First {activeTab === "single" ? "Project" : "Bulk Project"}
                     </Link>
                   </Button>
                 </>
@@ -710,6 +782,8 @@ export default function ProjectsPage() {
             </CardContent>
           </Card>
         )}
+          </TabsContent>
+        </Tabs>
       </div>
 
       {/* Bulk Export Progress Modal */}

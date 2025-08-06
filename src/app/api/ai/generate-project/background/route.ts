@@ -507,12 +507,21 @@ async function processProjectGeneration(
             const bytedanceAnimationService = new BytedanceAnimationService();
 
             try {
+              // Calculate animation duration based on scene duration
+              // If scene duration <= 5 seconds, use 5 second animation
+              // If scene duration > 5 seconds, use 10 second animation
+              console.log(`Scene ${index + 1} duration: ${scene.duration}s`);
+              const animationDuration = scene.duration > 5 ? "10" : "5";
+              console.log(
+                `Animation duration for scene ${index + 1}: ${animationDuration}s`
+              );
+
               const bytedanceResult =
                 await bytedanceAnimationService.generateAnimation({
                   imageUrl: publicImageUrl,
                   prompt: animationPrompt,
                   resolution: "720p",
-                  duration: "5",
+                  duration: animationDuration,
                   cameraFixed: false,
                 });
 
@@ -564,11 +573,17 @@ async function processProjectGeneration(
           } else if (validatedData.animationProvider === "runway") {
             // Use Runway animation service
             try {
+              // Calculate animation duration based on scene duration
+              // If scene duration <= 5 seconds, use 5 second animation
+              // If scene duration > 5 seconds, use 10 second animation
+              const animationDuration = scene.duration > 5 ? "10" : "5";
+
               const runwayResult =
                 await unifiedAnimationService.generateAnimation({
                   imageUrl: publicImageUrl,
                   prompt: animationPrompt,
                   provider: "runway",
+                  duration: animationDuration,
                 });
 
               if (runwayResult.videoUrl) {
@@ -870,7 +885,42 @@ async function generateAdConcept(
                 `Successfully parsed ${generatedScenes.length} scenes from OpenAI`
               );
 
-              // Return the AI-generated scenes
+              // Distribute total duration across scenes
+              const durationPerScene = Math.floor(
+                totalDuration / generatedScenes.length
+              );
+              let remainingDuration =
+                totalDuration - durationPerScene * generatedScenes.length;
+
+              // Assign durations to each scene
+              generatedScenes = generatedScenes.map((scene, index) => {
+                let sceneDuration = durationPerScene;
+                // Add remaining duration to the last scenes
+                if (
+                  remainingDuration > 0 &&
+                  index >= generatedScenes.length - remainingDuration
+                ) {
+                  sceneDuration += 1;
+                }
+                // Ensure duration is within bounds (1-10 seconds)
+                sceneDuration = Math.max(1, Math.min(10, sceneDuration));
+
+                return {
+                  ...scene,
+                  duration: sceneDuration,
+                };
+              });
+
+              console.log(
+                `Assigned durations to scenes:`,
+                generatedScenes.map((s) => s.duration)
+              );
+              console.log(
+                `Full scenes with durations:`,
+                JSON.stringify(generatedScenes, null, 2)
+              );
+
+              // Return the AI-generated scenes with durations
               return {
                 adType,
                 productName,
@@ -1078,7 +1128,7 @@ async function generateAdConcept(
         let newDuration = Math.round(scene.duration + avgAdjustment);
 
         // Ensure it's within bounds
-        newDuration = Math.max(1, Math.min(5, newDuration));
+        newDuration = Math.max(1, Math.min(10, newDuration));
 
         // Track how much of the difference we've addressed
         const actualAdjustment = newDuration - scene.duration;
@@ -1099,7 +1149,7 @@ async function generateAdConcept(
             index,
             capacity:
               remainingDifference > 0
-                ? 5 - scene.duration // Room to increase
+                ? 10 - scene.duration // Room to increase
                 : scene.duration - 1, // Room to decrease
           }))
           .sort((a, b) => b.capacity - a.capacity) // Sort by most capacity
@@ -1111,7 +1161,7 @@ async function generateAdConcept(
 
           const scene = mockScenes[index];
 
-          if (remainingDifference > 0 && scene.duration < 5) {
+          if (remainingDifference > 0 && scene.duration < 10) {
             // Need to increase duration
             scene.duration += 1;
             remainingDifference -= 1;
@@ -1241,23 +1291,13 @@ Create this scene with the exact ${style} style requirements listed above.`;
           // Convert format string to Runware format type
           const formatType = format as "9:16" | "16:9" | "1:1" | "4:5";
 
-          // Use centralized dimensions to ensure consistency with video export
-          const {
-            getDimensionsFromFormat,
-          } = require("@/app/utils/video-dimensions");
-          const dimensions = getDimensionsFromFormat(formatType);
-          const width = dimensions.width;
-          const height = dimensions.height;
-
           // Call Runware service for image generation
+          // Let Runware handle dimensions based on format and model
           const result = await runwareService.generateImage({
             prompt,
             format: formatType,
-            width,
-            height,
             numSamples: 1,
-            negativePrompt:
-              "low quality, bad quality, blurry, distorted, deformed, text, watermark, signature, logo",
+            negativePrompt: "", // Empty to avoid fluxultra error
           });
 
           // Set the image URL from the result, ensuring it's a string
@@ -1319,6 +1359,9 @@ Create this scene with the exact ${style} style requirements listed above.`;
       }
 
       // Create complete scene object
+      console.log(
+        `Scene ${scenes.length + 1} from adConcept has duration: ${scene.duration}`
+      );
       scenes.push({
         id: `scene-${Date.now()}-${scenes.length}`,
         order: scenes.length,

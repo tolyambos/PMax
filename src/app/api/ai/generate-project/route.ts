@@ -484,7 +484,7 @@ export async function POST(req: Request) {
                 imageUrl: publicImageUrl,
                 prompt: animationPrompt,
                 resolution: "720p",
-                duration: "5",
+                duration: scene.duration > 5 ? "10" : "5",
                 cameraFixed: false,
               });
 
@@ -494,7 +494,7 @@ export async function POST(req: Request) {
               cost: bytedanceResult.cost,
               metadata: {
                 seed: bytedanceResult.seed,
-                duration: "5",
+                duration: scene.duration > 5 ? "10" : "5",
                 resolution: "720p",
               },
             };
@@ -506,7 +506,7 @@ export async function POST(req: Request) {
               provider: body.animationProvider,
               // Bytedance-specific options
               resolution: "720p",
-              duration: scene.duration > 7 ? "10" : "5",
+              duration: scene.duration > 5 ? "10" : "5",
               cameraFixed: false,
             });
           }
@@ -743,7 +743,38 @@ async function generateAdConcept(
                 `Successfully parsed ${generatedScenes.length} scenes from OpenAI`
               );
 
-              // Return the AI-generated scenes
+              // Distribute total duration across scenes
+              const durationPerScene = Math.floor(
+                totalDuration / generatedScenes.length
+              );
+              let remainingDuration =
+                totalDuration - durationPerScene * generatedScenes.length;
+
+              // Assign durations to each scene
+              generatedScenes = generatedScenes.map((scene, index) => {
+                let sceneDuration = durationPerScene;
+                // Add remaining duration to the last scenes
+                if (
+                  remainingDuration > 0 &&
+                  index >= generatedScenes.length - remainingDuration
+                ) {
+                  sceneDuration += 1;
+                }
+                // Ensure duration is within bounds (1-10 seconds)
+                sceneDuration = Math.max(1, Math.min(10, sceneDuration));
+
+                return {
+                  ...scene,
+                  duration: sceneDuration,
+                };
+              });
+
+              console.log(
+                `Assigned durations to scenes:`,
+                generatedScenes.map((s) => s.duration)
+              );
+
+              // Return the AI-generated scenes with durations
               return {
                 adType,
                 productName,
@@ -991,7 +1022,7 @@ async function generateAdConcept(
         let newDuration = Math.round(scene.duration + avgAdjustment);
 
         // Ensure it's within bounds
-        newDuration = Math.max(1, Math.min(5, newDuration));
+        newDuration = Math.max(1, Math.min(10, newDuration));
 
         // Track how much of the difference we've addressed
         const actualAdjustment = newDuration - scene.duration;
@@ -1012,7 +1043,7 @@ async function generateAdConcept(
             index,
             capacity:
               remainingDifference > 0
-                ? 5 - scene.duration // Room to increase
+                ? 10 - scene.duration // Room to increase
                 : scene.duration - 1, // Room to decrease
           }))
           .sort((a, b) => b.capacity - a.capacity) // Sort by most capacity
@@ -1024,7 +1055,7 @@ async function generateAdConcept(
 
           const scene = mockScenes[index];
 
-          if (remainingDifference > 0 && scene.duration < 5) {
+          if (remainingDifference > 0 && scene.duration < 10) {
             // Need to increase duration
             scene.duration += 1;
             remainingDifference -= 1;
@@ -1164,23 +1195,13 @@ Create this scene with the exact ${style} style requirements listed above.`;
           // Convert format string to Runware format type
           const formatType = format as "9:16" | "16:9" | "1:1" | "4:5";
 
-          // Use centralized dimensions to ensure consistency with video export
-          const {
-            getDimensionsFromFormat,
-          } = require("@/app/utils/video-dimensions");
-          const dimensions = getDimensionsFromFormat(formatType);
-          const width = dimensions.width;
-          const height = dimensions.height;
-
           // Call Runware service for image generation
+          // Let Runware handle dimensions based on format and model
           const result = await runwareService.generateImage({
             prompt,
             format: formatType,
-            width,
-            height,
             numSamples: 1,
-            negativePrompt:
-              "low quality, bad quality, blurry, distorted, deformed, text, watermark, signature, logo",
+            negativePrompt: "", // Empty to avoid fluxultra error
           });
 
           // Set the image URL from the result, ensuring it's a string

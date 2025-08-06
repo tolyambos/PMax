@@ -1125,15 +1125,15 @@ export default function ProjectWizard({
                     </span>
                   </div>
                   <p className="text-xs text-center text-muted-foreground">
-                    Max {projectData.numScenes * 5}s ({projectData.numScenes}{" "}
-                    scenes × 5s)
+                    Max {projectData.numScenes * 10}s ({projectData.numScenes}{" "}
+                    scenes × 10s)
                   </p>
                   <Slider
                     value={[projectData.totalDuration]}
                     onValueChange={([value]) =>
                       setProjectData({ ...projectData, totalDuration: value })
                     }
-                    max={projectData.numScenes * 5} // 5 seconds max per scene
+                    max={projectData.numScenes * 10} // 10 seconds max per scene
                     min={projectData.numScenes} // 1 second min per scene
                     step={1}
                     className="w-full"
@@ -1142,11 +1142,11 @@ export default function ProjectWizard({
                     <span>{projectData.numScenes}s</span>
                     <span>
                       {Math.round(
-                        (projectData.numScenes * 5 + projectData.numScenes) / 2
+                        (projectData.numScenes * 10 + projectData.numScenes) / 2
                       )}
                       s
                     </span>
-                    <span>{projectData.numScenes * 5}s</span>
+                    <span>{projectData.numScenes * 10}s</span>
                   </div>
                 </div>
               </Card>

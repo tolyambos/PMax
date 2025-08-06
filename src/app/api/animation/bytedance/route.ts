@@ -20,6 +20,7 @@ export async function POST(request: NextRequest) {
       duration = "5",
       cameraFixed = false,
       seed,
+      endImageUrl,
     } = body;
 
     if (!imageUrl || !prompt) {
@@ -32,6 +33,7 @@ export async function POST(request: NextRequest) {
     console.log("[bytedance/animation] Processing request:", {
       userId: userId,
       imageUrl: imageUrl.substring(0, 100) + "...",
+      endImageUrl: endImageUrl ? endImageUrl.substring(0, 100) + "..." : undefined,
       prompt: prompt.substring(0, 100) + "...",
       resolution,
       duration,
@@ -41,14 +43,16 @@ export async function POST(request: NextRequest) {
 
     // Generate presigned URL if this is an S3 URL
     let publicImageUrl = imageUrl;
+    let publicEndImageUrl = endImageUrl;
+    
     try {
       // Check if this is an S3 URL that needs a presigned URL
-      const isS3Url =
-        imageUrl.includes("wasabisys.com") ||
-        imageUrl.includes("amazonaws.com") ||
-        imageUrl.includes("s3.");
+      const isS3Url = (url: string) =>
+        url && (url.includes("wasabisys.com") ||
+        url.includes("amazonaws.com") ||
+        url.includes("s3."));
 
-      if (isS3Url) {
+      if (isS3Url(imageUrl)) {
         console.log(
           "[bytedance/animation] 🔗 Generating presigned URL for S3 image"
         );
@@ -66,6 +70,24 @@ export async function POST(request: NextRequest) {
         console.log(
           "[bytedance/animation] ✅ Generated presigned URL:",
           publicImageUrl.substring(0, 100) + "..."
+        );
+      }
+      
+      // Also generate presigned URL for end image if provided
+      if (endImageUrl && isS3Url(endImageUrl)) {
+        console.log(
+          "[bytedance/animation] 🔗 Generating presigned URL for S3 end image"
+        );
+
+        const { s3Utils } = await import("@/lib/s3-utils");
+        const { bucket, bucketKey } =
+          s3Utils.extractBucketAndKeyFromUrl(endImageUrl);
+
+        publicEndImageUrl = await s3Utils.getPresignedUrl(bucket, bucketKey);
+
+        console.log(
+          "[bytedance/animation] ✅ Generated presigned URL for end image:",
+          publicEndImageUrl.substring(0, 100) + "..."
         );
       }
     } catch (s3Error) {
@@ -87,6 +109,7 @@ export async function POST(request: NextRequest) {
       duration,
       cameraFixed,
       seed,
+      endImageUrl: publicEndImageUrl,
     });
 
     console.log("[bytedance/animation] Successfully generated animation:", {
@@ -121,7 +144,7 @@ export async function GET() {
       description:
         "POST to generate animations using Bytedance's Seedance model",
       requiredFields: ["imageUrl", "prompt"],
-      optionalFields: ["resolution", "duration", "cameraFixed", "seed"],
+      optionalFields: ["resolution", "duration", "cameraFixed", "seed", "endImageUrl"],
       examples: {
         imageUrl: "https://example.com/image.jpg",
         prompt: "A little dog is running in the sunshine",

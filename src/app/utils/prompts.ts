@@ -8,66 +8,15 @@
  */
 export function getStyleInstructions(style: string): string {
   const styleGuides: Record<string, string> = {
-    cinematic: `
-- Film-like quality with dramatic lighting and shadow play
-- Professional cinematography techniques: depth of field, bokeh effects
-- Moody atmosphere with carefully controlled color grading
-- Dynamic camera angles: low angle shots, dutch angles, dramatic perspectives
-- High contrast between light and dark areas (chiaroscuro lighting)
-- Rich, saturated colors with cinematic color palettes (teal and orange, blue and amber)
-- Atmospheric effects: lens flares, volumetric lighting, fog/haze for depth
-- Wide aspect ratio framing with letterbox feel
-- Epic scale and grandeur in composition
-- Hollywood blockbuster production value`,
+    cinematic: `Dramatic lighting, moody atmosphere, dynamic angles, high contrast, cinematic colors`,
 
-    realistic: `
-- True-to-life photography with natural lighting conditions
-- Authentic textures and materials with accurate surface properties
-- Realistic shadows and reflections following physics
-- Natural color temperature and white balance
-- Documentary-style composition with candid feel
-- Environmental lighting: golden hour, blue hour, overcast, direct sunlight
-- Practical depth of field based on camera optics
-- No artificial enhancements or stylization
-- Photojournalistic quality with authentic moments
-- Real-world proportions and perspective`,
+    realistic: `Natural lighting, authentic textures, realistic shadows, true colors, documentary style`,
 
-    minimalist: `
-- Clean, uncluttered composition with negative space
-- Simple geometric shapes and forms
-- Limited color palette: monochromatic or 2-3 colors maximum
-- Flat lighting with soft shadows or no shadows
-- Focus on essential elements only
-- Scandinavian/Japanese aesthetic influence
-- Plenty of white or neutral space
-- Bold typography integration possibilities
-- Strong emphasis on balance and symmetry
-- Modern, sophisticated elegance`,
+    minimalist: `Clean composition, negative space, limited colors, soft lighting, essential elements only`,
 
-    vibrant: `
-- Bold, saturated colors with high contrast
-- Dynamic energy through color combinations
-- Bright, punchy lighting with colorful highlights
-- Pop art influence with graphic elements
-- Neon accents and glowing effects
-- Festival/carnival atmosphere possibilities
-- Multiple light sources with color gels
-- High key lighting for maximum brightness
-- Playful, energetic composition
-- Eye-catching visual impact with "wow" factor`,
+    vibrant: `Bold saturated colors, bright lighting, high contrast, energetic composition, eye-catching`,
 
-    "3D rendered": `
-- Photorealistic 3D graphics with ray-traced lighting
-- Perfect surfaces with customizable materials
-- Ambient occlusion for depth and realism
-- Global illumination for accurate light bouncing
-- Subsurface scattering for translucent materials
-- Clean, artifact-free renders
-- Studio lighting setup possibilities
-- Infinite depth of field or selective focus
-- Impossible camera angles and perspectives
-- Futuristic or fantastical elements integration
-`,
+    "3D rendered": `3D graphics, perfect surfaces, studio lighting, clean renders, futuristic elements`,
   };
 
   return styleGuides[style] || styleGuides["realistic"];
@@ -172,24 +121,14 @@ MANDATORY STYLE REQUIREMENTS - ${detectedStyle.toUpperCase()}:
 ${styleInstructions}
 
 PROFESSIONAL VISUAL QUALITY STANDARDS:
-Each scene description must incorporate professional photography and cinematography elements:
-- Ultra sharp, crystal clear imagery with high definition detail
-- Perfect professional lighting with dramatic effects and even exposure
-- Dynamic camera angles and perspectives for maximum visual impact
-- High contrast compositions that create visual interest and depth
-- Vibrant, accurate colors with proper saturation and color grading
-- Commercial advertising quality aesthetic and composition
-- Clean, artifact-free environments without visual distortions
-- Professional studio or cinematic environmental lighting
-- Strong background contrast to enhance subject prominence
-- Cinematic depth of field and focus techniques
+Sharp HD imagery, professional lighting, dynamic angles, high contrast, vibrant colors, commercial quality
 
 CRITICAL: Every scene MUST incorporate the ${detectedStyle} style requirements listed above. 
 The style should be evident in lighting, composition, color grading, and overall aesthetic.
 
 For each scene, provide:
 1. A detailed visual description that incorporates BOTH the ${detectedStyle} style AND professional quality standards
-2. Duration in seconds (between 1-5 seconds per scene)
+2. Duration in seconds (between 1-10 seconds per scene)
 
 Make your scene descriptions as vivid and specific as possible, incorporating all the key points
 and elements mentioned in the description. Be creative and make sure the images will be 
@@ -225,24 +164,14 @@ ${keyPoints || "No specific points provided"}
 The ad should have exactly ${numScenes} scenes.
 
 PROFESSIONAL VISUAL QUALITY STANDARDS:
-Each scene description must incorporate professional photography and cinematography elements:
-- Ultra sharp, crystal clear imagery with high definition detail
-- Perfect professional lighting with dramatic effects and even exposure
-- Dynamic camera angles and perspectives for maximum visual impact
-- High contrast compositions that create visual interest and depth
-- Vibrant, accurate colors with proper saturation and color grading
-- Commercial advertising quality aesthetic and composition
-- Clean, artifact-free environments without visual distortions
-- Professional studio or cinematic environmental lighting
-- Strong background contrast to enhance subject prominence
-- Cinematic depth of field and focus techniques
+Sharp HD imagery, professional lighting, dynamic angles, high contrast, vibrant colors, commercial quality
 
 IMPORTANT: The total duration must be exactly ${totalDuration} seconds, distributed appropriately across all ${numScenes} scenes.
 
 For each scene, provide:
 1. A detailed visual description that incorporates professional quality standards
 2. Any text overlay or voice-over for the scene
-3. Duration in seconds (between 1-5 seconds per scene)
+3. Duration in seconds (between 1-10 seconds per scene)
 
 Format your response as a JSON array of scene objects with these properties:
 - description: Detailed visual description for image generation with professional quality standards
@@ -256,32 +185,8 @@ NOTE: Make sure the sum of all scene durations equals exactly ${totalDuration} s
  * Prompt for generating background images
  */
 export const GENERATE_BACKGROUND_PROMPT = (prompt: string, style: string) => {
-  // Enhanced style-specific instructions
   const styleInstructions = getStyleInstructions(style);
-
-  return `
-Create a high-quality, visually appealing background image based on this description:
-
-${prompt}
-
-STYLE REQUIREMENTS - ${style.toUpperCase()}:
-${styleInstructions}
-
-PROFESSIONAL QUALITY REQUIREMENTS:
-- Ultra sharp, crystal clear, high definition imagery
-- Perfect professional lighting with even exposure
-- Vibrant, accurate colors with proper saturation
-- Clean composition without visual artifacts or distortions
-- Photorealistic detail with correct proportions
-- Commercial advertising quality and aesthetic appeal
-- Dynamic angles and perspectives for visual interest
-- High contrast and depth for improved visual impact
-- Professional photography standard suitable for advertising
-
-The image should be beautiful, professional, and eye-catching.
-Make sure the background works well with text overlays and product placement.
-Ensure professional lighting conditions and avoid any blurry, pixelated, or distorted elements.
-`;
+  return `${prompt}. Style: ${styleInstructions}. Professional advertising quality, sharp focus, perfect lighting.`;
 };
 
 /**

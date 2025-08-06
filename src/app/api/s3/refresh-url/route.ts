@@ -17,7 +17,7 @@ export async function POST(request: NextRequest) {
       userId = authResult.userId;
     }
 
-    const { url, ownerId } = await request.json();
+    const { url, ownerId, forDownload } = await request.json();
 
     if (!url) {
       return NextResponse.json({ error: "URL is required" }, { status: 400 });
@@ -26,10 +26,10 @@ export async function POST(request: NextRequest) {
     // Extract bucket and key from the URL
     const { bucket, bucketKey } = s3Utils.extractBucketAndKeyFromUrl(url);
 
-    // Refresh presigned URL
-    const presignedUrl = await s3Utils.refreshPresignedUrl(bucket, bucketKey);
+    // Generate presigned URL with optional download headers
+    const presignedUrl = await s3Utils.getPresignedUrl(bucket, bucketKey, forDownload || false);
 
-    return NextResponse.json({ presignedUrl });
+    return NextResponse.json({ url: presignedUrl });
   } catch (error) {
     console.error("Error refreshing presigned URL:", error);
 

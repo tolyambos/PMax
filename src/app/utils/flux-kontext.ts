@@ -271,7 +271,7 @@ export class FluxKontextService {
             Authorization: `Bearer ${openaiApiKey}`,
           },
           body: JSON.stringify({
-            model: "gpt-4o-mini",
+            model: "gpt-4o-latest",
             messages: [
               {
                 role: "user",

@@ -228,6 +228,11 @@ export function useSceneManagement() {
         // Use unified animation service based on user settings
         console.log("🔄 Using animation provider:", animationProvider);
 
+        // Calculate animation duration based on scene duration
+        // If scene duration <= 5 seconds, use 5 second animation
+        // If scene duration > 5 seconds, use 10 second animation
+        const animationDuration = scene.duration > 5 ? "10" : "5";
+        
         const animationResult = await unifiedAnimationService.generateAnimation(
           {
             imageUrl: scene.imageUrl || "",
@@ -235,7 +240,7 @@ export function useSceneManagement() {
             provider: animationProvider,
             // Bytedance-specific options
             resolution: "720p",
-            duration: "5", // Always use 5 seconds max for animations
+            duration: animationDuration,
             cameraFixed: false,
           }
         );

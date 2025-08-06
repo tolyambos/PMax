@@ -105,9 +105,10 @@ export class RunwayMLService {
         // Request image generation
         const result = await this.runwareServer.requestImages({
           customTaskUUID: taskUUID,
-          model: "runware:101@1", // General purpose model
+          //model: "runware:101@1", // General purpose model
+          model: "bfl:2@2", // General purpose model
           positivePrompt: prompt,
-          negativePrompt,
+          //negativePrompt,
           width,
           height,
           numberResults: numSamples,

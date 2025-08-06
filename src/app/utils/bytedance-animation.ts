@@ -10,10 +10,11 @@ if (process.env.FAL_KEY) {
 export interface BytedanceAnimationOptions {
   imageUrl: string;
   prompt: string;
-  resolution?: "480p" | "720p";
+  resolution?: "480p" | "720p" | "1080p";
   duration?: "5" | "10";
   cameraFixed?: boolean;
   seed?: number;
+  endImageUrl?: string;
 }
 
 export interface BytedanceAnimationResult {
@@ -34,10 +35,16 @@ export class BytedanceAnimationService {
     options: BytedanceAnimationOptions
   ): Promise<BytedanceAnimationResult> {
     console.log("[BytedanceAnimation] 🎬 Starting animation generation");
+    // Check if we need to downgrade resolution
+    const effectiveResolution = (options.endImageUrl && (options.resolution || "1080p") === "1080p") 
+      ? "720p" 
+      : (options.resolution || "1080p");
+
     console.log("[BytedanceAnimation] Options:", {
       imageUrl: options.imageUrl.substring(0, 100) + "...",
+      endImageUrl: options.endImageUrl ? options.endImageUrl.substring(0, 100) + "..." : undefined,
       prompt: options.prompt,
-      resolution: options.resolution || "720p",
+      resolution: effectiveResolution,
       duration: parseInt(options.duration || "5"), // Show converted duration
       cameraFixed: options.cameraFixed || false,
       seed: options.seed || -1,
@@ -49,27 +56,38 @@ export class BytedanceAnimationService {
     }
 
     try {
+      // Automatically downgrade to 720p if using end_image_url with 1080p
+      let resolution = options.resolution || "1080p";
+      if (options.endImageUrl && resolution === "1080p") {
+        console.log(
+          "[BytedanceAnimation] ⚠️ Downgrading to 720p due to end_image_url limitation"
+        );
+        resolution = "720p";
+      }
+
       const result = await fal.subscribe(
         "fal-ai/bytedance/seedance/v1/lite/image-to-video",
         {
           input: {
             prompt: options.prompt,
             image_url: options.imageUrl,
-            resolution: options.resolution || "720p",
+            ...(options.endImageUrl && { end_image_url: options.endImageUrl }),
+            resolution,
             duration: parseInt(options.duration || "5"), // Convert to number
             camera_fixed: options.cameraFixed || false,
             seed: options.seed || -1, // -1 for random
           },
           logs: true,
           onQueueUpdate: (update) => {
-            if (update.status === "IN_PROGRESS") {
-              console.log(
-                "[BytedanceAnimation] Progress:",
-                update.logs?.map((log) => log.message).join(", ")
-              );
-            } else {
-              console.log("[BytedanceAnimation] Queue status:", update.status);
-            }
+            // Commented out to reduce log noise
+            // if (update.status === "IN_PROGRESS") {
+            //   console.log(
+            //     "[BytedanceAnimation] Progress:",
+            //     update.logs?.map((log) => log.message).join(", ")
+            //   );
+            // } else {
+            //   console.log("[BytedanceAnimation] Queue status:", update.status);
+            // }
           },
         }
       );

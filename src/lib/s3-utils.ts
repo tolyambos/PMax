@@ -262,10 +262,11 @@ class S3Utils {
     });
   }
 
-  public async getPresignedUrl(bucket: string, bucketKey: string) {
+  public async getPresignedUrl(bucket: string, bucketKey: string, forDownload: boolean = false) {
     console.log("[getPresignedUrl] Generating presigned URL:", {
       bucket,
       bucketKey,
+      forDownload,
     });
 
     try {
@@ -290,6 +291,7 @@ class S3Utils {
           bucket,
           key: cleanKey,
           contentLength: headResponse.ContentLength,
+          contentType: headResponse.ContentType,
           lastModified: headResponse.LastModified,
         });
       } catch (error: any) {
@@ -307,9 +309,15 @@ class S3Utils {
       }
 
       // Now generate the presigned URL
+      const filename = cleanKey.split('/').pop() || 'download';
       const command = new GetObjectCommand({
         Bucket: bucket,
         Key: cleanKey,
+        // Add response headers for downloads
+        ...(forDownload && {
+          ResponseContentDisposition: `attachment; filename="${filename}"`,
+          ResponseContentType: this.getContentType(filename),
+        }),
       });
 
       const presignedUrl = await getSignedUrl(s3Client, command, {
@@ -321,6 +329,7 @@ class S3Utils {
         key: cleanKey,
         urlLength: presignedUrl.length,
         expiresIn: "7 days",
+        forDownload,
       });
 
       return presignedUrl;

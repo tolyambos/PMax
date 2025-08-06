@@ -1348,88 +1348,147 @@ export default function ScenePanel({
       });
 
       let backgroundPrompt = selectedBackgroundEntry?.prompt || "image";
+      
+      // ALWAYS use vision AI to analyze the actual image for better animation prompts
+      toast({
+        title: "Analyzing scene image...",
+        description: "Using AI vision to understand the visual content",
+      });
 
-      // If this is a custom uploaded image without a real prompt, use vision AI to analyze it first
-      if (
-        backgroundPrompt === "Custom uploaded image" ||
-        backgroundPrompt === "Original image"
-      ) {
-        toast({
-          title: "Analyzing image...",
-          description: "Using AI vision to understand your image first",
+      let visionAnalysis = "";
+      try {
+        // Get a fresh presigned URL for the image before sending to OpenAI Vision
+        const freshImageUrl = await getFreshPresignedUrl(selectedStaticImage);
+
+        const visionResponse = await fetch("/api/ai/analyze-image", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            imageUrl: freshImageUrl,
+            prompt: `Analyze this advertising scene image in detail. Describe:
+1. Main subject/product and its position
+2. Background and environment
+3. Lighting and mood
+4. Colors and visual style
+5. Composition and camera angle
+6. Any text or graphics visible
+7. Elements that could be animated (objects, lighting, textures)
+8. Overall emotional tone and message
+
+Be specific about spatial relationships and visual elements that would benefit from motion.`,
+          }),
         });
 
-        try {
-          // Get a fresh presigned URL for the image before sending to OpenAI Vision
-          const freshImageUrl = await getFreshPresignedUrl(selectedStaticImage);
+        if (visionResponse.ok) {
+          const visionResult = await visionResponse.json();
+          visionAnalysis = visionResult.description || "";
+          
+          // If this was a custom/original image, update the background history
+          if (visionResult.description && selectedBackgroundEntry && 
+              (backgroundPrompt === "Custom uploaded image" || backgroundPrompt === "Original image")) {
+            const updatedEntry = {
+              ...selectedBackgroundEntry,
+              prompt: visionResult.description,
+              timestamp: Date.now(),
+            };
 
-          const visionResponse = await fetch("/api/ai/analyze-image", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              imageUrl: freshImageUrl,
-              prompt:
-                "Describe this image in detail for video animation purposes. Focus on the main subject, setting, colors, mood, composition, and any elements that would be interesting to animate. Keep it concise but descriptive.",
-            }),
-          });
+            // Update local state
+            setBackgroundHistory((prev) =>
+              prev.map((item) =>
+                extractS3Key(item.url) === extractS3Key(selectedStaticImage)
+                  ? updatedEntry
+                  : item
+              )
+            );
 
-          if (visionResponse.ok) {
-            const visionResult = await visionResponse.json();
-            backgroundPrompt = visionResult.description || backgroundPrompt;
-
-            // Update the background history with the new AI-generated description
-            if (visionResult.description && selectedBackgroundEntry) {
-              const updatedEntry = {
-                ...selectedBackgroundEntry,
-                prompt: visionResult.description,
-                timestamp: Date.now(),
-              };
-
-              // Update local state
-              setBackgroundHistory((prev) =>
-                prev.map((item) =>
-                  extractS3Key(item.url) === extractS3Key(selectedStaticImage)
-                    ? updatedEntry
-                    : item
-                )
-              );
-
-              // Save to backend
-              await saveBackgroundHistoryEntry(updatedEntry);
-            }
-
-            toast({
-              title: "Image analyzed!",
-              description: "Now generating animation prompt...",
-            });
-          } else {
-            console.warn("Vision analysis failed, using generic prompt");
+            // Save to backend
+            await saveBackgroundHistoryEntry(updatedEntry);
           }
-        } catch (visionError) {
-          console.error("Vision analysis error:", visionError);
-          // Continue with the original prompt if vision fails
+        } else {
+          console.warn("Vision analysis failed, using text prompt only");
         }
+      } catch (visionError) {
+        console.error("Vision analysis error:", visionError);
+        toast({
+          title: "Vision analysis failed",
+          description: "Using text prompt for animation generation",
+          variant: "default",
+        });
       }
 
+      // Get project context for better animation suggestions
+      const projectPrompt = "";
+      const projectDescription = "";
+      const projectName = "";
+      
+      // Parse project prompt to understand ad type and context
+      let projectContext = {
+        adType: "general",
+        productName: "",
+        targetAudience: "",
+        keyPoints: []
+      };
+      
+      try {
+        const parsedPrompt = JSON.parse(projectPrompt);
+        projectContext = {
+          adType: parsedPrompt.adType || "general",
+          productName: parsedPrompt.productName || projectName,
+          targetAudience: parsedPrompt.targetAudience || "general audience",
+          keyPoints: parsedPrompt.keyPoints || []
+        };
+      } catch (e) {
+        // If not JSON, extract what we can from text
+        projectContext.productName = projectName;
+      }
+      
       // Create AI prompt for generating animation suggestions using professional video prompt template
-      const aiPrompt = `You are a video motion expert specializing in Runway Gen-4 video generation. Your task is to transform a detailed image prompt into a visually compelling and emotionally engaging video prompt ideal for advertising use.
+      const aiPrompt = `You are a video motion expert specializing in creating compelling animations for advertising. Your task is to generate animation prompts that align with the specific ad context and requirements.
 
-INPUT IMAGE PROMPT:
+PROJECT CONTEXT:
+- Ad Type: ${projectContext.adType}
+- Product/Brand: ${projectContext.productName}
+- Target Audience: ${projectContext.targetAudience}
+- Scene Duration: ${selectedSceneToUse.duration} seconds
+- Scene Position: Scene ${sceneIndex} of ${state.scenes.length}
+
+ORIGINAL SCENE PROMPT (what was requested):
 ${backgroundPrompt}
 
-GOAL:
-Generate a motion prompt that enhances the image with striking, tasteful, and ad-friendly animation — designed to catch attention, evoke emotion, or add atmosphere, while keeping the scene coherent and focused.
+ACTUAL VISUAL ANALYSIS (what's in the image):
+${visionAnalysis || backgroundPrompt}
 
-GUIDELINES FOR VIDEO PROMPT CREATION:
-1. Focus primarily on describing MOTION, not static elements.
-2. Use simple, direct language that describes specific physical or visual movements.
-3. Refer to subjects in general terms (e.g., "the subject", "the woman", "the car").
-4. Include only 1–3 motion elements to avoid conflict or clutter.
-5. Structure the prompt in this order:
-   - Subject motion (how characters or objects move)
-   - Scene motion (environmental, lighting, or atmospheric effects)
-   - Camera motion (if any)
-   - Style descriptor (e.g., "cinematic live-action", "stylized motion graphics", "smooth animation")
+GOAL:
+Create an animation prompt based on the ACTUAL VISUAL ANALYSIS above. The animation should:
+1. Animate the specific elements visible in the analyzed image
+2. Enhance this scene to serve the ${projectContext.adType} ad purpose
+3. Create motion appropriate for ${projectContext.productName} and ${projectContext.targetAudience}
+4. Fit perfectly within a ${selectedSceneToUse.duration}-second duration
+5. Work as scene ${sceneIndex} of ${state.scenes.length} in the overall narrative
+
+IMPORTANT: Base your animation suggestions on what's ACTUALLY IN THE IMAGE (from the visual analysis), not just the original prompt text.
+
+ANIMATION GUIDELINES BASED ON AD TYPE:
+${projectContext.adType === 'brand' ? `For BRAND ADS:
+- Use aspirational, smooth camera movements (slow push-ins, gentle pans)
+- Focus on mood and atmosphere over product details
+- Create emotional connection through cinematic techniques
+- Emphasize brand values through motion (elegance, innovation, etc.)` 
+: projectContext.adType === 'product' ? `For PRODUCT ADS:
+- Highlight product features with dynamic movements
+- Use product rotation, zoom on details, or reveal animations
+- Keep focus on the product throughout the animation
+- Add visual effects that emphasize product benefits`
+: `For GENERAL ADS:
+- Balance between storytelling and product visibility
+- Use movements that guide viewer attention
+- Mix static and dynamic elements for visual interest`}
+
+MOTION STRUCTURE:
+1. Primary Motion: Main subject or ${projectContext.productName} movement
+2. Secondary Motion: Environmental or atmospheric elements
+3. Camera Motion: Appropriate for ${selectedSceneToUse.duration}s duration
+4. Visual Effects: Subtle enhancements that support the message
 
 MOTION TYPES TO CONSIDER:
 - Subject Motion: E.g., "the boy reaches toward the sky", "the product gently rotates"
@@ -1444,10 +1503,15 @@ BEST PRACTICES:
 - Avoid overly complex sequences or multiple transitions.
 - Don't repeat details already visible in the image prompt — just describe how they move.
 
-EXAMPLES OF EFFECTIVE VIDEO PROMPTS:
-1. "The subject turns and smiles softly. Sunlight flickers across their face. Gentle zoom in. Cinematic live-action."
-2. "The product rotates slowly in mid-air. Glowing highlights shimmer across its surface. Locked camera. Stylized motion graphics."
-3. "Wind flows through tall grass in the foreground. Soft particles rise in the background. Static frame. Dreamy animation."
+EXAMPLES BASED ON YOUR CONTEXT (${projectContext.adType} ad for ${projectContext.productName}):
+${projectContext.adType === 'brand' ? 
+`1. "Slow camera push toward the ${projectContext.productName}. Soft light gradually illuminates the surface. Ambient particles drift. Cinematic and aspirational."
+2. "Static frame. Subtle color shift from cool to warm tones. Light rays emerge from behind. Emotional and atmospheric."` :
+projectContext.adType === 'product' ?
+`1. "The ${projectContext.productName} rotates 360 degrees. Key features highlight sequentially. Camera follows motion. Product showcase style."
+2. "Close-up detail pan across surface. Texture and quality emphasized. Subtle zoom on logo. Premium product reveal."` :
+`1. "The scene comes to life with gentle motion. Natural lighting shifts. Camera slowly pulls back. Engaging storytelling."
+2. "Elements animate in sequence. Focus shifts between foreground and background. Smooth transitions. Dynamic commercial style."`}
 
 Create a concise, effective video prompt for animation creation based on the input image prompt. Keep it impactful and ad-ready.`;
 
